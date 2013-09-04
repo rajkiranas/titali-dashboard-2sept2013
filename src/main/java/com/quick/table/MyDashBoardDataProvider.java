@@ -39,6 +39,21 @@ public class MyDashBoardDataProvider {
         t.setContainerDataSource(MyDashBoardContainer.getWhatsNewForMeContainer(whatsnews));
         t.setVisibleColumns(MyDashBoardContainer.NATURAL_COL_ORDER_WHATS_NEW);
         t.setColumnHeaders(MyDashBoardContainer.COL_HEADERS_ENGLISH_WHATS_NEW);
+        
+        t.setCellStyleGenerator(new Table.CellStyleGenerator(){
+    
+
+            @Override
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+                 if (propertyId == "dateTime") 
+                 {
+                    return "blueTextColorStyle";
+                 }
+                 else
+                     return "";
+            }
+        });
+        
         return t;
     }
     
