@@ -41,6 +41,7 @@ public class ConfirmationDialogueBox extends Window implements Button.ClickListe
         setContent(subContent);
         setHeight("20%");
         setWidth("30%");
+        
         // Center it in the browser window
         //subWindow.center();
         this.center();

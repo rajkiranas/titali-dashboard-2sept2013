@@ -9,8 +9,16 @@ import com.quick.bean.MyDashBoardBean;
 import com.quick.entity.Notices;
 import com.quick.entity.Whatsnew;
 import com.quick.entity.Whoisdoingwhat;
+import com.quick.global.GlobalConstants;
 import com.vaadin.data.util.BeanItemContainer;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Hours;
+import org.joda.time.Minutes;
+import org.joda.time.Seconds;
 
 /**
  *
@@ -18,15 +26,16 @@ import java.util.List;
  */
 public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
      public static final Object[] NATURAL_COL_ORDER_WHATS_NEW = new Object[]{
-       "notification"};
-     //"notification","dateTime"};
+         "notification","dateTime"};
+       
+     //"notification"};
         /**
         * "Human readable" captions for properties in same order as in
         * NATURAL_COL_ORDER_DAILY_CALLS.
         */
     public static final String[] COL_HEADERS_ENGLISH_WHATS_NEW = new String[]{
-        "Notification's"};
-    //"Notification's","Release time"};
+        "Notification's",""};
+    //"Notification's"};
     
     
     
@@ -51,6 +60,8 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
     public static final String[] COL_HEADERS_ENGLISH_Activity = new String[]{
         "Notification's"};
 
+    
+
     public MyDashBoardContainer(){
         super(MyDashBoardBean.class);
     }
@@ -65,7 +76,19 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
                  bean=new MyDashBoardBean();
                  bean.setNotification(w.getDisplaynotification());
                  bean.setItemid(String.valueOf(w.getItemid()));
-                 bean.setDateTime(w.getReleasedate().toString());
+                 //int minutesAgo=Minutes.minutesBetween(new DateTime(w.getReleasedate()), new DateTime(new Date())).getMinutes();
+                 
+                 String timeInterval = getTimeIntervalOfTheActivity(w.getReleasedate());
+                 
+                 
+                 
+                /* System.out.print("****** "+Days.daysBetween(new DateTime(w.getReleasedate()), new DateTime(new Date())).getDays() + " days, ");
+		System.out.print("****** "+Hours.hoursBetween(new DateTime(w.getReleasedate()), new DateTime(new Date())).getHours() % 24 + " hours, ");
+		System.out.print("****** "+Minutes.minutesBetween(new DateTime(w.getReleasedate()), new DateTime(new Date())).getMinutes() % 60 + " minutes, ");
+		System.out.print("****** "+Seconds.secondsBetween(new DateTime(w.getReleasedate()), new DateTime(new Date())).getSeconds() % 60 + " seconds."); */
+                
+                bean.setDateTime(timeInterval);
+                
                  boardContainer.addItem(bean);
            }
        }catch(Exception ex){
@@ -73,6 +96,36 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
        }
        return boardContainer;
         
+    }
+    
+    private static String getTimeIntervalOfTheActivity(Date releasedate) 
+    {
+        String returnTime=GlobalConstants.emptyString;
+        Date now =new Date();
+        int minutes = Minutes.minutesBetween(new DateTime(releasedate), new DateTime(now)).getMinutes()%60;
+        if(minutes<60)
+        {
+            returnTime=minutes+" minutes ago";
+        }
+        else
+        {
+            int hours=Hours.hoursBetween(new DateTime(releasedate), new DateTime(now)).getHours()%60;
+            if(hours<24)
+            {
+                returnTime=hours+" hours ago";
+            }
+            else
+            {
+                int days=Days.daysBetween(new DateTime(releasedate), new DateTime(now)).getDays()%24;
+                if(days==1)
+                    returnTime=days+" day ago";
+                else
+                    returnTime=days+" days ago";
+            }
+            
+        }
+         
+        return returnTime;
     }
     
     
