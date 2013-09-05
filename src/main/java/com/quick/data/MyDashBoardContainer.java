@@ -34,31 +34,31 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
         * NATURAL_COL_ORDER_DAILY_CALLS.
         */
     public static final String[] COL_HEADERS_ENGLISH_WHATS_NEW = new String[]{
-        "Notification's",""};
+        "Notification's",GlobalConstants.emptyString};
     //"Notification's"};
     
     
     
     
      public static final Object[] NATURAL_COL_ORDER_NOtice = new Object[]{
-       "notification"};
+       "notification","dateTime"};
         /**
         * "Human readable" captions for properties in same order as in
         * NATURAL_COL_ORDER_DAILY_CALLS.
         */
     public static final String[] COL_HEADERS_ENGLISH__NOtice = new String[]{
-        "Notice"};
+        "Notification's",GlobalConstants.emptyString};
     
     
     
      public static final Object[] NATURAL_COL_ORDER_Activity = new Object[]{
-       "notification"};
+       "notification","dateTime"};
         /**
         * "Human readable" captions for properties in same order as in
         * NATURAL_COL_ORDER_DAILY_CALLS.
         */
     public static final String[] COL_HEADERS_ENGLISH_Activity = new String[]{
-        "Notification's"};
+        "Notification's",GlobalConstants.emptyString};
 
     
 
@@ -78,7 +78,7 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
                  bean.setItemid(String.valueOf(w.getItemid()));
                  //int minutesAgo=Minutes.minutesBetween(new DateTime(w.getReleasedate()), new DateTime(new Date())).getMinutes();
                  
-                 String timeInterval = getTimeIntervalOfTheActivity(w.getReleasedate());
+                 
                  
                  
                  
@@ -92,7 +92,7 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
 		System.out.print("****** "+Hours.hoursBetween(new DateTime(new Date()), new DateTime(w.getReleasedate())).getHours() % 24 + " hours, ");
 		System.out.print("****** "+Minutes.minutesBetween(new DateTime(new Date()), new DateTime(w.getReleasedate())).getMinutes() % 60 + " minutes, ");
 		System.out.print("****** "+Seconds.secondsBetween(new DateTime(new Date()), new DateTime(w.getReleasedate())).getSeconds() % 60 + " seconds."); */
-                
+                String timeInterval = getTimeIntervalOfTheActivity(w.getReleasedate());
                 bean.setDateTime(timeInterval);
                 
                  boardContainer.addItem(bean);
@@ -140,23 +140,18 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
        MyDashBoardBean bean;
        boardContainer=new MyDashBoardContainer();
        try{
-        
-             
            for(Notices notices:noticeses){
                  bean=new MyDashBoardBean();
                  bean.setNotification(notices.getNoticeline());
+                 
+                 String timeInterval = getTimeIntervalOfTheActivity(notices.getNoticedate());
+                 bean.setDateTime(timeInterval);
                  boardContainer.addItem(bean);
            }
-           
-           
        }catch(Exception ex){
            ex.printStackTrace();
        }
-       
-       
-       
        return boardContainer;
-        
     }
 
       
@@ -172,7 +167,12 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
                 bean.setBywhome(whoisdoingwhat.getByWhom());
                 bean.setTopic(whoisdoingwhat.getTopic()); */
                 bean.setNotification(whoisdoingwhat.getDisplaynotification());
-                bean.setUploadId(String.valueOf(whoisdoingwhat.getUploadId()));                
+                bean.setUploadId(String.valueOf(whoisdoingwhat.getUploadId()));   
+                
+                String timeInterval = getTimeIntervalOfTheActivity(whoisdoingwhat.getUploadDate());
+                bean.setDateTime(timeInterval);
+                
+                
                 boardContainer.addItem(bean);
             }
            

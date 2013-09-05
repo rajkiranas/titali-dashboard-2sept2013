@@ -124,7 +124,7 @@ public class MasterDataProvider {
 
             Type listType = new TypeToken<ArrayList<Userprofile>>() {
             }.getType();
-            Gson gson=  new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+            Gson gson=  new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();
             teacherList= gson.fromJson(outNObject.getString(GlobalConstants.TEACHERLIST), listType);
         } catch (JSONException ex) {
             Logger.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
@@ -194,7 +194,7 @@ public class MasterDataProvider {
 
             Type listType = new TypeToken<ArrayList<MasteParmBean>>() {
             }.getType();
-            Gson gson=  new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+            Gson gson=  new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();
             uploadList= gson.fromJson(outNObject.getString(GlobalConstants.QUICKLEARNLIST), listType);
         } catch (JSONException ex) {
             Logger.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);

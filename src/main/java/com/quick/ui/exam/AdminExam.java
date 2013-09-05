@@ -501,7 +501,7 @@ public class AdminExam extends VerticalLayout implements View  {
                       
             Type listType = new TypeToken<ArrayList<ExamBean>>() {
             }.getType();
-            Gson gson=  new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+            Gson gson=  new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();
             selectedExamDetails=gson.fromJson(outNObject.getString(GlobalConstants.EXAMLIST), listType);
         } catch (JSONException ex) {
           //  Logger.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);

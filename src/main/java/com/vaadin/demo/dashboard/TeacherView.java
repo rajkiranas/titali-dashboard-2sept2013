@@ -165,7 +165,7 @@ public class TeacherView extends VerticalLayout implements View,Button.ClickList
 
             Type listType = new TypeToken<ArrayList<Userprofile>>() {
             }.getType();
-            Gson gson=  new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+            Gson gson=  new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();
             teacherList= gson.fromJson(outNObject.getString(GlobalConstants.teacher), listType);
         } catch (JSONException ex) {
            // Logger.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
