@@ -94,8 +94,8 @@ public class DashboardUI extends UI{
             //put("/transactions", TransactionsView.class);
             //put("/reports", ReportsView.class);
             //put("/schedule", ScheduleView.class);
-            put("/student",StudentView.class);
-            put("/teacher",TeacherView.class);
+            put("/students",StudentView.class);
+            put("/teachers",TeacherView.class);
             put("/upload",QuickUpload.class);
             put("/MyExam",StudentExam.class);
             put("/AdminExam",AdminExam.class);
@@ -375,7 +375,7 @@ public class DashboardUI extends UI{
         /*for (final String view : new String[] { "dashboard", "learn",
                 "transactions", "reports", "schedule","student","teacher","upload","MyExam" }) {*/
         for (final String view : new String[] { "dashboard", "learn",
-                "student","teacher","upload","MyExam","AdminExam" }) {
+                "students","teachers","upload","MyExam","AdminExam" }) {
             
             Button b = new NativeButton(view.substring(0, 1).toUpperCase()
                     + view.substring(1).replace('-', ' '));
