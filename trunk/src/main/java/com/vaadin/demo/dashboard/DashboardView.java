@@ -298,7 +298,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         row.addComponent(createPanel(whosDoingWhatTable));
 
         //row.addComponent(createPanel(new TopSixTheatersChart()));
-        row.addComponent(createPanel(new Label("My performance comes here")));
+        row.addComponent(createPanel(getMyPerformance()));
     }
 
     Window notifications;
@@ -359,7 +359,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
 
             Type listType = new TypeToken<ArrayList<Whatsnew>>() {
             }.getType();
-            Gson whatsNewGson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();       
+            Gson whatsNewGson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
             whatsnewsList = whatsNewGson.fromJson(outNObject.getString(GlobalConstants.WHATSNEW), listType);
             
             
@@ -367,14 +367,16 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
              Type listType1 = new TypeToken<ArrayList<MasteParmBean>>() {
             }.getType();
             
-            whosDoingWhatFromDB = new Gson().fromJson(outNObject.getString(GlobalConstants.WHOSEDOINGWHAT), listType1);
+             Gson whoIsDoingWhatGson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
+            whosDoingWhatFromDB = whoIsDoingWhatGson.fromJson(outNObject.getString(GlobalConstants.WHOSEDOINGWHAT), listType1);
             
             
             
              Type listType2 = new TypeToken<ArrayList<Notices>>() {
             }.getType();
             
-            noticeses = new Gson().fromJson(outNObject.getString(GlobalConstants.NOTICES), listType2);
+             Gson noticesGson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
+            noticeses = noticesGson.fromJson(outNObject.getString(GlobalConstants.NOTICES), listType2);
             
            
         } catch (JSONException ex) 
@@ -438,6 +440,17 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
 //        layout1.setExpandRatio(viwMoreBtn, 0.5f);
         
         return layout1;
+    }
+
+    private Component getMyPerformance() 
+    {
+        HorizontalLayout hl = new HorizontalLayout();
+        hl.setCaption("My Achievement");
+        hl.setSizeFull();
+        Label l = new Label("<table width='50%' height='100%' border='0' bgcolor='purple'><tr><td align=center><font face='verdana' color='white' align=center><h1><b>4.5</b></h1> out of 5</font></td></tr></table>", ContentMode.HTML);
+        l.setSizeFull();
+        hl.addComponent(l);
+        return hl;
     }
 
 }

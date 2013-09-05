@@ -573,7 +573,7 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
           
             Type listType = new TypeToken<ArrayList<MasteParmBean>>() {
             }.getType();
-            Gson gson=  new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();
+            Gson gson=  new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();
             list= gson.fromJson(outNObject.getString(GlobalConstants.QUICKLEARNLIST), listType);
             
         } catch (JSONException ex) 

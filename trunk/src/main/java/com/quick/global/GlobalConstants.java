@@ -84,6 +84,7 @@ public class GlobalConstants
    public static final String UPDATE_USER_NOTES_FOR_TOPIC_URL="UPDATE_USER_NOTES_FOR_TOPIC_URL";
    public static final String CREATE_EXAM_URL="CREATE_EXAM_URL";
    public static final String DELETE_EXAM_BY_ID="DELETE_EXAM_BY_ID";
+   public static final String gsonTimeFormat="yyyy-MM-dd'T'HH:mm:ss'Z'";
    //public static final String UserMasterResource = "/UserMaster";
     
     static
