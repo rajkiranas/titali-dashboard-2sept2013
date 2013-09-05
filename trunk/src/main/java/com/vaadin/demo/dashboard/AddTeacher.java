@@ -123,7 +123,7 @@ public class AddTeacher extends Window implements Button.ClickListener,Property.
         center();        
         setClosable(false);
         setWidth("80%");
-        setHeight("70%");  
+        setHeight("90%");  
         setStandardList(MasterDataProvider.getStandardList());
         setQualificationList(MasterDataProvider.getQualificationList());
         buildBaseTeacherLayout();
@@ -140,7 +140,7 @@ public class AddTeacher extends Window implements Button.ClickListener,Property.
         center();        
         setClosable(false);
         setWidth("80%");
-        setHeight("70%");  
+        setHeight("90%");  
         setStandardList(MasterDataProvider.getStandardList());        
         setQualificationList(MasterDataProvider.getQualificationList());       
         buildBaseTeacherLayout();

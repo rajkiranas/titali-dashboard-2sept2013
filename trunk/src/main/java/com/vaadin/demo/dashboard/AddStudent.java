@@ -138,15 +138,9 @@ public class AddStudent extends Window implements Button.ClickListener{
        
        Panel formPanel=new Panel();
        formPanel.setSizeUndefined();
-       formPanel.setWidth("710px");
-       formPanel.setHeight("280px");
-       if(isNewStudent){
-           formPanel.setCaption("Add Student");
-       }else{
-           formPanel.setCaption("Edit Student");
-       }
-       
-       
+       formPanel.setWidth("100%");
+       formPanel.setHeight("100%");
+       formPanel.setCaption("Student Information");
        
        HorizontalLayout formLayout=new HorizontalLayout();
        formLayout.setSpacing(true);

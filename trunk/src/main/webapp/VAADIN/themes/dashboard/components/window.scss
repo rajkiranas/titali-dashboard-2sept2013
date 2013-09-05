@@ -57,10 +57,12 @@
 	}
 	
 	.v-window-outerheader {
-		padding: 0.5em 20px;
+		/* padding: 0.5em 20px; */
 		height: 1.7em;
 		font-weight: 300;
 		font-size: 20px;
+                color: white;
+                background: #353637;
 	}
 	
 	.v-window-header {

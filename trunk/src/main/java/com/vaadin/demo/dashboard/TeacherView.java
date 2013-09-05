@@ -63,13 +63,19 @@ public class TeacherView extends VerticalLayout implements View,Button.ClickList
     }
 
     private Component buildBaseTeacher() {
-        editors = new TabSheet();
-        editors.setSizeFull();       
+//        editors = new TabSheet();
+//        editors.setSizeFull();       
+        
+        
+        final Label title = new Label("Teachers");
+        title.setSizeUndefined();
+        title.addStyleName("h1");
+        
         
         final CssLayout center = new CssLayout();
         center.setSizeFull();
-        center.setCaption("All Teachers");        
-         
+        //center.setCaption("All Teachers");        
+        center.addComponent(title);
         HorizontalLayout toolbar = new HorizontalLayout();
         toolbar.setWidth("100%");        
         toolbar.setHeight("-1px");
@@ -82,7 +88,7 @@ public class TeacherView extends VerticalLayout implements View,Button.ClickList
         buttons.setSpacing(true);
         buttons.setSizeUndefined();
         
-        allTeacherBtn=new Button("All Teacher",(Button.ClickListener)this);
+        allTeacherBtn=new Button("All Teachers",(Button.ClickListener)this);
         allTeacherBtn.addStyleName("default");
         allTeacherBtn.setImmediate(true);
         buttons.addComponent(allTeacherBtn);      
@@ -100,8 +106,8 @@ public class TeacherView extends VerticalLayout implements View,Button.ClickList
         toolbar.setComponentAlignment(buttons, Alignment.TOP_RIGHT); 
              
         center.addComponent(buildStudentTable());
-        editors.addComponent(center);        
-        return editors;
+        ///editors.addComponent(center);        
+        return center;
     }
     
     private Table buildStudentTable() {

@@ -68,12 +68,17 @@ public class StudentView extends VerticalLayout implements View,Button.ClickList
     
     private Component buildBaseStudent(){
         
-        editors = new TabSheet();
-        editors.setSizeFull();       
+//        editors = new TabSheet();
+//        editors.setSizeFull();       
+        
+        final Label title = new Label("Students");
+        title.setSizeUndefined();
+        title.addStyleName("h1");
         
         final CssLayout center = new CssLayout();
         center.setSizeFull();
-        center.setCaption("All Student");        
+        //center.setCaption("All Student");        
+        center.addComponent(title);
         
         HorizontalLayout toolbar = new HorizontalLayout();
         toolbar.setWidth("100%");        
@@ -87,7 +92,7 @@ public class StudentView extends VerticalLayout implements View,Button.ClickList
         buttons.setSpacing(true);
         buttons.setSizeUndefined();
         
-        allStudBtn=new Button("All Student",(Button.ClickListener)this);
+        allStudBtn=new Button("All Students",(Button.ClickListener)this);
         allStudBtn.addStyleName("default");
         allStudBtn.setImmediate(true);
         buttons.addComponent(allStudBtn);      
@@ -107,8 +112,8 @@ public class StudentView extends VerticalLayout implements View,Button.ClickList
         
        
         center.addComponent(buildStudentTable());
-        editors.addComponent(center);        
-        return editors;
+        ///editors.addComponent(center);        
+        return center;
     }
     
     private Table buildStudentTable() {
