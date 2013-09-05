@@ -11,6 +11,7 @@
 package com.vaadin.demo.dashboard;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.quick.bean.MasteParmBean;
 import com.quick.bean.MyDashBoardBean;
@@ -358,8 +359,8 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
 
             Type listType = new TypeToken<ArrayList<Whatsnew>>() {
             }.getType();
-            
-            whatsnewsList = new Gson().fromJson(outNObject.getString(GlobalConstants.WHATSNEW), listType);
+            Gson whatsNewGson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create();       
+            whatsnewsList = whatsNewGson.fromJson(outNObject.getString(GlobalConstants.WHATSNEW), listType);
             
             
             
