@@ -82,10 +82,16 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
                  
                  
                  
-                /* System.out.print("****** "+Days.daysBetween(new DateTime(w.getReleasedate()), new DateTime(new Date())).getDays() + " days, ");
+              /*  System.out.print("****** "+Days.daysBetween(new DateTime(w.getReleasedate()), new DateTime(new Date())).getDays() + " days, ");
 		System.out.print("****** "+Hours.hoursBetween(new DateTime(w.getReleasedate()), new DateTime(new Date())).getHours() % 24 + " hours, ");
 		System.out.print("****** "+Minutes.minutesBetween(new DateTime(w.getReleasedate()), new DateTime(new Date())).getMinutes() % 60 + " minutes, ");
-		System.out.print("****** "+Seconds.secondsBetween(new DateTime(w.getReleasedate()), new DateTime(new Date())).getSeconds() % 60 + " seconds."); */
+		System.out.print("****** "+Seconds.secondsBetween(new DateTime(w.getReleasedate()), new DateTime(new Date())).getSeconds() % 60 + " seconds.");
+                
+                
+                System.out.print("****** "+Days.daysBetween(new DateTime(new Date()), new DateTime(w.getReleasedate())).getDays() + " days, ");
+		System.out.print("****** "+Hours.hoursBetween(new DateTime(new Date()), new DateTime(w.getReleasedate())).getHours() % 24 + " hours, ");
+		System.out.print("****** "+Minutes.minutesBetween(new DateTime(new Date()), new DateTime(w.getReleasedate())).getMinutes() % 60 + " minutes, ");
+		System.out.print("****** "+Seconds.secondsBetween(new DateTime(new Date()), new DateTime(w.getReleasedate())).getSeconds() % 60 + " seconds."); */
                 
                 bean.setDateTime(timeInterval);
                 
@@ -102,21 +108,21 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
     {
         String returnTime=GlobalConstants.emptyString;
         Date now =new Date();
-        int minutes = Minutes.minutesBetween(new DateTime(releasedate), new DateTime(now)).getMinutes()%60;
+        int minutes = Minutes.minutesBetween(new DateTime(releasedate), new DateTime(now)).getMinutes();
         if(minutes<60)
         {
             returnTime=minutes+" minutes ago";
         }
         else
         {
-            int hours=Hours.hoursBetween(new DateTime(releasedate), new DateTime(now)).getHours()%60;
+            int hours=Hours.hoursBetween(new DateTime(releasedate), new DateTime(now)).getHours();
             if(hours<24)
             {
                 returnTime=hours+" hours ago";
             }
             else
             {
-                int days=Days.daysBetween(new DateTime(releasedate), new DateTime(now)).getDays()%24;
+                int days=Days.daysBetween(new DateTime(releasedate), new DateTime(now)).getDays();
                 if(days==1)
                     returnTime=days+" day ago";
                 else
