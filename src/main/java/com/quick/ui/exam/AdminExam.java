@@ -76,6 +76,9 @@ public class AdminExam extends VerticalLayout implements View  {
          Button viewExam;
          Table examlistTbl;
          ValueChangeListener exmlistListner;
+        HorizontalLayout row1;
+        HorizontalLayout row2;
+        private CssLayout examsummaryPannel;
         
     Table t;
     MyDashBoardDataProvider boardDataProvider = new MyDashBoardDataProvider();
@@ -252,12 +255,12 @@ public class AdminExam extends VerticalLayout implements View  {
         top.addComponent(viewExam);
         top.setComponentAlignment(viewExam, Alignment.MIDDLE_LEFT);
         
-        HorizontalLayout row = new HorizontalLayout();
-        row.setSizeFull();
-        row.setMargin(new MarginInfo(true, true, false, true));
-        row.setSpacing(true);
-        addComponent(row);
-        setExpandRatio(row, 2); 
+         row1 = new HorizontalLayout();
+        row1.setSizeFull();
+        row1.setMargin(new MarginInfo(true, true, false, true));
+        row1.setSpacing(true);
+        addComponent(row1);
+        setExpandRatio(row1, 2); 
 
         Userprofile userprofile = (Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile);
           Component examdtls = buildSelectedExamDetails();
@@ -272,33 +275,35 @@ public class AdminExam extends VerticalLayout implements View  {
                ExamBean eb = (ExamBean) event.getProperty().getValue(); 
                setSelectedExam(getSelectedExamDetailsById(eb.getExamId()));
                updateExamDetails();
+               updateExamSummary();
             }
         };
          
         examlistTbl.addValueChangeListener(exmlistListner);
         examlistTbl.select(examlistTbl.firstItemId());
 
-        row.addComponent(createPanel(UIUtils.buildVerticalLayoutForComponent(examlistTbl)));
+        row1.addComponent(createPanel(UIUtils.buildVerticalLayoutForComponent(examlistTbl)));
        // row.addComponent(createPanel(AdminExamDataProvider.getMyExamPieChart()));
-        row.addComponent(createPanel(new Label("My Exam Pie chart")));
+        row1.addComponent(createPanel(new Label("My Exam Pie chart")));
 
-        row = new HorizontalLayout();
-        row.setMargin(true);
-        row.setSizeFull();
-        row.setSpacing(true);
-        addComponent(row);
-        setExpandRatio(row, 2);
+        row2 = new HorizontalLayout();
+        row2.setMargin(true);
+        row2.setSizeFull();
+        row2.setSpacing(true);
+        addComponent(row2);
+        setExpandRatio(row2, 2);
 
         
        
         //UIUtils.getVerticalPaneView(examdtls, examdetailspieChart))
-        row.addComponent(createPanel(examdtls));
+        row2.addComponent(createPanel(examdtls));
 
        // row.addComponent(createPanel(AdminExamDataProvider.getExamResult()));
         Component examChart = getExamDetailsPieChart();
-        row.addComponent(createPanel(UIUtils.getTabSheetPaneView(examChart,
+        examsummaryPannel = createPanel(UIUtils.getTabSheetPaneView(examChart,
                 AdminExamDataProvider.getPresentStudentsForExam(getSelectedExam())  
-                , AdminExamDataProvider.getAbsentStudentsForExam(getSelectedExam()))));
+                , AdminExamDataProvider.getAbsentStudentsForExam(getSelectedExam())));
+        row2.addComponent(examsummaryPannel);
 
     }
     
@@ -504,6 +509,20 @@ public class AdminExam extends VerticalLayout implements View  {
         examlistTbl.addValueChangeListener(exmlistListner);
     }
    
+    
+    private void updateExamSummary()
+    {
+       if(row2!=null){
+           
+        row2.removeComponent(examsummaryPannel);
+        Component examChart = getExamDetailsPieChart();
+        examsummaryPannel =  examsummaryPannel = createPanel(UIUtils.getTabSheetPaneView(examChart,
+                AdminExamDataProvider.getPresentStudentsForExam(getSelectedExam())  
+                , AdminExamDataProvider.getAbsentStudentsForExam(getSelectedExam())));
+        row2.addComponent(examsummaryPannel);
+
+       }
+    }
  /**
       * adding listener to the remove button for delete topic from upload screen
       * */

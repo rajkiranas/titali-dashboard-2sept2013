@@ -32,6 +32,7 @@ import java.text.DecimalFormat;
 import com.vaadin.data.Property;
 import com.quick.data.Generator;
 import com.quick.global.GlobalConstants;
+import com.quick.utilities.UIUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -51,6 +52,7 @@ import com.vaadin.ui.Table.Align;
 import com.vaadin.ui.Table.RowHeaderMode;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -62,7 +64,9 @@ public class StudentExam extends VerticalLayout implements View  {
          TextField scoretxt;
          TextField questionstxt;
           Button startExam;;
-         
+        HorizontalLayout row1;
+        HorizontalLayout row2;
+        private CssLayout examsummaryPannel;
         
     Table t;
     MyDashBoardDataProvider boardDataProvider = new MyDashBoardDataProvider();
@@ -242,12 +246,15 @@ public class StudentExam extends VerticalLayout implements View  {
         top.setComponentAlignment(edit, Alignment.MIDDLE_LEFT);
         top.addComponent(startExam);
         top.setComponentAlignment(startExam, Alignment.MIDDLE_LEFT);
-        HorizontalLayout row = new HorizontalLayout();
-        row.setSizeFull();
-        row.setMargin(new MarginInfo(true, true, false, true));
-        row.setSpacing(true);
-        addComponent(row);
-        setExpandRatio(row, 2); 
+        
+        
+        
+         row1 = new HorizontalLayout();
+        row1.setSizeFull();
+        row1.setMargin(new MarginInfo(true, true, false, true));
+        row1.setSpacing(true);
+        addComponent(row1);
+        setExpandRatio(row1, 2); 
 
         Userprofile userprofile = (Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile);
         Table examlistTbl = StudentExamDataProvider.getStudentExamList(getExamList(userprofile.getStd(),userprofile.getDiv()));
@@ -258,49 +265,63 @@ public class StudentExam extends VerticalLayout implements View  {
                ExamBean eb = (ExamBean) event.getProperty().getValue(); 
                setSelectedExam(getSelectedExamDetailsById(eb.getExamId()));
                updateExamDetails();
+               updateExamSummary();
             }
+
+            
 
            
         });
-        row.addComponent(createPanel(examlistTbl));
-        row.addComponent(createPanel(StudentExamDataProvider.getMyExamPieChart(null)));
+        
+        examlistTbl.select(examlistTbl.firstItemId());
+        row1.addComponent(createPanel(examlistTbl));
+        row1.addComponent(createPanel(StudentExamDataProvider.getMyExamPieChart(null)));
+        
+        
+        
 
-        row = new HorizontalLayout();
-        row.setMargin(true);
-        row.setSizeFull();
-        row.setSpacing(true);
-        addComponent(row);
-        setExpandRatio(row, 2);
+        row2 = new HorizontalLayout();
+        row2.setMargin(true);
+        row2.setSizeFull();
+        row2.setSpacing(true);
+        addComponent(row2);
+        setExpandRatio(row2, 2);
 
-        t = new Table() {
-            @Override
-            protected String formatPropertyValue(Object rowId, Object colId,
-                    Property<?> property) {
-                if (colId.equals("Revenue")) {
-                    if (property != null && property.getValue() != null) {
-                        Double r = (Double) property.getValue();
-                        String ret = new DecimalFormat("#.##").format(r);
-                        return "$" + ret;
-                    } else {
-                        return "";
-                    }
-                }
-                return super.formatPropertyValue(rowId, colId, property);
-            }
-        };
-        t.setCaption("Top 10 Titles by Revenue");
+        //////////////////////////////////////////////////////////////////////////////////////
+        //// anonymous table for format property value ////
+        //////////////////////////////////////////////////////////////////////////////////////////
+//        t = new Table() {
+//            @Override
+//            protected String formatPropertyValue(Object rowId, Object colId,
+//                    Property<?> property) {
+//                if (colId.equals("Revenue")) {
+//                    if (property != null && property.getValue() != null) {
+//                        Double r = (Double) property.getValue();
+//                        String ret = new DecimalFormat("#.##").format(r);
+//                        return "$" + ret;
+//                    } else {
+//                        return "";
+//                    }
+//                }
+//                return super.formatPropertyValue(rowId, colId, property);
+//            }
+//        };
+//        t.setCaption("Top 10 Titles by Revenue");
+//
+//        t.setWidth("100%");
+//        t.setPageLength(0);
+//        t.addStyleName("plain");
+//        t.addStyleName("borderless");
+//        t.setSortEnabled(false);
+//        t.setColumnAlignment("Revenue", Align.RIGHT);
+//        t.setRowHeaderMode(RowHeaderMode.INDEX);
 
-        t.setWidth("100%");
-        t.setPageLength(0);
-        t.addStyleName("plain");
-        t.addStyleName("borderless");
-        t.setSortEnabled(false);
-        t.setColumnAlignment("Revenue", Align.RIGHT);
-        t.setRowHeaderMode(RowHeaderMode.INDEX);
+        row2.addComponent(createPanel(getSelectedExamDetails(null)));
 
-        row.addComponent(createPanel(getSelectedExamDetails(null)));
+        Component examChart = getExamDetailsPieChart();
+        examsummaryPannel=createPanel(UIUtils.getTabSheetPaneView(examChart));
+        row2.addComponent(examsummaryPannel);
 
-        row.addComponent(createPanel(StudentExamDataProvider.getExamResult(null)));
 
     }
    
@@ -389,6 +410,18 @@ public class StudentExam extends VerticalLayout implements View  {
        updateSelectedExamDetailsPanel();         
      }
 
+    private void updateExamSummary()
+    {
+       if(row2!=null){
+           
+        row2.removeComponent(examsummaryPannel);
+        Component examChart = getExamDetailsPieChart();
+        examsummaryPannel = createPanel(UIUtils.getTabSheetPaneView(examChart));
+        row2.addComponent(examsummaryPannel);
+
+       }
+    }
+     
      private void updateSelectedExamDetailsPanel() {
         ExamBean eb = getSelectedExam().get(0);
       
@@ -403,7 +436,7 @@ public class StudentExam extends VerticalLayout implements View  {
     
   
       private void startExam() {
-         //throw new UnsupportedOperationException("Not yet implemented");
+        
       }
     
     
@@ -473,7 +506,22 @@ public class StudentExam extends VerticalLayout implements View  {
 
     
 
-   
+   private Component getExamDetailsPieChart() {
+        
+        
+        
+        ExamBean eb = getSelectedExam().get(0);
+        HashMap<String,Double> dataMap = new HashMap<String,Double>();
+        
+        dataMap.put("Absent", ((double) eb.getTotalStudents() - (double) eb.getAppearedStudents()));
+
+        dataMap.put("Fail", (double) eb.getFailedStudents());
+
+        dataMap.put("Passed", (double) eb.getPassedStudents());
+
+        return CustomPieChart.createChart(dataMap,"Passed");
+        
+    }
 
     
 
