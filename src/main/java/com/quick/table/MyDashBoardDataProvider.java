@@ -32,7 +32,7 @@ public class MyDashBoardDataProvider {
         t.addStyleName("borderless");
         t.setSortEnabled(false);
         t.setWidth("100%");
-        t.setPageLength(0);
+        //t.setPageLength(0);
         t.setSelectable(true);
         t.addValueChangeListener((Property.ValueChangeListener)dashBoardView);
         t.setImmediate(true); // react at once when something is selected

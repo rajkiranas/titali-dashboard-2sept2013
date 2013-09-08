@@ -12,6 +12,7 @@ public class GlobalConstants
     
     
     
+    
 
     /** Creates a new instance of EQ_GlobalConstants */
     public GlobalConstants() {
@@ -61,7 +62,7 @@ public class GlobalConstants
     public static final String h1_style = "h1";
     public static final String default_style = "default";
     public static final String going_through="going through";
-    
+    public static final String  DASH = "-";
     
     
      // == exam ============
@@ -84,6 +85,8 @@ public class GlobalConstants
    public static final String UPDATE_USER_NOTES_FOR_TOPIC_URL="UPDATE_USER_NOTES_FOR_TOPIC_URL";
    public static final String CREATE_EXAM_URL="CREATE_EXAM_URL";
    public static final String DELETE_EXAM_BY_ID="DELETE_EXAM_BY_ID";
+   public static final String GET_PRESENT_STUD_FOR_EXAM="GET_PRESENT_STUD_FOR_EXAM";
+   public static final String GET_ABSENT_STUD_FOR_EXAM ="GET_ABSENT_STUD_FOR_EXAM" ;
    public static final String gsonTimeFormat="yyyy-MM-dd'T'HH:mm:ss'Z'";
    //public static final String UserMasterResource = "/UserMaster";
     

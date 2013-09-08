@@ -44,6 +44,33 @@ public class ExamBean {
      private int marksPerQuestion;
      private int queType;
      private String contestLine;
+     private String username;
+     private Date responseDt;
+     private String result;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Date getResponseDt() {
+        return responseDt;
+    }
+
+    public void setResponseDt(Date responseDt) {
+        this.responseDt = responseDt;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
 
     public String getContestLine() {
         return contestLine;

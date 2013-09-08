@@ -54,6 +54,7 @@ import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,13 +66,15 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class DashboardView extends VerticalLayout implements View, Property.ValueChangeListener {
 
-    Table t;
-    MyDashBoardDataProvider boardDataProvider = new MyDashBoardDataProvider();
+    private Table t;
+    private MyDashBoardDataProvider boardDataProvider = new MyDashBoardDataProvider();
     private  List<Whatsnew> whatsnewsList;
     private  List<MasteParmBean> whosDoingWhatFromDB;
     private  List<Notices> noticeses;
     private  Table whatsNewTable;
     private  Table whosDoingWhatTable;
+    private static final String strViewMore="View More";
+
     
     
     
@@ -248,11 +251,12 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         row.setSpacing(true);
         addComponent(row);
         setExpandRatio(row, 1.5f);
-        whatsNewTable = boardDataProvider.getWhatsNewForme(whatsnewsList,this);
         
-        row.addComponent(createPanel(whatsNewTable));
+        
+        whatsNewTable = boardDataProvider.getWhatsNewForme(whatsnewsList,this);
         //row.addComponent(createPanel(getWhatsNewLayout()));
-
+        row.addComponent(createPanel(whatsNewTable));
+        
         /* TextArea notes = new TextArea("Notes");
         notes.setValue("Remember to:\n· Zoom in and out in the Sales view\n· Filter the transactions and drag a set of them to the Reports tab\n· Create a new report\n· Change the schedule of the movie theater");
         notes.setSizeFull(); */
@@ -296,9 +300,12 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
 
         whosDoingWhatTable=boardDataProvider.getWhoIsDoingWhat(whosDoingWhatFromDB,this);
         row.addComponent(createPanel(whosDoingWhatTable));
-
+        
+        
         //row.addComponent(createPanel(new TopSixTheatersChart()));
         row.addComponent(createPanel(getMyPerformance()));
+
+        
     }
 
     Window notifications;
@@ -418,28 +425,32 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         
     }
 
-    private VerticalLayout getWhatsNewLayout() {
-        VerticalLayout layout1 = new VerticalLayout();
-        layout1.setWidth("100%");
-        layout1.setHeight("100%");
-        layout1.setImmediate(true);
-        layout1.addComponent(whatsNewTable);
-        //layout.setExpandRatio(whatsNewTable, 2);
-               
-        Button viwMoreBtn = new Button("View More");
-        viwMoreBtn.setImmediate(true);
-        viwMoreBtn.setWidth("100%");
-        //viwMoreBtn.setHeight("50%");
+    private Component getWhatsNewLayout() {
+        
+        VerticalLayout parent = new VerticalLayout();
+        parent.setSizeFull();        
+        parent.addComponent(whatsNewTable);
+        parent.setExpandRatio(whatsNewTable, 4);
+        //whatsNewTable.
         
         
-        layout1.addComponent(viwMoreBtn);
-//        //layout.setExpandRatio(viwMoreBtn, 1);
+        Button viewMoreBtn = new Button(strViewMore);
+        viewMoreBtn.setImmediate(true);
+        viewMoreBtn.setStyleName(BaseTheme.BUTTON_LINK);
+//        viewMoreBtn.setWidth("100%");
+//        viewMoreBtn.setHeight("3%");
 //        
-//                
-//        layout1.setExpandRatio(whatsNewTable, 2.5f);
-//        layout1.setExpandRatio(viwMoreBtn, 0.5f);
+//        VerticalLayout l = new VerticalLayout();
+//        l.setWidth("100%");
+//        l.addComponent(viewMoreBtn);
+//        l.setComponentAlignment(viewMoreBtn, Alignment.BOTTOM_CENTER);
         
-        return layout1;
+        parent.addComponent(viewMoreBtn);
+        parent.setComponentAlignment(viewMoreBtn, Alignment.BOTTOM_CENTER);
+        parent.setExpandRatio(viewMoreBtn, 0.5f);
+//               
+        
+        return parent;
     }
 
     private Component getMyPerformance() 
