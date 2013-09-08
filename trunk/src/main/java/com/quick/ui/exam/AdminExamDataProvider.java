@@ -84,7 +84,7 @@ public class AdminExamDataProvider {
 //                }
 //            });
         
-        Table t1 = new Table(){
+        t1 = new Table(){
         
       @Override
        protected String formatPropertyValue(Object rowId,
