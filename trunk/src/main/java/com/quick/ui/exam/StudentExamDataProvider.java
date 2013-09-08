@@ -35,6 +35,7 @@ public class StudentExamDataProvider {
         t1.setContainerDataSource(StudentExamListContainer.getExamListContainer(list));
         t1.setVisibleColumns(StudentExamListContainer.NATURAL_COL_ORDER_QUICKLEARN);
         t1.setColumnHeaders(StudentExamListContainer.COL_HEADERS_ENGLISH_QUICKLEARN);
+        t1.sort(new Object[]{"examId"}, new boolean[]{true});
        
         return t1;
     }

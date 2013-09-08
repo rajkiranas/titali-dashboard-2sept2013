@@ -37,9 +37,11 @@ import com.quick.data.Generator;
 import com.quick.global.GlobalConstants;
 import com.quick.table.QuickUploadTable;
 import com.quick.utilities.ConfirmationDialogueBox;
+import com.quick.utilities.UIUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.vaadin.addon.charts.Chart;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.demo.dashboard.QuickUpload;
@@ -58,6 +60,7 @@ import com.vaadin.ui.Table.Align;
 import com.vaadin.ui.Table.RowHeaderMode;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import org.codehaus.jettison.json.JSONException;
@@ -257,6 +260,9 @@ public class AdminExam extends VerticalLayout implements View  {
         setExpandRatio(row, 2); 
 
         Userprofile userprofile = (Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile);
+          Component examdtls = buildSelectedExamDetails();
+         
+        
         AdminExamDataProvider provider = new AdminExamDataProvider(this);
          examlistTbl = provider.getStudentExamList(getExamList(userprofile.getStd(),userprofile.getDiv()));
          exmlistListner = new Property.ValueChangeListener() {
@@ -268,19 +274,11 @@ public class AdminExam extends VerticalLayout implements View  {
                updateExamDetails();
             }
         };
+         
         examlistTbl.addValueChangeListener(exmlistListner);
-//        examlistTbl.addValueChangeListener(new Property.ValueChangeListener() {
-//
-//            @Override
-//            public void valueChange(ValueChangeEvent event) {
-//               ExamBean eb = (ExamBean) event.getProperty().getValue(); 
-//               setSelectedExam(getSelectedExamDetailsById(eb.getExamId()));
-//               updateExamDetails();
-//            }
+        examlistTbl.select(examlistTbl.firstItemId());
 
-           
-    //    });
-        row.addComponent(createPanel(examlistTbl));
+        row.addComponent(createPanel(UIUtils.buildVerticalLayoutForComponent(examlistTbl)));
        // row.addComponent(createPanel(AdminExamDataProvider.getMyExamPieChart()));
         row.addComponent(createPanel(new Label("My Exam Pie chart")));
 
@@ -291,42 +289,22 @@ public class AdminExam extends VerticalLayout implements View  {
         addComponent(row);
         setExpandRatio(row, 2);
 
-        t = new Table() {
-            @Override
-            protected String formatPropertyValue(Object rowId, Object colId,
-                    Property<?> property) {
-                if (colId.equals("Revenue")) {
-                    if (property != null && property.getValue() != null) {
-                        Double r = (Double) property.getValue();
-                        String ret = new DecimalFormat("#.##").format(r);
-                        return "$" + ret;
-                    } else {
-                        return "";
-                    }
-                }
-                return super.formatPropertyValue(rowId, colId, property);
-            }
-        };
-        t.setCaption("Top 10 Titles by Revenue");
-
-        t.setWidth("100%");
-        t.setPageLength(0);
-        t.addStyleName("plain");
-        t.addStyleName("borderless");
-        t.setSortEnabled(false);
-        t.setColumnAlignment("Revenue", Align.RIGHT);
-        t.setRowHeaderMode(RowHeaderMode.INDEX);
-
-        row.addComponent(createPanel(getSelectedExamDetails()));
+        
+       
+        //UIUtils.getVerticalPaneView(examdtls, examdetailspieChart))
+        row.addComponent(createPanel(examdtls));
 
        // row.addComponent(createPanel(AdminExamDataProvider.getExamResult()));
-        row.addComponent(createPanel(new Label("Exam Result chart")));
+        Component examChart = getExamDetailsPieChart();
+        row.addComponent(createPanel(UIUtils.getTabSheetPaneView(examChart,
+                AdminExamDataProvider.getPresentStudentsForExam(getSelectedExam())  
+                , AdminExamDataProvider.getAbsentStudentsForExam(getSelectedExam()))));
 
     }
     
      
    
-    public  Component getSelectedExamDetails() {
+    public  Component buildSelectedExamDetails() {
         FormLayout formLayout = new FormLayout();
         formLayout.setMargin(true);
         subtxt =new TextField();
@@ -606,6 +584,51 @@ public class AdminExam extends VerticalLayout implements View  {
             ex.printStackTrace();
         }
      }
+
+    private Component getExamDetailsPieChart() {
+        
+        
+        
+        ExamBean eb = getSelectedExam().get(0);
+        HashMap<String,Double> dataMap = new HashMap<String,Double>();
+        
+        dataMap.put("Absent", ((double) eb.getTotalStudents() - (double) eb.getAppearedStudents()));
+
+        dataMap.put("Fail", (double) eb.getFailedStudents());
+
+        dataMap.put("Passed", (double) eb.getPassedStudents());
+
+        return CustomPieChart.createChart(dataMap,"Passed");
+        
+    }
+    
+   /*  private ColumnChart getAvgAndTopIncentiveColumnChart() 
+    {
+        ColumnChart cc = new ColumnChart();
+        //UIUtils.setColumnChartContainerDataSource(cc, columChartValuesMap);
+        cc.setHeight("420px");
+        cc.setWidth("250px");
+        cc.addXAxisLabel("payout");
+        
+        cc.addColumn("payout");
+        //cc.addColumn(GlobalConstants.Attainment);AvgNationalPayout
+        //String payoutChartCaption=GlobalConstants.emptyString;
+        
+        
+           // payoutChartCaption="column chart";            
+            cc.add("", new double[]{ new Double(30)});
+            cc.add("", new double[]{new Double(10)});
+            cc.add("", new double[]{new Double(20)});
+        
+        
+//        VerticalLayout vl = new VerticalLayout();
+//        vl.setCaption(payoutChartCaption);
+//        vl.setSizeFull();
+//        vl.addComponent(cc);
+        
+        return cc;
+    } */
+
      
     
     
