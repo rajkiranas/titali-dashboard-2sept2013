@@ -47,6 +47,7 @@ public class ExamBean {
      private String username;
      private Date responseDt;
      private String result;
+     private String examTypeName;
 
     public String getUsername() {
         return username;
@@ -291,6 +292,20 @@ public class ExamBean {
 
     public void setMarksPerQuestion(int marksPerQuestion) {
         this.marksPerQuestion = marksPerQuestion;
+    }
+
+    /**
+     * @return the examTypeName
+     */
+    public String getExamTypeName() {
+        return examTypeName;
+    }
+
+    /**
+     * @param examTypeName the examTypeName to set
+     */
+    public void setExamTypeName(String examTypeName) {
+        this.examTypeName = examTypeName;
     }
 
  

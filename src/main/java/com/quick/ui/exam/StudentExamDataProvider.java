@@ -11,6 +11,9 @@ import com.vaadin.data.Property;
 import com.vaadin.demo.dashboard.TopGrossingMoviesChart;
 import com.vaadin.demo.dashboard.TopSixTheatersChart;
 import com.vaadin.ui.*;
+import com.vaadin.ui.themes.BaseTheme;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,7 +23,7 @@ import java.util.List;
 public class StudentExamDataProvider {
     
     
-    public static Table getStudentExamList(List<ExamBean> list){
+    /* public static Table getStudentExamList(List<ExamBean> list){
         Table t1 = new Table();
         t1.setCaption("Student ExamList");
         //setSizeFull();
@@ -36,6 +39,41 @@ public class StudentExamDataProvider {
         t1.setVisibleColumns(StudentExamListContainer.NATURAL_COL_ORDER_QUICKLEARN);
         t1.setColumnHeaders(StudentExamListContainer.COL_HEADERS_ENGLISH_QUICKLEARN);
         t1.sort(new Object[]{"examId"}, new boolean[]{true});
+       
+        return t1;
+    } */
+    
+    private Table t1;
+    public  Table getStudentExamList(List<ExamBean> list){
+        
+        t1 = new Table(){
+        
+      @Override
+       protected String formatPropertyValue(Object rowId,
+           Object colId, Property property) {
+       // Format by property type
+       if (property.getType() == Date.class) {
+           SimpleDateFormat df =
+               new SimpleDateFormat("MM/dd/yyyy");
+           return df.format((Date)property.getValue());
+       }
+       return super.formatPropertyValue(rowId, colId, property);
+}
+  };
+        t1.setCaption("ExamList");
+        //setSizeFull();
+      //  addStyleName("plain");
+        t1.addStyleName("borderless");
+        t1.setSortEnabled(false);
+        t1.setWidth("100%");
+        t1.setPageLength(10);
+        t1.setSelectable(true);
+        //t1.setMultiSelect(true);
+        t1.setImmediate(true); // react at once when something is selected
+        t1.setContainerDataSource(StudentExamListContainer.getExamListContainer(list));
+        t1.setVisibleColumns(StudentExamListContainer.NATURAL_COL_ORDER_EXAM_LIST);
+        t1.setColumnHeaders(StudentExamListContainer.COL_HEADERS_ENGLISH_EXAM_LIST);
+        t1.sort(new Object[]{"examId"}, new boolean[]{true});        
        
         return t1;
     }

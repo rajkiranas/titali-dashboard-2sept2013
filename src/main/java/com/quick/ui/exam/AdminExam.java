@@ -114,7 +114,7 @@ public class AdminExam extends VerticalLayout implements View  {
         top.setSpacing(true);
         top.addStyleName("toolbar");
         addComponent(top);
-        final Label title = new Label("Student Exam");
+        final Label title = new Label("Exam management");
         title.setSizeUndefined();
         title.addStyleName("h1");
         top.addComponent(title);
@@ -267,7 +267,7 @@ public class AdminExam extends VerticalLayout implements View  {
          
         
         AdminExamDataProvider provider = new AdminExamDataProvider(this);
-         examlistTbl = provider.getStudentExamList(getExamList(userprofile.getStd(),userprofile.getDiv()));
+         examlistTbl = provider.getExamListForTeacher(getExamList(userprofile.getStd(),userprofile.getDiv()));
          exmlistListner = new Property.ValueChangeListener() {
 
             @Override
@@ -282,9 +282,9 @@ public class AdminExam extends VerticalLayout implements View  {
         examlistTbl.addValueChangeListener(exmlistListner);
         examlistTbl.select(examlistTbl.firstItemId());
 
-        row1.addComponent(createPanel(UIUtils.buildVerticalLayoutForComponent(examlistTbl)));
-       // row.addComponent(createPanel(AdminExamDataProvider.getMyExamPieChart()));
-        row1.addComponent(createPanel(new Label("My Exam Pie chart")));
+        row1.addComponent(UIUtils.createPanel(UIUtils.buildVerticalLayoutForComponent(examlistTbl)));
+       // row.addComponent(UIUtils.createPanel(AdminExamDataProvider.getMyExamPieChart()));
+        row1.addComponent(UIUtils.createPanel(new Label("My Exam Pie chart")));
 
         row2 = new HorizontalLayout();
         row2.setMargin(true);
@@ -296,11 +296,11 @@ public class AdminExam extends VerticalLayout implements View  {
         
        
         //UIUtils.getVerticalPaneView(examdtls, examdetailspieChart))
-        row2.addComponent(createPanel(examdtls));
+        row2.addComponent(UIUtils.createPanel(examdtls));
 
-       // row.addComponent(createPanel(AdminExamDataProvider.getExamResult()));
+       // row.addComponent(UIUtils.createPanel(AdminExamDataProvider.getExamResult()));
         Component examChart = getExamDetailsPieChart();
-        examsummaryPannel = createPanel(UIUtils.getTabSheetPaneView(examChart,
+        examsummaryPannel = UIUtils.createPanel(UIUtils.getTabSheetPaneView(examChart,
                 AdminExamDataProvider.getPresentStudentsForExam(getSelectedExam())  
                 , AdminExamDataProvider.getAbsentStudentsForExam(getSelectedExam())));
         row2.addComponent(examsummaryPannel);
@@ -336,30 +336,30 @@ public class AdminExam extends VerticalLayout implements View  {
     }
 
 
-    private CssLayout createPanel(Component content) {
-        CssLayout panel = new CssLayout();
-        panel.addStyleName("layout-panel");
-        panel.setSizeFull();
-
-        Button configure = new Button();
-        configure.addStyleName("configure");
-        configure.addStyleName("icon-cog");
-        configure.addStyleName("icon-only");
-        configure.addStyleName("borderless");
-        configure.setDescription("Configure");
-        configure.addStyleName("small");
-        configure.addClickListener(new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                Notification.show("Not implemented in this demo");
-            }
-        });
-        panel.addComponent(configure);
-        
-
-        panel.addComponent(content);
-        return panel;
-    }
+//    private CssLayout createPanel(Component content) {
+//        CssLayout panel = new CssLayout();
+//        panel.addStyleName("layout-panel");
+//        panel.setSizeFull();
+//
+//        Button configure = new Button();
+//        configure.addStyleName("configure");
+//        configure.addStyleName("icon-cog");
+//        configure.addStyleName("icon-only");
+//        configure.addStyleName("borderless");
+//        configure.setDescription("Configure");
+//        configure.addStyleName("small");
+//        configure.addClickListener(new ClickListener() {
+//            @Override
+//            public void buttonClick(ClickEvent event) {
+//                Notification.show("Not implemented in this demo");
+//            }
+//        });
+//        panel.addComponent(configure);
+//        
+//
+//        panel.addComponent(content);
+//        return panel;
+//    }
 
     @Override
     public void enter(ViewChangeEvent event) {
@@ -441,7 +441,7 @@ public class AdminExam extends VerticalLayout implements View  {
                 inputJson.put("std", std);
                 inputJson.put("div", div);
              }catch(Exception ex){
-                 
+                 ex.printStackTrace();
              }
             
             ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
@@ -455,7 +455,7 @@ public class AdminExam extends VerticalLayout implements View  {
             
             examList= new Gson().fromJson(outNObject.getString(GlobalConstants.EXAMLIST), listType);
         } catch (JSONException ex) {
-          //  Logger.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
+          ex.printStackTrace();
         }
         return examList;
             
@@ -473,7 +473,7 @@ public class AdminExam extends VerticalLayout implements View  {
                 inputJson.put("exmId", examId);
 //                inputJson.put("div", "A-1");
              }catch(Exception ex){
-                 
+                 ex.printStackTrace();
              }
             
             ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
@@ -487,7 +487,7 @@ public class AdminExam extends VerticalLayout implements View  {
             Gson gson=  new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();
             selectedExamDetails=gson.fromJson(outNObject.getString(GlobalConstants.EXAMLIST), listType);
         } catch (JSONException ex) {
-          //  Logger.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
+          ex.printStackTrace();
         }
         return selectedExamDetails;
     }
@@ -504,9 +504,11 @@ public class AdminExam extends VerticalLayout implements View  {
         examlistTbl.getContainerDataSource().removeAllItems();
         Userprofile userprofile = (Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile);
         examlistTbl.setContainerDataSource(StudentExamListContainer.getExamListContainer(getExamList(userprofile.getStd(),userprofile.getDiv())));
-        examlistTbl.setVisibleColumns(StudentExamListContainer.NATURAL_COL_ORDER_QUICKLEARN);
-        examlistTbl.setColumnHeaders(StudentExamListContainer.COL_HEADERS_ENGLISH_QUICKLEARN);
+        examlistTbl.setVisibleColumns(StudentExamListContainer.NATURAL_COL_ORDER_EXAM_LIST);
+        examlistTbl.setColumnHeaders(StudentExamListContainer.COL_HEADERS_ENGLISH_EXAM_LIST);
         examlistTbl.addValueChangeListener(exmlistListner);
+        examlistTbl.sort(new Object[]{"examId"}, new boolean[]{true});
+        examlistTbl.select(examlistTbl.firstItemId());
     }
    
     
@@ -516,7 +518,7 @@ public class AdminExam extends VerticalLayout implements View  {
            
         row2.removeComponent(examsummaryPannel);
         Component examChart = getExamDetailsPieChart();
-        examsummaryPannel =  examsummaryPannel = createPanel(UIUtils.getTabSheetPaneView(examChart,
+        examsummaryPannel =  examsummaryPannel = UIUtils.createPanel(UIUtils.getTabSheetPaneView(examChart,
                 AdminExamDataProvider.getPresentStudentsForExam(getSelectedExam())  
                 , AdminExamDataProvider.getAbsentStudentsForExam(getSelectedExam())));
         row2.addComponent(examsummaryPannel);

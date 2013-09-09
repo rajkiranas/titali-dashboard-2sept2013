@@ -52,6 +52,7 @@ import com.vaadin.ui.Table.Align;
 import com.vaadin.ui.Table.RowHeaderMode;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import org.codehaus.jettison.json.JSONException;
@@ -59,13 +60,13 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class StudentExam extends VerticalLayout implements View  {
 
-         TextField subtxt ;
-         TextField markstxt;
-         TextField scoretxt;
-         TextField questionstxt;
-          Button startExam;;
-        HorizontalLayout row1;
-        HorizontalLayout row2;
+        private TextField subtxt ;
+        private TextField markstxt;
+        private TextField scoretxt;
+        private TextField questionstxt;
+        private Button startExamBtn;;
+        private HorizontalLayout row1;
+        private HorizontalLayout row2;
         private CssLayout examsummaryPannel;
         
     Table t;
@@ -108,9 +109,9 @@ public class StudentExam extends VerticalLayout implements View  {
         questionstxt.setCaption("Questions");
         questionstxt.setImmediate(true);
         
-         startExam = new Button("Start Exam");
-        startExam.addStyleName("default");
-        startExam.addClickListener(new ClickListener() {
+        startExamBtn = new Button("Start Exam");
+        startExamBtn.addStyleName("default");
+        startExamBtn.addClickListener(new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -244,8 +245,8 @@ public class StudentExam extends VerticalLayout implements View  {
             }
         });
         top.setComponentAlignment(edit, Alignment.MIDDLE_LEFT);
-        top.addComponent(startExam);
-        top.setComponentAlignment(startExam, Alignment.MIDDLE_LEFT);
+        top.addComponent(startExamBtn);
+        top.setComponentAlignment(startExamBtn, Alignment.MIDDLE_LEFT);
         
         
         
@@ -257,7 +258,8 @@ public class StudentExam extends VerticalLayout implements View  {
         setExpandRatio(row1, 2); 
 
         Userprofile userprofile = (Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile);
-        Table examlistTbl = StudentExamDataProvider.getStudentExamList(getExamList(userprofile.getStd(),userprofile.getDiv()));
+        StudentExamDataProvider provider = new StudentExamDataProvider();
+        Table examlistTbl = provider.getStudentExamList(getExamList(userprofile.getStd(),userprofile.getDiv()));
         examlistTbl.addValueChangeListener(new Property.ValueChangeListener() {
 
             @Override
@@ -266,19 +268,13 @@ public class StudentExam extends VerticalLayout implements View  {
                setSelectedExam(getSelectedExamDetailsById(eb.getExamId()));
                updateExamDetails();
                updateExamSummary();
+               decidevisibilityAndCaptionOfStartExamBtn(eb);
             }
-
-            
-
-           
         });
         
         examlistTbl.select(examlistTbl.firstItemId());
-        row1.addComponent(createPanel(examlistTbl));
-        row1.addComponent(createPanel(StudentExamDataProvider.getMyExamPieChart(null)));
-        
-        
-        
+        row1.addComponent(UIUtils.createPanel(examlistTbl));
+        row1.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(null)));
 
         row2 = new HorizontalLayout();
         row2.setMargin(true);
@@ -316,10 +312,10 @@ public class StudentExam extends VerticalLayout implements View  {
 //        t.setColumnAlignment("Revenue", Align.RIGHT);
 //        t.setRowHeaderMode(RowHeaderMode.INDEX);
 
-        row2.addComponent(createPanel(getSelectedExamDetails(null)));
+        row2.addComponent(UIUtils.createPanel(getSelectedExamDetails(null)));
 
         Component examChart = getExamDetailsPieChart();
-        examsummaryPannel=createPanel(UIUtils.getTabSheetPaneView(examChart));
+        examsummaryPannel=UIUtils.createPanel(UIUtils.getTabSheetPaneView(examChart));
         row2.addComponent(examsummaryPannel);
 
 
@@ -338,30 +334,30 @@ public class StudentExam extends VerticalLayout implements View  {
     }
 
 
-    private CssLayout createPanel(Component content) {
-        CssLayout panel = new CssLayout();
-        panel.addStyleName("layout-panel");
-        panel.setSizeFull();
-
-        Button configure = new Button();
-        configure.addStyleName("configure");
-        configure.addStyleName("icon-cog");
-        configure.addStyleName("icon-only");
-        configure.addStyleName("borderless");
-        configure.setDescription("Configure");
-        configure.addStyleName("small");
-        configure.addClickListener(new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                Notification.show("Not implemented in this demo");
-            }
-        });
-        panel.addComponent(configure);
-        
-
-        panel.addComponent(content);
-        return panel;
-    }
+//    private CssLayout createPanel(Component content) {
+//        CssLayout panel = new CssLayout();
+//        panel.addStyleName("layout-panel");
+//        panel.setSizeFull();
+//
+//        Button configure = new Button();
+//        configure.addStyleName("configure");
+//        configure.addStyleName("icon-cog");
+//        configure.addStyleName("icon-only");
+//        configure.addStyleName("borderless");
+//        configure.setDescription("Configure");
+//        configure.addStyleName("small");
+//        configure.addClickListener(new ClickListener() {
+//            @Override
+//            public void buttonClick(ClickEvent event) {
+//                Notification.show("Not implemented in this demo");
+//            }
+//        });
+//        panel.addComponent(configure);
+//        
+//
+//        panel.addComponent(content);
+//        return panel;
+//    }
 
     @Override
     public void enter(ViewChangeEvent event) {
@@ -416,7 +412,7 @@ public class StudentExam extends VerticalLayout implements View  {
            
         row2.removeComponent(examsummaryPannel);
         Component examChart = getExamDetailsPieChart();
-        examsummaryPannel = createPanel(UIUtils.getTabSheetPaneView(examChart));
+        examsummaryPannel = UIUtils.createPanel(UIUtils.getTabSheetPaneView(examChart));
         row2.addComponent(examsummaryPannel);
 
        }
@@ -427,19 +423,16 @@ public class StudentExam extends VerticalLayout implements View  {
       
         subtxt.setValue(eb.getSub());
        
-        markstxt.setValue(""+eb.getTotalMarks());
+        markstxt.setValue(GlobalConstants.emptyString+eb.getTotalMarks());
         
-        scoretxt.setValue(""+eb.getPassingMarks());
+        scoretxt.setValue(GlobalConstants.emptyString+eb.getPassingMarks());
         
-        questionstxt.setValue(""+eb.getNoOfQuestions());
+        questionstxt.setValue(GlobalConstants.emptyString+eb.getNoOfQuestions());
     }
     
-  
       private void startExam() {
         
       }
-    
-    
     
     public  List<ExamBean> getExamList(String std,String div) {
        
@@ -505,24 +498,37 @@ public class StudentExam extends VerticalLayout implements View  {
     }
 
     
+    private static final String Absent="Absent";
+    private static final String Fail="Fail";
+    private static final String Passed="Passed";
 
    private Component getExamDetailsPieChart() {
-        
-        
         
         ExamBean eb = getSelectedExam().get(0);
         HashMap<String,Double> dataMap = new HashMap<String,Double>();
         
-        dataMap.put("Absent", ((double) eb.getTotalStudents() - (double) eb.getAppearedStudents()));
+        dataMap.put(Absent, ((double) eb.getTotalStudents() - (double) eb.getAppearedStudents()));
 
-        dataMap.put("Fail", (double) eb.getFailedStudents());
+        dataMap.put(Fail, (double) eb.getFailedStudents());
 
-        dataMap.put("Passed", (double) eb.getPassedStudents());
+        dataMap.put(Passed, (double) eb.getPassedStudents());
 
-        return CustomPieChart.createChart(dataMap,"Passed");
+        return CustomPieChart.createChart(dataMap,Passed);
         
     }
 
-    
+    private static final String startExam = "Start Exam";
+    private static final String viewExam = "View Exam";
+
+    private void decidevisibilityAndCaptionOfStartExamBtn(ExamBean eb) {
+        Date now = new Date();
+        if (now.getTime() > eb.getStartDt().getTime() && now.getTime() < eb.getEndDt().getTime()) {
+            startExamBtn.setCaption(startExam);
+        } else if (now.getTime() > eb.getEndDt().getTime()) {
+            startExamBtn.setCaption(viewExam);
+        } else {
+            startExamBtn.setVisible(false);
+        }
+    }    
 
 }
