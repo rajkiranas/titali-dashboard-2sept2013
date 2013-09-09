@@ -16,8 +16,8 @@ import java.util.List;
  * @author rajkiran
  */
 public class StudentExamListContainer extends BeanItemContainer<ExamBean> {
-    public static Object[] NATURAL_COL_ORDER_QUICKLEARN={"examId","exName","startDt","endDt"};
-    public static String[] COL_HEADERS_ENGLISH_QUICKLEARN={"ExamId","ExamName","StartDate","EndDate"};
+    public static Object[] NATURAL_COL_ORDER_EXAM_LIST={"examId","exName","examTypeName","startDt","endDt"};
+    public static String[] COL_HEADERS_ENGLISH_EXAM_LIST={"Exam Id","Exam name","Exam type","Start date","End date"};
     
     
    public static Object[] NATURAL_COL_ORDER_EXAM_PRESENT={"username","responseDt","totalMarks","result"};
@@ -35,6 +35,9 @@ public class StudentExamListContainer extends BeanItemContainer<ExamBean> {
     }
     
     
+    private static final String Objective="Objective";
+    private static final String Descriptive="Descriptive";
+    
     public static StudentExamListContainer getExamListContainer(List<ExamBean> list){
         StudentExamListContainer container = new StudentExamListContainer();
        ExamBean bean =null;
@@ -43,7 +46,18 @@ public class StudentExamListContainer extends BeanItemContainer<ExamBean> {
            bean.setExName(eb.getExName());
            bean.setStartDt(eb.getStartDt()); 
            bean.setEndDt(eb.getEndDt()); 
-           bean.setExamId(eb.getExamId()); 
+           bean.setExamId(eb.getExamId());
+           //1=objective
+           //2=descriptive
+           bean.setExType(eb.getExType());
+           if(bean.getExType()==1)
+           {
+               bean.setExamTypeName((Objective));
+           }
+           else if(bean.getExType()==2)
+           {
+               bean.setExamTypeName((Descriptive));
+           }
            container.addItem(bean);
         }
         

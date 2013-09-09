@@ -521,7 +521,7 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
                 Gson gson = new Gson();
                 String json = gson.toJson(questionList);
                 examJSONObject.put(GlobalConstants.EXAMQUESTIONLIST, json);
-                saveExamDetails(examJSONObject);
+                saveExamDetailsInDB(examJSONObject);
 
             } catch (JSONException ex) {
                 ex.printStackTrace();
@@ -533,12 +533,32 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
 
     }
 
-    private void saveExamDetails(JSONObject inputJson) {       
+    private void saveExamDetailsInDB(JSONObject inputJson) {
             Client client = Client.create();
             WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.CREATE_EXAM_URL));
             ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
             String output = response.getEntity(String.class);
-      
+            
+            JSONObject outNObject;
+        
+            try 
+            {
+                outNObject = new JSONObject(output);
+                int status = Integer.parseInt(outNObject.getString(GlobalConstants.STATUS));
+                if(status == GlobalConstants.YES)
+                {
+                    Notification.show("Successfully created exam", Notification.Type.WARNING_MESSAGE);
+                }
+                else
+                {
+                    Notification.show("Exam creation failed", Notification.Type.WARNING_MESSAGE);
+                }
+            } 
+            catch (JSONException ex) 
+            {
+                Notification.show("Exam creation failed", Notification.Type.WARNING_MESSAGE);
+                ex.printStackTrace();
+            }
     }
 
     private void setExamDetailsToForm(ExamBean eb) {

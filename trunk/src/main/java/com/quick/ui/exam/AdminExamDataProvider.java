@@ -40,6 +40,7 @@ import org.codehaus.jettison.json.JSONObject;
 public class AdminExamDataProvider {
 
     
+    private static final String dateFormatMMddyyyy="MM/dd/yyyy";
     private AdminExam adminExam;
     private Table t1;
 
@@ -53,7 +54,7 @@ public class AdminExamDataProvider {
         this.adminExam=exam;
     }
     
-    public  Table getStudentExamList(List<ExamBean> list){
+    public  Table getExamListForTeacher(List<ExamBean> list){
         //Table t1 = new Table();
 //        t1.setCaption("Exam List");
 //        //setSizeFull();
@@ -85,15 +86,19 @@ public class AdminExamDataProvider {
 //            });
         
         t1 = new Table(){
+            
+            SimpleDateFormat df =
+               new SimpleDateFormat(dateFormatMMddyyyy);
         
       @Override
        protected String formatPropertyValue(Object rowId,
            Object colId, Property property) {
        // Format by property type
        if (property.getType() == Date.class) {
-           SimpleDateFormat df =
-               new SimpleDateFormat("MM/dd/yyyy");
+           if(property.getValue()!=null)           
            return df.format((Date)property.getValue());
+           else
+             return GlobalConstants.emptyString;
        }
        return super.formatPropertyValue(rowId, colId, property);
    
@@ -110,8 +115,8 @@ public class AdminExamDataProvider {
         //t1.setMultiSelect(true);
         t1.setImmediate(true); // react at once when something is selected
         t1.setContainerDataSource(StudentExamListContainer.getExamListContainer(list));
-        t1.setVisibleColumns(StudentExamListContainer.NATURAL_COL_ORDER_QUICKLEARN);
-        t1.setColumnHeaders(StudentExamListContainer.COL_HEADERS_ENGLISH_QUICKLEARN);
+        t1.setVisibleColumns(StudentExamListContainer.NATURAL_COL_ORDER_EXAM_LIST);
+        t1.setColumnHeaders(StudentExamListContainer.COL_HEADERS_ENGLISH_EXAM_LIST);
         t1.sort(new Object[]{"examId"}, new boolean[]{true});
         
         t1.addGeneratedColumn("Remove", new Table.ColumnGenerator() 
