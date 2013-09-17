@@ -87,35 +87,36 @@ public class StudentExam extends VerticalLayout implements View  {
     public void setSelectedExam(List<ExamBean> selectedExam) {
         this.selectedExam = selectedExam;
     }
-
     
-    
-    
-    
+    private static final String Subject ="Subject";
+    private static final String Marks ="Marks";
+    private static final String Questions ="Questions";
+    private static final String Score ="Score";
     public StudentExam() {
         subtxt =new TextField();
         subtxt.setImmediate(true);
-        subtxt.setCaption("subject");
+        subtxt.setCaption(Subject);
         
         markstxt =new TextField();
-        markstxt.setCaption("Marks");
+        markstxt.setCaption(Marks);
         markstxt.setImmediate(true);
         
         scoretxt =new TextField();
-        scoretxt.setCaption("Score");
+        scoretxt.setCaption(Score);
         scoretxt.setImmediate(true);
         
         questionstxt =new TextField();
-        questionstxt.setCaption("Questions");
+        questionstxt.setCaption(Questions);
         questionstxt.setImmediate(true);
         
-        startExamBtn = new Button("Start Exam");
-        startExamBtn.addStyleName("default");
+        startExamBtn = new Button(GlobalConstants.startExam);
+        startExamBtn.setImmediate(true);
+        startExamBtn.addStyleName(GlobalConstants.default_style);
         startExamBtn.addClickListener(new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                startExam();
+                startOrViewtExam();
             }
 
             
@@ -123,6 +124,7 @@ public class StudentExam extends VerticalLayout implements View  {
        // addStyleName("dashboard-view");
     }
     
+    private static final String Student_Exams="Student Exams";
     private void buildUi(){
         
         HorizontalLayout top = new HorizontalLayout();
@@ -130,7 +132,7 @@ public class StudentExam extends VerticalLayout implements View  {
         top.setSpacing(true);
         top.addStyleName("toolbar");
         addComponent(top);
-        final Label title = new Label("Student Exam");
+        final Label title = new Label(Student_Exams);
         title.setSizeUndefined();
         title.addStyleName("h1");
         top.addComponent(title);
@@ -421,6 +423,11 @@ public class StudentExam extends VerticalLayout implements View  {
      private void updateSelectedExamDetailsPanel() {
         ExamBean eb = getSelectedExam().get(0);
       
+        subtxt.setReadOnly(false);
+        markstxt.setReadOnly(false);
+        scoretxt.setReadOnly(false);
+        questionstxt.setReadOnly(false);
+        
         subtxt.setValue(eb.getSub());
        
         markstxt.setValue(GlobalConstants.emptyString+eb.getTotalMarks());
@@ -428,10 +435,21 @@ public class StudentExam extends VerticalLayout implements View  {
         scoretxt.setValue(GlobalConstants.emptyString+eb.getPassingMarks());
         
         questionstxt.setValue(GlobalConstants.emptyString+eb.getNoOfQuestions());
+        
+        subtxt.setReadOnly(true);
+        markstxt.setReadOnly(true);
+        scoretxt.setReadOnly(true);
+        questionstxt.setReadOnly(true);
     }
     
-      private void startExam() {
-        
+      private void startOrViewtExam() {
+          
+       ExamBean eb = getSelectedExam().get(0);
+       Userprofile userprofile = (Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile);
+       // startExamBtn.getCaption() is used to decide between start exam and view exam
+       CreateStudExamPopup examPopup = new CreateStudExamPopup(this,eb,startExamBtn.getCaption(),userprofile.getUsername());
+       UI.getCurrent().addWindow(examPopup);
+       examPopup.focus();
       }
     
     public  List<ExamBean> getExamList(String std,String div) {
@@ -439,7 +457,7 @@ public class StudentExam extends VerticalLayout implements View  {
          List<ExamBean> examList = null;
         try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/examResource/getExamList");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_EXAM_LIST));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
              try{           
@@ -459,7 +477,9 @@ public class StudentExam extends VerticalLayout implements View  {
             }.getType();
             
             examList= new Gson().fromJson(outNObject.getString(GlobalConstants.EXAMLIST), listType);
-        } catch (JSONException ex) {
+        } catch (JSONException ex) 
+        {
+            ex.printStackTrace();
           //  L.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
         }
         return examList;
@@ -467,17 +487,19 @@ public class StudentExam extends VerticalLayout implements View  {
     }
     
     
-    public List<ExamBean> getSelectedExamDetailsById(int examId){
+    private List<ExamBean> getSelectedExamDetailsById(int examId){
          List<ExamBean> selectedExamDetails = null;
         try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/examResource/getExamDetailsById");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_EXAM_DETAILS_BY_ID));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
              try{           
                 inputJson.put("exmId", examId);
 //                inputJson.put("div", "A-1");
-             }catch(Exception ex){
+             }catch(Exception ex)
+             {
+                 ex.printStackTrace();
                  
              }
             
@@ -486,13 +508,20 @@ public class StudentExam extends VerticalLayout implements View  {
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);
             outNObject = new JSONObject(output);
+            
+            int status = Integer.parseInt(outNObject.getString(GlobalConstants.STATUS));
+            
+            if(status == GlobalConstants.NO)
+            {
+                Notification.show("Retrieving exam details failed", Notification.Type.WARNING_MESSAGE);
+            }
 
             Type listType = new TypeToken<ArrayList<ExamBean>>() {
             }.getType();
             
             selectedExamDetails= new Gson().fromJson(outNObject.getString(GlobalConstants.EXAMLIST), listType);
         } catch (JSONException ex) {
-          //  Logger.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
+          ex.printStackTrace();
         }
         return selectedExamDetails;
     }
@@ -517,15 +546,15 @@ public class StudentExam extends VerticalLayout implements View  {
         
     }
 
-    private static final String startExam = "Start Exam";
-    private static final String viewExam = "View Exam";
+    
 
     private void decidevisibilityAndCaptionOfStartExamBtn(ExamBean eb) {
         Date now = new Date();
-        if (now.getTime() > eb.getStartDt().getTime() && now.getTime() < eb.getEndDt().getTime()) {
-            startExamBtn.setCaption(startExam);
+        
+        if (now.getTime() >= eb.getStartDt().getTime() && now.getTime() <= eb.getEndDt().getTime()) {
+            startExamBtn.setCaption(GlobalConstants.startExam);
         } else if (now.getTime() > eb.getEndDt().getTime()) {
-            startExamBtn.setCaption(viewExam);
+            startExamBtn.setCaption(GlobalConstants.viewExam);
         } else {
             startExamBtn.setVisible(false);
         }

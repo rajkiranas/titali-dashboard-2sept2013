@@ -48,6 +48,15 @@ public class ExamBean {
      private Date responseDt;
      private String result;
      private String examTypeName;
+     private String questionId;
+
+    public String getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId;
+    }
 
     public String getUsername() {
         return username;

@@ -587,7 +587,6 @@ public class AdminExam extends VerticalLayout implements View  {
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);
             outNObject = new JSONObject(output);
-            System.out.println("ou########tNObject="+outNObject.getString(GlobalConstants.STATUS));
             int status = Integer.parseInt(outNObject.getString(GlobalConstants.STATUS));
             
             if(status == GlobalConstants.YES)

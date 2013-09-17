@@ -63,6 +63,11 @@ public class GlobalConstants
     public static final String default_style = "default";
     public static final String going_through="going through";
     public static final String  DASH = "-";
+    public static final String startExam = "Start Exam";
+    public static final String viewExam = "View Exam";
+    public static final String gsonTimeFormat="yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String application_json="application/json";
+
     
     
      // == exam ============
@@ -71,7 +76,7 @@ public class GlobalConstants
     public static final String EXAMQUESTIONLIST ="examQuestionList";
     public static final String CurrentUserProfile = "CurrentUserProfile";
     
-    //===========URL FOR SERVICES===========
+   //===========URL FOR SERVICES===========
    public static final String DASHBOARD_URL="DASHBOARD_URL";
    public static final String LOGIN_URL="LOGIN_URL";
    public static final String STANDARD_LISTING_URL="STANDARD_LISTING_URL";
@@ -87,7 +92,11 @@ public class GlobalConstants
    public static final String DELETE_EXAM_BY_ID="DELETE_EXAM_BY_ID";
    public static final String GET_PRESENT_STUD_FOR_EXAM="GET_PRESENT_STUD_FOR_EXAM";
    public static final String GET_ABSENT_STUD_FOR_EXAM ="GET_ABSENT_STUD_FOR_EXAM" ;
-   public static final String gsonTimeFormat="yyyy-MM-dd'T'HH:mm:ss'Z'";
+   public static final String GET_EXAM_DETAILS_BY_ID="GET_EXAM_DETAILS_BY_ID";
+   public static final String GET_EXAM_LIST="GET_EXAM_LIST";
+   public static final String GET_EXAM_QUESTIONS_BY_EXAM_ID="GET_EXAM_QUESTIONS_BY_EXAM_ID";
+   public static final String SUBMIT_QUE_ANS_RESPONSE="SUBMIT_QUE_ANS_RESPONSE";
+   
    //public static final String UserMasterResource = "/UserMaster";
     
     static
