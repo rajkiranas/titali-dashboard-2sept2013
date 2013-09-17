@@ -34,7 +34,7 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @author rajkiran
  */
-public class CreateAdminExamPopup extends Window implements Button.ClickListener,Property.ValueChangeListener{
+public class CreateStudExamPopup extends Window implements Button.ClickListener,Property.ValueChangeListener{
     private ComboBox calsscmb;
     private ComboBox divcmb;
     private ComboBox subcbm;
@@ -58,7 +58,7 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
     private Button finishExamButton;
     private List<Std> standardList;
     private List<QuickLearn> subjectList;
-    private List<ExamBean> questionList = new ArrayList<ExamBean>();
+    private List<ExamBean> questionAnswerList = new ArrayList<ExamBean>();
     private boolean isNewExam=false;
     private Button nextBtn;
     private List<ExamQueAnsBean> examQueAnsBeanList;
@@ -75,7 +75,9 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
     private Button createExamBtn;
     private int noOfQue = 0;
     private Button previousbtn;
-    private AdminExam adminExam;
+    private StudentExam studExam;
+    private String studExamCaption;
+    private String loggedInUser;
     
     public List<Std> getStandardList() {
         return standardList;
@@ -96,8 +98,8 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
     
     
     
-    public CreateAdminExamPopup(AdminExam adminExam){
-        this.adminExam = adminExam;
+    public CreateStudExamPopup(StudentExam studnExam){
+        this.studExam = studnExam;
         setModal(true);
         setCaption("Welcome to create Exam");        
         center();        
@@ -108,24 +110,28 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
         BuildUI();
     }
     
-   public CreateAdminExamPopup(AdminExam adminExam,ExamBean eb) {
-        this.adminExam = adminExam;
+   public CreateStudExamPopup(StudentExam studExam,ExamBean eb, String studExamCaption,String username) {
+       this.loggedInUser=username;
+       this.studExamCaption=studExamCaption;
+        this.studExam = studExam;
         setModal(true);
-        setCaption("Welcome to Edit Exam");        
+        setCaption(GlobalConstants.startExam);
         center();        
        // setClosable(false);
+        isNewExam=true;
         setWidth("80%");
         setHeight("80%");        
         BuildUI();
         setExamDetailsToForm(eb);
         setExamQuestionAnswersById(eb.getExamId());
-            listCnt=getExamQueAnsBeanList().size();
+        listCnt=getExamQueAnsBeanList().size();
        // to show first question when table value change get call
          getNextQuestion();
       //  setExamQuestionAnswerDetails(getExamQueAnsBeanList());        
     }
 
-    private void BuildUI() {
+    private void BuildUI() 
+    {
         setStandardList(MasterDataProvider.getStandardList());
         baseLayout = new HorizontalSplitPanel();
         baseLayout.setSplitPosition(400,Sizeable.UNITS_PIXELS);
@@ -134,19 +140,13 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
         
         baseLayout.setFirstComponent(getfirstcomponet());
         
-        if(this.getCaption().equals("Welcome to Edit Exam"))
-        {
-              baseLayout.setSecondComponent(getsecondComponent());
-              createExamBtn.setVisible(false);
-        }
-        else
-        {
-             Label l = new Label("<br><br><br><br><br><h1><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Please enter exam details <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and create the exam.</b></h1>", ContentMode.HTML);
-             baseLayout.setSecondComponent(l);       
-        }
+        baseLayout.setSecondComponent(getsecondComponent());
+        createExamBtn.setVisible(false);
+        
+//        Label l = new Label("<br><br><br><br><br><h1><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Please enter exam details <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and create the exam.</b></h1>", ContentMode.HTML);
+//        baseLayout.setSecondComponent(l);       
        
         setContent(baseLayout);
-       
     } 
     
     private VerticalLayout getfirstcomponet(){
@@ -343,33 +343,40 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
         examTypeLayout = new HorizontalLayout();
        
        if(isNewExam){
-            createQueBtn = new Button("Create Question");
-            createQueBtn.addClickListener((Button.ClickListener)this);
-            createQueBtn.setImmediate(true);
-            createQueBtn.setStyleName("default");
-            
-            finishExamButton = new Button("Finish");
-            finishExamButton.addClickListener((Button.ClickListener)this);
-            finishExamButton.setImmediate(true);
-            finishExamButton.setStyleName("default");
-            
-            layout.addComponent(createQueBtn, "left:50px;top:220px;");
-            layout.addComponent(finishExamButton, "left:210px;top:220px;");
-            
-            createQueBtn.setVisible(false);
-            finishExamButton.setVisible(false);
-       }else{
-           nextBtn = new Button("Next");
-           nextBtn.addClickListener((Button.ClickListener)this);
-           nextBtn.setImmediate(true);
-           nextBtn.setStyleName("default");  
            
            previousbtn = new Button("Previous");
            previousbtn.addClickListener((Button.ClickListener)this);
            previousbtn.setImmediate(true);
-           previousbtn.setStyleName("default");  
-           layout.addComponent(nextBtn, "left:50px;top:220px;");
-           layout.addComponent(previousbtn, "left:140px;top:220px;");
+           previousbtn.setStyleName(GlobalConstants.default_style);  
+           
+           nextBtn = new Button("Next");
+           nextBtn.addClickListener((Button.ClickListener)this);
+           nextBtn.setImmediate(true);
+           nextBtn.setStyleName(GlobalConstants.default_style);  
+            
+            finishExamButton = new Button("Finish");
+            finishExamButton.addClickListener((Button.ClickListener)this);
+            finishExamButton.setImmediate(true);
+            finishExamButton.setStyleName(GlobalConstants.default_style);
+            
+            layout.addComponent(previousbtn, "left:5px;top:220px;");
+            layout.addComponent(nextBtn, "left:120px;top:220px;");
+            layout.addComponent(finishExamButton, "left:210px;top:220px;");
+            
+            /* createQueBtn.setVisible(true);
+            finishExamButton.setVisible(true); */
+       }else{
+           nextBtn = new Button("Next");
+           nextBtn.addClickListener((Button.ClickListener)this);
+           nextBtn.setImmediate(true);
+           nextBtn.setStyleName(GlobalConstants.default_style);  
+           
+           previousbtn = new Button("Previous");
+           previousbtn.addClickListener((Button.ClickListener)this);
+           previousbtn.setImmediate(true);
+           previousbtn.setStyleName(GlobalConstants.default_style);  
+           layout.addComponent(previousbtn, "left:50px;top:220px;");
+           layout.addComponent(nextBtn, "left:140px;top:220px;");
        }       
        
         examTypeLayout.addComponent(question);       
@@ -408,19 +415,23 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
         Button btn = event.getButton();
         if(btn==createQueBtn){
             
-            createNewQuestion();
+            createQuestionAnswerResponse();
             noOfQue++;
             
         }
         else if(btn == finishExamButton)
         {
-           createExam(); 
+            createQuestionAnswerResponse();
+           submitStudentExamResponseToDB(); 
         }
         else if(btn==nextBtn)
         {   
+            createQuestionAnswerResponse();
+            noOfQue++;
             getNextQuestion();
              
         }else if(btn==previousbtn){
+            createQuestionAnswerResponse();
             getPreviouseQuestion();
         }
         else if(btn == createExamBtn){
@@ -432,24 +443,13 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
         }
     }
 
-    private void createNewQuestion() {
+    private void createQuestionAnswerResponse() {
         if(validateQuesAnsForm()){
             
          ExamBean examBean = new ExamBean();
-         examBean.setQueString(question.getValue());
-         examBean.setOption1(op1txt.getValue());
-         examBean.setOption2(op2txt.getValue());
-         examBean.setOption3(op3txt.getValue());
-         examBean.setOption4(op4txt.getValue());
-         examBean.setMarksPerQuestion(Integer.parseInt(marksPerQuestion.getValue()));
-         
-           if(examTypeOpt.getValue().equals("Objective")){
-                 examBean.setExType(1);
-            }else if(examTypeOpt.getValue().equals("Descriptive")){
-                 examBean.setExType(2);
-            }else{
-                 examBean.setExType(3);
-            }
+         examBean.setExamId(examIdForSubmittingAnswers);
+         examBean.setUsername(this.loggedInUser);
+         examBean.setQuestionId(String.valueOf(this.questionId));
          
          if(op1chk.getValue())
          {
@@ -466,16 +466,16 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
          else
          {
              examBean.setAns(op4txt.getValue());
-         }
-        
+         }        
           addIntoQuestionList(examBean);
-          //belwo passed to new checkbox is dummy to reset values of existing checkboxes
+          
+          /* //belwo passed to new checkbox is dummy to reset values of existing checkboxes
           checkSelectedAnswer(new CheckBox());
           op1txt.setValue(GlobalConstants.emptyString);
           op2txt.setValue(GlobalConstants.emptyString);
           op3txt.setValue(GlobalConstants.emptyString);
           op4txt.setValue(GlobalConstants.emptyString);
-          question.setValue(GlobalConstants.emptyString); 
+          question.setValue(GlobalConstants.emptyString);  */
        
         }
         
@@ -483,63 +483,64 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
 
     private void addIntoQuestionList(ExamBean examBean)
     {
-        questionList.add(examBean);
+        questionAnswerList.add(examBean);
     }
 
-    private void createExam() {
+    private void submitStudentExamResponseToDB() {
 
         //exam nmae and exam type is reamining to change
         if (validateQuesAnsForm()) {
-            //adding last entered question here
-            createNewQuestion();
-            noOfQue++;
-            try {
+            try 
+            {
+//                JSONObject examJSONObject = new JSONObject();
+//                examJSONObject.put("std", calsscmb.getValue());
+//                examJSONObject.put("sub", subcbm.getValue());
+//                examJSONObject.put("topic", topic.getValue());
+//                examJSONObject.put("startDt", startDate.getValue());
+//                examJSONObject.put("endDt", endDate.getValue());
+//                examJSONObject.put("passingMarks", passingMarks.getValue());
+//                examJSONObject.put("marksForQuestion", marksPerQuestion.getValue());
+//                examJSONObject.put("exType", examTypeOpt.getValue());
+//                examJSONObject.put("contestline", contestLine.getValue());
+//                examJSONObject.put("noOfQuestions", noOfQue);
+//                examJSONObject.put("createdBy", ((Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile)).getName());
+//                examJSONObject.put("exName", examNametxt.getValue());
+//
+//
+//                if (examTypeOpt.getValue().equals("Objective")) {
+//                    examJSONObject.put("exType", 1);
+//                } else if (examTypeOpt.getValue().equals("Descriptive")) {
+//                    examJSONObject.put("exType", 2);
+//                } else {
+//                    examJSONObject.put("exType", 3);
+//                }
+//
+//                examJSONObject.put("fordiv", divcmb.getValue());
+
+
+
                 JSONObject examJSONObject = new JSONObject();
-                examJSONObject.put("std", calsscmb.getValue());
-                examJSONObject.put("sub", subcbm.getValue());
-                examJSONObject.put("topic", topic.getValue());
-                examJSONObject.put("startDt", startDate.getValue());
-                examJSONObject.put("endDt", endDate.getValue());
-                examJSONObject.put("passingMarks", passingMarks.getValue());
-                examJSONObject.put("marksForQuestion", marksPerQuestion.getValue());
-                examJSONObject.put("exType", examTypeOpt.getValue());
-                examJSONObject.put("contestline", contestLine.getValue());
-                examJSONObject.put("noOfQuestions", noOfQue);
-                examJSONObject.put("createdBy", ((Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile)).getName());
-                examJSONObject.put("exName", examNametxt.getValue());
-
-
-                if (examTypeOpt.getValue().equals("Objective")) {
-                    examJSONObject.put("exType", 1);
-                } else if (examTypeOpt.getValue().equals("Descriptive")) {
-                    examJSONObject.put("exType", 2);
-                } else {
-                    examJSONObject.put("exType", 3);
-                }
-
-                examJSONObject.put("fordiv", divcmb.getValue());
-
-
-
                 Gson gson = new Gson();
-                String json = gson.toJson(questionList);
-                examJSONObject.put(GlobalConstants.EXAMQUESTIONLIST, json);
-                saveExamDetailsInDB(examJSONObject);
+                String questionAnswerListJSON = gson.toJson(questionAnswerList);
+                examJSONObject.put("examId",examIdForSubmittingAnswers);
+                examJSONObject.put("userId",((Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile)).getUsername());
+                examJSONObject.put(GlobalConstants.EXAMQUESTIONLIST, questionAnswerListJSON);
+                submitQuestionAnsResponseToDB(examJSONObject);
 
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }finally{
-                adminExam.updateExamList();
-                CreateAdminExamPopup.this.close();
+               //////// studExam.updateExamList();
+                CreateStudExamPopup.this.close();
             }
         }
 
     }
 
-    private void saveExamDetailsInDB(JSONObject inputJson) {
+    private void submitQuestionAnsResponseToDB(JSONObject inputJson) {
             Client client = Client.create();
-            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.CREATE_EXAM_URL));
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SUBMIT_QUE_ANS_RESPONSE));
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             String output = response.getEntity(String.class);
             
             JSONObject outNObject;
@@ -604,7 +605,7 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
 
     private List<ExamQueAnsBean> getExamQuestionAnswersById(int examId) {
         
-         List<ExamQueAnsBean> examList = null;
+         List<ExamQueAnsBean> examQuestionAnswerBean = null;
         try 
         {
             Client client = Client.create();
@@ -613,14 +614,22 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
             JSONObject inputJson = new JSONObject();
              try
              {           
-                inputJson.put("exmId", examId);               
-                inputJson.put("isSendAns", true);
+                inputJson.put("exmId", examId);
+                //setting boolean value - to decide whether to bring answers of the questions or not
+                if(this.studExamCaption.equals(GlobalConstants.startExam))
+                {
+                    inputJson.put("isSendAns", false);
+                }
+                else if(this.studExamCaption.equals(GlobalConstants.viewExam))
+                {
+                    inputJson.put("isSendAns", true);
+                }
              }catch(Exception ex)
              {                 
                  ex.printStackTrace();
              }
             
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);
@@ -629,13 +638,13 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
             Type listType = new TypeToken<ArrayList<ExamQueAnsBean>>() {
             }.getType();
             
-            examList= new Gson().fromJson(outNObject.getString(GlobalConstants.EXAMLIST), listType);
+            examQuestionAnswerBean= new Gson().fromJson(outNObject.getString(GlobalConstants.EXAMLIST), listType);
         } catch (JSONException ex)
         {
           //  Logger.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
         }
-        return examList;
+        return examQuestionAnswerBean;
     }
 
     private void setExamQuestionAnswerDetails(List<ExamQueAnsBean> examQueAnsBeanList) {   
@@ -857,18 +866,35 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
         }
     }
 
+    private int examIdForSubmittingAnswers;
+    // question id changes frequently, when user navigates using next or previous button
+    private int questionId;
     private void getNextQuestion() {
         if(listCnt>0){
+            
                 ExamQueAnsBean bean=getExamQueAnsBeanList().get(--listCnt);
-               
+                examIdForSubmittingAnswers = bean.getExamId();
+                questionId=bean.getQuestionId();
+                // 1 is objective type exams
                     if(bean.getExType()==1){
                             //descriptiveBtn.setCaption("Objective");  
+                        
+                            op1txt.setReadOnly(false);
+                            op2txt.setReadOnly(false);
+                            op3txt.setReadOnly(false);
+                            op4txt.setReadOnly(false);
+                            
                             op1txt.setValue(bean.getOption1());
                             op2txt.setValue(bean.getOption2());
                             op3txt.setValue(bean.getOption3());
                             op4txt.setValue(bean.getOption4());
                             
-                             if(op1txt.getValue().equals(bean.getAns()))
+                            op1txt.setReadOnly(true);
+                            op2txt.setReadOnly(true);
+                            op3txt.setReadOnly(true);
+                            op4txt.setReadOnly(true);
+                            
+                             /* if(op1txt.getValue().equals(bean.getAns()))
                             {
                                  checkSelectedAnswer(op1chk);
                             }
@@ -883,7 +909,7 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
                             else
                             {
                                 checkSelectedAnswer(op4chk);
-                            }
+                            } */
                             
                             
                     }
@@ -892,7 +918,9 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
 //                           // descAnsTextArea.setVisible(true);
 //                            //descAnsTextArea.setValue(""+bean.getAns());
 //                    }            
-                    question.setValue(""+bean.getQuestion()); 
+                    question.setReadOnly(false);
+                    question.setValue(GlobalConstants.emptyString+bean.getQuestion()); 
+                    question.setReadOnly(true);
             }else{
                 Notification.show("No other questions available");
             }          
@@ -902,15 +930,27 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
       private void getPreviouseQuestion() {
         if(listCnt<getExamQueAnsBeanList().size()-1){
                 ExamQueAnsBean bean=getExamQueAnsBeanList().get(++listCnt);
-               
+                examIdForSubmittingAnswers = bean.getExamId();
+                questionId=bean.getQuestionId();
+                // 1 is objective type exams
                     if(bean.getExType()==1){
 //                            descriptiveBtn.setCaption("Objective");  
+                            op1txt.setReadOnly(false);
+                            op2txt.setReadOnly(false);
+                            op3txt.setReadOnly(false);
+                            op4txt.setReadOnly(false);
+                            
                             op1txt.setValue(bean.getOption1());
                             op2txt.setValue(bean.getOption2());
                             op3txt.setValue(bean.getOption3());
                             op4txt.setValue(bean.getOption4());
                             
-                            if(op1txt.getValue().equals(bean.getAns()))
+                            op1txt.setReadOnly(true);
+                            op2txt.setReadOnly(true);
+                            op3txt.setReadOnly(true);
+                            op4txt.setReadOnly(true);
+                            
+                            /* if(op1txt.getValue().equals(bean.getAns()))
                             {
                                  checkSelectedAnswer(op1chk);
                             }
@@ -925,7 +965,7 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
                             else
                             {
                                 checkSelectedAnswer(op4chk);
-                            }
+                            } */
                             
                     }
 //                    else{
@@ -933,13 +973,15 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
 //                           // descAnsTextArea.setVisible(true);
 //                            descAnsTextArea.setValue(""+bean.getAns());
 //                    }            
-                    question.setValue(""+bean.getQuestion()); 
+                    question.setReadOnly(false);
+                    question.setValue(GlobalConstants.emptyString+bean.getQuestion()); 
+                    question.setReadOnly(true);
             }else{
                 Notification.show("No other questions available");
             }          
     }
       
-      public void checkSelectedAnswer(CheckBox chkbox){
+      private void checkSelectedAnswer(CheckBox chkbox){
           removeValuChangeListnerFromOptChk(op1chk);
           removeValuChangeListnerFromOptChk(op2chk);
           removeValuChangeListnerFromOptChk(op3chk);
