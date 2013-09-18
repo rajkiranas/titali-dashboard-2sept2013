@@ -483,7 +483,10 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
 
     private void addIntoQuestionList(ExamBean examBean)
     {
-        questionAnswerList.add(examBean);
+        if(!questionAnswerList.contains(examBean)){
+             questionAnswerList.add(examBean);
+        }
+       
     }
 
     private void submitStudentExamResponseToDB() {

@@ -558,6 +558,6 @@ public class StudentExam extends VerticalLayout implements View  {
         } else {
             startExamBtn.setVisible(false);
         }
-    }    
+    }
 
 }
