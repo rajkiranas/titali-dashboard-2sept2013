@@ -317,6 +317,28 @@ public class ExamBean {
         this.examTypeName = examTypeName;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 83 * hash + this.examId;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ExamBean other = (ExamBean) obj;
+        if (this.examId != other.examId) {
+            return false;
+        }
+        return true;
+    }
+
  
    
 

@@ -195,24 +195,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
 
     private CssLayout createPanel(Component content) {
         CssLayout panel = new CssLayout();
-        panel.addStyleName("layout-panel");
         panel.setSizeFull();
-
-        Button configure = new Button();
-        configure.addStyleName("configure");
-        configure.addStyleName("icon-cog");
-        configure.addStyleName("icon-only");
-        configure.addStyleName("borderless");
-        configure.setDescription("Configure");
-        configure.addStyleName("small");
-        configure.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                Notification.show("Not implemented in this demo");
-            }
-        });
-        panel.addComponent(configure);
-
         panel.addComponent(content);
         return panel;
     }
@@ -255,7 +238,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
     private Component CreateFirstPaneview() {
         
         quickLearnTable = new StudQuickLearnTable(this);
-        notes = new TextArea("My short notes for this topic");
+        notes = new TextArea("My short notes for the topic");
         
         column.setSpacing(true);
         cbSubject.setInputPrompt("subject");
@@ -319,8 +302,13 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
                 updateUserShortNotes();
             }
         });
-        column.addComponent(notes);
-        column.setExpandRatio(notes, 0.5f);
+        
+        
+        CssLayout panel = createPanel(notes);
+        panel.addStyleName("notes");
+        
+        column.addComponent(panel);
+        column.setExpandRatio(panel, 0.5f);
         return column;
        
     }
