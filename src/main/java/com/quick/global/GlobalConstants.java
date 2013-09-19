@@ -67,6 +67,8 @@ public class GlobalConstants
     public static final String viewExam = "View Exam";
     public static final String gsonTimeFormat="yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String application_json="application/json";
+    public static final String dateFormatMMddyyyy="MM/dd/yyyy";
+    public static final String Technologies="Technologies";
 
     
     
@@ -96,6 +98,12 @@ public class GlobalConstants
    public static final String GET_EXAM_LIST="GET_EXAM_LIST";
    public static final String GET_EXAM_QUESTIONS_BY_EXAM_ID="GET_EXAM_QUESTIONS_BY_EXAM_ID";
    public static final String SUBMIT_QUE_ANS_RESPONSE="SUBMIT_QUE_ANS_RESPONSE";
+   public static final String GET_ALL_NOTICES="GET_ALL_NOTICES";
+   public static final String SAVE_NOTICE="SAVE_NOTICE";
+   public static  final String DELETE_NOTICE="DELETE_NOTICE";
+   public static final String SAVE_TECHNOLOGY="SAVE_TECHNOLOGY";
+   public static  final String DELETE_TECHNOLOGY="DELETE_TECHNOLOGY";
+   public static  final String GET_ALL_TECHNOLOGY="GET_ALL_TECHNOLOGY";
    
    //public static final String UserMasterResource = "/UserMaster";
     
