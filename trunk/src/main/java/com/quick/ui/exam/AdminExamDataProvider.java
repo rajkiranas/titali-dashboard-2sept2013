@@ -40,7 +40,7 @@ import org.codehaus.jettison.json.JSONObject;
 public class AdminExamDataProvider {
 
     
-    private static final String dateFormatMMddyyyy="MM/dd/yyyy";
+    
     private AdminExam adminExam;
     private Table t1;
 
@@ -88,7 +88,7 @@ public class AdminExamDataProvider {
         t1 = new Table(){
             
             SimpleDateFormat df =
-               new SimpleDateFormat(dateFormatMMddyyyy);
+               new SimpleDateFormat(GlobalConstants.dateFormatMMddyyyy);
         
       @Override
        protected String formatPropertyValue(Object rowId,

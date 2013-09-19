@@ -27,8 +27,10 @@ import com.vaadin.annotations.Title;
 import com.quick.data.DataProvider;
 import com.quick.data.Generator;
 import com.quick.data.MyConverterFactory;
+import com.quick.notices.CreateNotices;
 import com.quick.ui.exam.AdminExam;
 import com.quick.ui.exam.StudentExam;
+import com.quick.upcomingtechnology.CreateUpcomingTechnology;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.event.Transferable;
@@ -99,6 +101,8 @@ public class DashboardUI extends UI{
             put("/upload",QuickUpload.class);
             put("/MyExam",StudentExam.class);
             put("/AdminExam",AdminExam.class);
+             put("/Notices",CreateNotices.class);
+             put("/Technology",CreateUpcomingTechnology.class);
         }
     };
 
@@ -375,7 +379,7 @@ public class DashboardUI extends UI{
         /*for (final String view : new String[] { "dashboard", "learn",
                 "transactions", "reports", "schedule","student","teacher","upload","MyExam" }) {*/
         for (final String view : new String[] { "dashboard", "learn",
-                "students","teachers","upload","MyExam","AdminExam" }) {
+                "students","teachers","upload","MyExam","AdminExam","Notices","Technology" }) {
             
             Button b = new NativeButton(view.substring(0, 1).toUpperCase()
                     + view.substring(1).replace('-', ' '));

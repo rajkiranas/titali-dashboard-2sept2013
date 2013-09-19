@@ -7,6 +7,7 @@ package com.quick.ui.exam;
 import com.quick.bean.ExamBean;
 import com.quick.container.StudQuickLearnContainer;
 import com.quick.container.StudentExamListContainer;
+import com.quick.global.GlobalConstants;
 import com.vaadin.data.Property;
 import com.vaadin.demo.dashboard.TopGrossingMoviesChart;
 import com.vaadin.demo.dashboard.TopSixTheatersChart;
@@ -15,6 +16,7 @@ import com.vaadin.ui.themes.BaseTheme;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import javax.xml.bind.annotation.XmlElementDecl;
 
 /**
  *
@@ -54,7 +56,7 @@ public class StudentExamDataProvider {
        // Format by property type
        if (property.getType() == Date.class) {
            SimpleDateFormat df =
-               new SimpleDateFormat("MM/dd/yyyy");
+               new SimpleDateFormat(GlobalConstants.dateFormatMMddyyyy);
            return df.format((Date)property.getValue());
        }
        return super.formatPropertyValue(rowId, colId, property);
