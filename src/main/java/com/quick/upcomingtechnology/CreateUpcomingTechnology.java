@@ -6,9 +6,11 @@ package com.quick.upcomingtechnology;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.quick.bean.CategoryDistributionBean;
 import com.quick.bean.ExamBean;
 import com.quick.bean.UpcomingTechnologyBean;
 import com.quick.bean.Userprofile;
+import com.quick.container.CategoryTechnologyContainer;
 import com.quick.container.UpcomingTechnologyContainer;
 import com.quick.global.GlobalConstants;
 import com.quick.ui.exam.CustomPieChart;
@@ -91,7 +93,7 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
     }
     
     public CreateUpcomingTechnology(){
-        setTechnologiesList(fetchTechnologies());
+        setTechnologiesList(fetchAllTechnologies());
         HorizontalLayout top = new HorizontalLayout();
         top.setWidth("100%");
         top.setSpacing(true);
@@ -166,6 +168,7 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
             @Override
             public void valueChange(ValueChangeEvent event) {
                updateUtFormField((UpcomingTechnologyBean)event.getProperty().getValue());
+               setCategorywiseTechnologyList(fetchRelatedTechnologies("programming"));
             }
 
         };
@@ -176,6 +179,7 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         return upcomingTechnologyTbl;
     }
 
+    private List<CategoryDistributionBean> categorywiseTechnologyList=null;
     private static final String technology_details="Technology Details";
     
     private Component getUTForm() {
@@ -288,7 +292,7 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
     }
 
    
-    private List<UpcomingTechnologyBean> fetchTechnologies() {
+    private List<UpcomingTechnologyBean> fetchAllTechnologies() {
         List<UpcomingTechnologyBean> technologyList=null;
         try {
             Client client = Client.create();
@@ -319,6 +323,38 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
             ex.printStackTrace();
         }
         return technologyList;
+    }
+    
+    private List<CategoryDistributionBean> fetchRelatedTechnologies(String category) {
+        List<CategoryDistributionBean> relatedTechnologyList=null;
+        try {
+            Client client = Client.create();
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_TECHNOLOGY_BY_CATEGORY));
+            //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
+            JSONObject inputJson = new JSONObject();
+            try {
+                inputJson.put("category", category);
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
+
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
+
+          
+            JSONObject outNObject = null;
+            String output = response.getEntity(String.class);
+            outNObject = new JSONObject(output);
+
+            Type listType = new TypeToken<ArrayList<CategoryDistributionBean>>() {
+            }.getType();
+            
+             relatedTechnologyList=new Gson().fromJson(outNObject.getString(GlobalConstants.category_distribution), listType);
+            
+        } catch (JSONException ex) 
+        {
+            ex.printStackTrace();
+        }
+        return relatedTechnologyList;
     }
 
     @Override
@@ -460,7 +496,7 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
     {
         upcomingTechnologyTbl.removeValueChangeListener(utTblValueChangeListener);
         upcomingTechnologyTbl.getContainerDataSource().removeAllItems();
-        setTechnologiesList(fetchTechnologies());
+        setTechnologiesList(fetchAllTechnologies());
         upcomingTechnologyTbl.setContainerDataSource(UpcomingTechnologyContainer.getUTContainer(getUTList()));
         upcomingTechnologyTbl.setVisibleColumns(UpcomingTechnologyContainer.NATURAL_COL_ORDER_TECHNOLOGIES);
         upcomingTechnologyTbl.setColumnHeaders(UpcomingTechnologyContainer.COL_HEADERS_ENGLISH_TECHNOLOGIES);
@@ -479,12 +515,15 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         HorizontalLayout h = new HorizontalLayout();
         h.setSizeFull();
         h.setSpacing(true);
+        
         Label lbl = new Label(technology_details);
         lbl.setWidth("100%");
         lbl.setHeight("100%");
-        h.addComponent(lbl);
-        h.setComponentAlignment(lbl,Alignment.MIDDLE_LEFT);
-        h.setExpandRatio(lbl, 1);
+        
+        Component table=getRelatedTechnologiesTable();
+        h.addComponent(table);
+        h.setComponentAlignment(table,Alignment.MIDDLE_LEFT);
+        h.setExpandRatio(table, 1);
         
         Component chart =getTechnologyUsageDistributionPieChart();
         h.addComponent(chart);
@@ -509,6 +548,47 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         
         return chart;
         
+    }
+
+    private Component getRelatedTechnologiesTable() 
+    {
+        Table t = new Table();
+        t.addStyleName("borderless");
+        ///noticetbl.setSortEnabled(false);
+        t.setImmediate(true); // react at once when something is selected
+        t.setWidth("100%");
+        t.setPageLength(5);
+        t.setSelectable(false);
+        t.setContainerDataSource(CategoryTechnologyContainer.getRelatedTechnologiesContainer(getCategorywiseTechnologyList()));
+        t.setVisibleColumns(CategoryTechnologyContainer.NATURAL_COL_ORDER_TECHNOLOGIES);
+        t.setColumnHeaders(CategoryTechnologyContainer.COL_HEADERS_ENGLISH_TECHNOLOGIES);
+        /* utTblValueChangeListener = new Property.ValueChangeListener() {
+
+            @Override
+            public void valueChange(ValueChangeEvent event) {
+               updateUtFormField((UpcomingTechnologyBean)event.getProperty().getValue());
+            }
+
+        }; */
+        
+        //t.addValueChangeListener(utTblValueChangeListener);
+        t.sort(new Object[]{"technologyName"}, new boolean[]{true});
+        //t.select(upcomingTechnologyTbl.firstItemId());
+        return t;
+    }
+
+    /**
+     * @return the categorywiseTechnologyList
+     */
+    public List<CategoryDistributionBean> getCategorywiseTechnologyList() {
+        return categorywiseTechnologyList;
+    }
+
+    /**
+     * @param categorywiseTechnologyList the categorywiseTechnologyList to set
+     */
+    public void setCategorywiseTechnologyList(List<CategoryDistributionBean> categorywiseTechnologyList) {
+        this.categorywiseTechnologyList = categorywiseTechnologyList;
     }
 
    

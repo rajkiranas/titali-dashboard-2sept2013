@@ -69,6 +69,7 @@ public class GlobalConstants
     public static final String application_json="application/json";
     public static final String dateFormatMMddyyyy="MM/dd/yyyy";
     public static final String Technologies="Technologies";
+    public static final String category_distribution = "category_distribution";
 
     
     
@@ -104,6 +105,7 @@ public class GlobalConstants
    public static final String SAVE_TECHNOLOGY="SAVE_TECHNOLOGY";
    public static  final String DELETE_TECHNOLOGY="DELETE_TECHNOLOGY";
    public static  final String GET_ALL_TECHNOLOGY="GET_ALL_TECHNOLOGY";
+   public static  final String GET_TECHNOLOGY_BY_CATEGORY="GET_TECHNOLOGY_BY_CATEGORY";
    
    //public static final String UserMasterResource = "/UserMaster";
     
