@@ -18,14 +18,14 @@ public class UpcomingTechnologyContainer extends BeanItemContainer<UpcomingTechn
 
 
       public static final Object[] NATURAL_COL_ORDER_TECHNOLOGIES = new Object[]{
-       "technologydate", "bywhom", "technologyline"};
+       "technologydate", "technologyline","category", "bywhom"};
       //"std","fordiv",
         /**
         * "Human readable" captions for properties in same order as in
         * NATURAL_COL_ORDER_DAILY_CALLS.
         */
     public static final String[] COL_HEADERS_ENGLISH_TECHNOLOGIES = new String[]{
-       "Technology date", "By whom", "Subject"};
+       "Technology date", "Name", "Category", "Created by"};
     //"Std","Div",
     
     public UpcomingTechnologyContainer(){
@@ -47,6 +47,7 @@ public class UpcomingTechnologyContainer extends BeanItemContainer<UpcomingTechn
            bean.setTechnologyline(mpb.getTechnologyline());
            bean.setTechnologybody(mpb.getTechnologybody());
            bean.setSub(mpb.getSub());
+           bean.setCategory(mpb.getCategory());
            container.addItem(bean);
         }
        }

@@ -6,10 +6,12 @@ package com.quick.upcomingtechnology;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.quick.bean.ExamBean;
 import com.quick.bean.UpcomingTechnologyBean;
 import com.quick.bean.Userprofile;
 import com.quick.container.UpcomingTechnologyContainer;
 import com.quick.global.GlobalConstants;
+import com.quick.ui.exam.CustomPieChart;
 import com.quick.utilities.UIUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -36,6 +38,7 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -51,6 +54,7 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
     private TextField utId;
     private TextField bywhom;
     private TextField utLine;
+    private TextField utCategory;
     private TextArea utBody;
     private Button createnUT;
     private Button clear;
@@ -114,8 +118,9 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         //form created first because below method tries to set its values on table value change
         Component form = UIUtils.createPanel(getUTForm());
         
-        row.addComponent(UIUtils.createPanel(getUTListView()));
+        Component l = getTechnologyListingAndGraphLayout();
         
+        row.addComponent(l);
         
         row.addComponent(form);
         row.setComponentAlignment(form, Alignment.MIDDLE_RIGHT);
@@ -150,7 +155,7 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         upcomingTechnologyTbl.addStyleName("borderless");
         ///noticetbl.setSortEnabled(false);
         upcomingTechnologyTbl.setWidth("100%");
-        upcomingTechnologyTbl.setPageLength(15);
+        upcomingTechnologyTbl.setPageLength(10);
         upcomingTechnologyTbl.setSelectable(true);
         upcomingTechnologyTbl.setImmediate(true); // react at once when something is selected
         upcomingTechnologyTbl.setContainerDataSource(UpcomingTechnologyContainer.getUTContainer(getUTList()));
@@ -174,40 +179,61 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
     private static final String technology_details="Technology Details";
     
     private Component getUTForm() {
-        FormLayout utForm = new FormLayout();
-        utForm.setCaption(technology_details);
-        utForm.setSizeFull();
+        VerticalLayout utForm = new VerticalLayout();
+        //utForm.setCaption(technology_details);
+        //utForm.setSizeFull();
+        utForm.setSpacing(true);
         
         utId = new TextField("Technology Id");
         utId.setImmediate(true);
         utId.setWidth("15%");
         utId.setReadOnly(true);
+        utId.setVisible(false);
         
         utDate = new PopupDateField("Date");
         utDate.setImmediate(true);
         utDate.setWidth("25%");
+        utDate.setVisible(false);
         
-        bywhom = new TextField("Created by");
+        
+        
+        bywhom = new TextField();
         bywhom.setImmediate(true);
         bywhom.setWidth("30%");
         bywhom.setReadOnly(true);
+        Component bywhomLayout =getHorizontalLayoutForTwoComponents("Created by",bywhom);
         
         
         
         
-        utLine = new TextField("Subject");
+        utLine = new TextField();
         utLine.setImmediate(true);
-        utLine.setWidth("70%");
+        utLine.setWidth("40%");
+        Component utLineLayout =getHorizontalLayoutForTwoComponents("Name",utLine);
         
-        utBody = new TextArea("Meassage");
+        
+        utCategory = new TextField();
+        utCategory.setImmediate(true);
+        utCategory.setWidth("40%");
+        
+        Component utCategoryLayout = getHorizontalLayoutForTwoComponents("Category",utCategory);
+        
+        
+        utBody = new TextArea();
         utBody.setImmediate(true);
-        utBody.setWidth("70%");
+        utBody.setWidth("97%");
+       // utBody.setHeight("100%");
+        utBody.setRows(14);
         
-        utForm.addComponent(utId);
-        utForm.addComponent(utDate);
-        utForm.addComponent(bywhom);
-        utForm.addComponent(utLine);
-        utForm.addComponent(utBody);
+        Component utBodyLayout = getHorizontalLayoutForTwoComponents("Description",utBody);
+       
+        
+        //utForm.addComponent(utId);
+        //utForm.addComponent(utDate);
+        utForm.addComponent(bywhomLayout);
+        utForm.addComponent(utLineLayout);
+        utForm.addComponent(utCategoryLayout);
+        utForm.addComponent(utBodyLayout);
         
         //profile=(Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile);
         //if(profile.get)
@@ -236,8 +262,29 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         buttonLayout.addComponent(createnUT);        
         buttonLayout.addComponent(delete);
         
-        utForm.addComponent(buttonLayout);
-        return utForm;
+        
+        VerticalLayout mainVertical = new VerticalLayout();
+        mainVertical.setSizeFull();
+        mainVertical.addComponent(utForm);
+        mainVertical.addComponent(buttonLayout);
+        
+        mainVertical.setExpandRatio(utForm, 3f);
+        mainVertical.setExpandRatio(buttonLayout, 0.5f);
+        mainVertical.setComponentAlignment(buttonLayout, Alignment.MIDDLE_CENTER);
+        
+        return mainVertical;
+    }
+    
+    private Component getHorizontalLayoutForTwoComponents(String s, Component c)
+    {
+        HorizontalLayout h = new HorizontalLayout();
+        Label l = new Label(s);
+        h.setSizeFull();
+        h.addComponent(l);
+        h.addComponent(c);
+        h.setExpandRatio(l, 0.5f);
+        h.setExpandRatio(c, 3f);
+        return h;
     }
 
    
@@ -300,6 +347,7 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         bywhom.setReadOnly(true);
         
         utLine.setValue(GlobalConstants.emptyString);
+        utCategory.setValue(GlobalConstants.emptyString);
         utBody.setValue(GlobalConstants.emptyString);
          
     }
@@ -319,9 +367,10 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
                 {
                     inputJson.put("technologyId", 0);
                 }
-                inputJson.put("technologydate", utDate.getValue().getTime());
+                inputJson.put("technologydate", new Date().getTime());
                 inputJson.put("bywhom", bywhom.getValue());
                 inputJson.put("technologyline", utLine.getValue());
+                inputJson.put("category", utCategory.getValue());
                 inputJson.put("technologybody", utBody.getValue());
             } catch (JSONException ex) {
                 ex.printStackTrace();
@@ -402,6 +451,7 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         bywhom.setReadOnly(true);
         
         utLine.setValue(bean.getTechnologyline());
+        utCategory.setValue(bean.getCategory());
         utBody.setValue(bean.getTechnologybody()); 
         setSelectedUTId(bean.getTechnologyid());
     }
@@ -417,6 +467,48 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         upcomingTechnologyTbl.addValueChangeListener(utTblValueChangeListener);
         upcomingTechnologyTbl.sort(new Object[]{"technologydate"}, new boolean[]{false});
         upcomingTechnologyTbl.select(upcomingTechnologyTbl.firstItemId());
+    }
+
+    private Component getTechnologyListingAndGraphLayout() 
+    {
+        VerticalLayout l = new VerticalLayout();
+        l.setSizeFull();
+        l.setSpacing(true);
+        l.addComponent(UIUtils.createPanel(getUTListView()));
+        
+        HorizontalLayout h = new HorizontalLayout();
+        h.setSizeFull();
+        h.setSpacing(true);
+        Label lbl = new Label(technology_details);
+        lbl.setWidth("100%");
+        lbl.setHeight("100%");
+        h.addComponent(lbl);
+        h.setComponentAlignment(lbl,Alignment.MIDDLE_LEFT);
+        h.setExpandRatio(lbl, 1);
+        
+        Component chart =getTechnologyUsageDistributionPieChart();
+        h.addComponent(chart);
+        h.setComponentAlignment(chart,Alignment.MIDDLE_CENTER);
+        h.setExpandRatio(chart, 2.5f);
+        
+        l.addComponent(h);
+        return UIUtils.createPanel(l);
+    }
+    
+    private Component getTechnologyUsageDistributionPieChart() {
+        
+        HashMap<String,Double> dataMap = new HashMap<String,Double>();
+        
+        dataMap.put("Java",50d);
+        dataMap.put(".Net", 30d);
+        dataMap.put("C", 5d);
+        dataMap.put("C++", 15d);
+
+        Component chart =CustomPieChart.createChart(dataMap,"Java","Industry popularity");
+        chart.setSizeFull();
+        
+        return chart;
+        
     }
 
    
