@@ -79,13 +79,13 @@ public class CustomPieChart extends Chart {
     
     
     
-     public static Chart createChart(HashMap<String,Double> dataMap, String selectedItem) {
+     public static Chart createChart(HashMap<String,Double> dataMap, String selectedItem, String chartDescription) {
          
         Chart chart = new Chart(ChartType.PIE);
-        chart.setDescription("Exam summary");
+        chart.setDescription(chartDescription);
         Configuration conf = chart.getConfiguration();
 
-        conf.setTitle("Exam summary");
+        conf.setTitle(chartDescription);
 
         PlotOptionsPie plotOptions = new PlotOptionsPie();
         plotOptions.setCursor(Cursor.POINTER);

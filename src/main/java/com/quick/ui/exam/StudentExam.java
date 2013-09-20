@@ -542,7 +542,7 @@ public class StudentExam extends VerticalLayout implements View  {
 
         dataMap.put(Passed, (double) eb.getPassedStudents());
 
-        return CustomPieChart.createChart(dataMap,Passed);
+        return CustomPieChart.createChart(dataMap,Passed,"Exam summary");
         
     }
 
