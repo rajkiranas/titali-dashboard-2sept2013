@@ -63,6 +63,8 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
     private Button delete;
     private int selectedUTId;
     private Userprofile profile;
+    private HorizontalLayout relatedTechnologiesAndPieChartLayout;
+
 
     private  Property.ValueChangeListener utTblValueChangeListener;
 
@@ -167,10 +169,15 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
 
             @Override
             public void valueChange(ValueChangeEvent event) {
-               updateUtFormField((UpcomingTechnologyBean)event.getProperty().getValue());
-               setCategorywiseTechnologyList(fetchRelatedTechnologies("programming"));
+                UpcomingTechnologyBean bean =(UpcomingTechnologyBean)event.getProperty().getValue();
+               updateUtFormField(bean);
+               setCategorywiseTechnologyList(fetchRelatedTechnologies(bean.getCategory()));               
+               
+               if(mailTableAddedFlag==1)
+               {
+                getRelatedTechnologiesAndPieChartLayout();
+               }
             }
-
         };
         
         upcomingTechnologyTbl.addValueChangeListener(utTblValueChangeListener);
@@ -505,63 +512,99 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         upcomingTechnologyTbl.select(upcomingTechnologyTbl.firstItemId());
     }
 
+    private VerticalLayout leftFirstComponentLayout;
+    int mailTableAddedFlag=0;
     private Component getTechnologyListingAndGraphLayout() 
     {
-        VerticalLayout l = new VerticalLayout();
-        l.setSizeFull();
-        l.setSpacing(true);
-        l.addComponent(UIUtils.createPanel(getUTListView()));
-        
-        HorizontalLayout h = new HorizontalLayout();
-        h.setSizeFull();
-        h.setSpacing(true);
-        
-        Label lbl = new Label(technology_details);
-        lbl.setWidth("100%");
-        lbl.setHeight("100%");
-        
-        Component table=getRelatedTechnologiesTable();
-        h.addComponent(table);
-        h.setComponentAlignment(table,Alignment.MIDDLE_LEFT);
-        h.setExpandRatio(table, 1);
-        
-        Component chart =getTechnologyUsageDistributionPieChart();
-        h.addComponent(chart);
-        h.setComponentAlignment(chart,Alignment.MIDDLE_CENTER);
-        h.setExpandRatio(chart, 2.5f);
-        
-        l.addComponent(h);
-        return UIUtils.createPanel(l);
+        leftFirstComponentLayout = new VerticalLayout();
+        leftFirstComponentLayout.setSizeFull();
+        leftFirstComponentLayout.setSpacing(true);
+        //main technology listing
+        leftFirstComponentLayout.addComponent(UIUtils.createPanel(getUTListView()));
+        mailTableAddedFlag=1;        
+        getRelatedTechnologiesAndPieChartLayout();
+        return UIUtils.createPanel(leftFirstComponentLayout);
     }
     
-    private Component getTechnologyUsageDistributionPieChart() {
+    
+    private HorizontalLayout getRelatedTechnologiesAndPieChartLayout()
+    {
+        if(relatedTechnologiesAndPieChartLayout!=null)
+        {
+            leftFirstComponentLayout.removeComponent(relatedTechnologiesAndPieChartLayout);
+        }
         
-        HashMap<String,Double> dataMap = new HashMap<String,Double>();
+        //below table and peichart
+        relatedTechnologiesAndPieChartLayout = new HorizontalLayout();
+        relatedTechnologiesAndPieChartLayout.setSizeFull();
+        relatedTechnologiesAndPieChartLayout.setSpacing(true);
         
-        dataMap.put("Java",50d);
-        dataMap.put(".Net", 30d);
-        dataMap.put("C", 5d);
-        dataMap.put("C++", 15d);
+        Component table=getRelatedTechnologiesTable();
+        updateRelatedTechnologiesTable();
 
-        Component chart =CustomPieChart.createChart(dataMap,"Java","Industry popularity");
+        relatedTechnologiesAndPieChartLayout.addComponent(table);
+        relatedTechnologiesAndPieChartLayout.setComponentAlignment(table,Alignment.TOP_CENTER);
+        relatedTechnologiesAndPieChartLayout.setExpandRatio(table, 1);        
+        
+        
+        
+        
+        HashMap map = getDataMapForRelatedTechnologiesPieChart(getCategorywiseTechnologyList());
+        buildPieChart(map);
+        
+        
+        //adding below table and peichart to the left vertical layout
+        leftFirstComponentLayout.addComponent(relatedTechnologiesAndPieChartLayout);
+        
+        return relatedTechnologiesAndPieChartLayout;
+        
+    }
+    
+    private void buildPieChart(HashMap dataMap)
+    {
+//        if(pieChart!=null)
+//        {
+//            relatedTechnologiesAndPieChartLayout.removeComponent(pieChart);
+//        }
+        
+        Component pieChart;
+        pieChart =getTechnologyUsageDistributionPieChart(dataMap);
+        relatedTechnologiesAndPieChartLayout.addComponent(pieChart);
+        relatedTechnologiesAndPieChartLayout.setComponentAlignment(pieChart,Alignment.MIDDLE_CENTER);
+        relatedTechnologiesAndPieChartLayout.setExpandRatio(pieChart, 2.5f);
+        
+    }
+    
+    private Component getTechnologyUsageDistributionPieChart(HashMap map) {
+        
+//        HashMap<String,Double> dataMap = new HashMap<String,Double>();
+//        
+//        dataMap.put("Java",50d);
+//        dataMap.put(".Net", 30d);
+//        dataMap.put("C", 5d);
+//        dataMap.put("C++", 15d);
+
+        Component chart =CustomPieChart.createChart(map,(String)map.keySet().iterator().next(),"Industry popularity");
         chart.setSizeFull();
         
         return chart;
         
     }
 
+    Table relatedTechnologiesTable = new Table();
     private Component getRelatedTechnologiesTable() 
     {
-        Table t = new Table();
-        t.addStyleName("borderless");
+        
+        relatedTechnologiesTable.addStyleName("borderless");
         ///noticetbl.setSortEnabled(false);
-        t.setImmediate(true); // react at once when something is selected
-        t.setWidth("100%");
-        t.setPageLength(5);
-        t.setSelectable(false);
-        t.setContainerDataSource(CategoryTechnologyContainer.getRelatedTechnologiesContainer(getCategorywiseTechnologyList()));
-        t.setVisibleColumns(CategoryTechnologyContainer.NATURAL_COL_ORDER_TECHNOLOGIES);
-        t.setColumnHeaders(CategoryTechnologyContainer.COL_HEADERS_ENGLISH_TECHNOLOGIES);
+        relatedTechnologiesTable.setCaption("Related technologies");
+        relatedTechnologiesTable.setImmediate(true); // react at once when something is selected
+        relatedTechnologiesTable.setWidth("100%");
+        relatedTechnologiesTable.setPageLength(5);
+        relatedTechnologiesTable.setSelectable(false);
+        relatedTechnologiesTable.setContainerDataSource(CategoryTechnologyContainer.getRelatedTechnologiesContainer(getCategorywiseTechnologyList()));
+        relatedTechnologiesTable.setVisibleColumns(CategoryTechnologyContainer.NATURAL_COL_ORDER_TECHNOLOGIES);
+        relatedTechnologiesTable.setColumnHeaders(CategoryTechnologyContainer.COL_HEADERS_ENGLISH_TECHNOLOGIES);
         /* utTblValueChangeListener = new Property.ValueChangeListener() {
 
             @Override
@@ -572,10 +615,33 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         }; */
         
         //t.addValueChangeListener(utTblValueChangeListener);
-        t.sort(new Object[]{"technologyName"}, new boolean[]{true});
+        relatedTechnologiesTable.sort(new Object[]{"technologyName"}, new boolean[]{true});
         //t.select(upcomingTechnologyTbl.firstItemId());
-        return t;
+        return relatedTechnologiesTable;
     }
+    
+    private void updateRelatedTechnologiesTable() 
+    {
+        relatedTechnologiesTable.getContainerDataSource().removeAllItems();
+        //setTechnologiesList(fetchAllTechnologies());
+        relatedTechnologiesTable.setContainerDataSource(CategoryTechnologyContainer.getRelatedTechnologiesContainer(getCategorywiseTechnologyList()));
+        relatedTechnologiesTable.setVisibleColumns(CategoryTechnologyContainer.NATURAL_COL_ORDER_TECHNOLOGIES);
+        relatedTechnologiesTable.setColumnHeaders(CategoryTechnologyContainer.COL_HEADERS_ENGLISH_TECHNOLOGIES);
+        relatedTechnologiesTable.sort(new Object[]{"technologyName"}, new boolean[]{true});
+    }
+    
+    
+    //provides input to piechart of related tech nologies
+    private HashMap getDataMapForRelatedTechnologiesPieChart(List<CategoryDistributionBean> categorywiseTechnologyList) 
+            {
+                HashMap map = new HashMap();
+                
+                for(CategoryDistributionBean bean:categorywiseTechnologyList)
+                {
+                    map .put(bean.getTechnologyName(), bean.getPercentage());
+                }                
+                return map;                
+            }
 
     /**
      * @return the categorywiseTechnologyList
