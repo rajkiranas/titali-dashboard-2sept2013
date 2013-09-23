@@ -36,6 +36,22 @@ import com.quick.utilities.UIUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.vaadin.addon.charts.Chart;
+import com.vaadin.addon.charts.model.ChartType;
+import com.vaadin.addon.charts.model.Configuration;
+import com.vaadin.addon.charts.model.HorizontalAlign;
+import com.vaadin.addon.charts.model.Labels;
+import com.vaadin.addon.charts.model.LayoutDirection;
+import com.vaadin.addon.charts.model.Legend;
+import com.vaadin.addon.charts.model.ListSeries;
+import com.vaadin.addon.charts.model.PlotOptionsColumn;
+import com.vaadin.addon.charts.model.Tooltip;
+import com.vaadin.addon.charts.model.VerticalAlign;
+import com.vaadin.addon.charts.model.XAxis;
+import com.vaadin.addon.charts.model.YAxis;
+import com.vaadin.addon.charts.model.style.SolidColor;
+import com.vaadin.addon.charts.model.style.Style;
+import com.vaadin.annotations.Title;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
@@ -252,7 +268,7 @@ public class StudentExam extends VerticalLayout implements View  {
         
         
         
-         row1 = new HorizontalLayout();
+        row1 = new HorizontalLayout();
         row1.setSizeFull();
         row1.setMargin(new MarginInfo(true, true, false, true));
         row1.setSpacing(true);
@@ -269,8 +285,10 @@ public class StudentExam extends VerticalLayout implements View  {
                ExamBean eb = (ExamBean) event.getProperty().getValue(); 
                setSelectedExam(getSelectedExamDetailsById(eb.getExamId()));
                updateExamDetails();
+               getExamDetailsAndComparisonBarChartLayout();
                updateExamSummary();
                decidevisibilityAndCaptionOfStartExamBtn(eb);
+               
             }
         });
         
@@ -314,16 +332,62 @@ public class StudentExam extends VerticalLayout implements View  {
 //        t.setColumnAlignment("Revenue", Align.RIGHT);
 //        t.setRowHeaderMode(RowHeaderMode.INDEX);
 
-        row2.addComponent(UIUtils.createPanel(getSelectedExamDetails(null)));
+        ///Component examDetails=UIUtils.createPanel(getExamDetailsAndComparisonBarChartLayout());
+        
+        getExamDetailsAndComparisonBarChartLayout();
+        
 
         Component examChart = getExamDetailsPieChart();
         examsummaryPannel=UIUtils.createPanel(UIUtils.getTabSheetPaneView(examChart));
         row2.addComponent(examsummaryPannel);
+        
+        
+//        row2.setComponentAlignment(examDetails,Alignment.TOP_CENTER);
+//        row2.setExpandRatio(examDetails, 1);     
+        
+        
+//        row2.setComponentAlignment(examsummaryPannel,Alignment.MIDDLE_CENTER);
+//        row2.setExpandRatio(examsummaryPannel, 2.5f);
 
 
     }
+    
+    CssLayout cssLayoutFormAndBarGraph;
+    private Component getExamDetailsAndComparisonBarChartLayout()
+    {
+         HorizontalLayout examDetailsFormAndBarGraphLayout  = new HorizontalLayout();
+
+        if(row2!=null)
+        {
+            if(cssLayoutFormAndBarGraph!=null)
+            {
+                row2.removeComponent(cssLayoutFormAndBarGraph);            
+            }
+            Component examDeatils = getSelectedExamDetailsForm();
+            examDetailsFormAndBarGraphLayout.addComponent(examDeatils);
+            String[] title = new String[] {"My Score","Avg Score","Top Score"};
+            Number[] scores = new Number[] { getSelectedExam().get(0).getExamLowScore(),getSelectedExam().get(0).getExamAvgScore(), getSelectedExam().get(0).getExamTopScore()};
+            Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks");
+            examDetailsFormAndBarGraphLayout.addComponent(barChart);
+
+
+            examDetailsFormAndBarGraphLayout.setComponentAlignment(examDeatils,Alignment.TOP_CENTER);
+            examDetailsFormAndBarGraphLayout.setExpandRatio(examDeatils, 1);     
+
+
+            examDetailsFormAndBarGraphLayout.setComponentAlignment(barChart,Alignment.MIDDLE_CENTER);
+            examDetailsFormAndBarGraphLayout.setExpandRatio(barChart, 2.5f);
+
+            cssLayoutFormAndBarGraph=UIUtils.createPanel(examDetailsFormAndBarGraphLayout);
+
+            row2.addComponent(cssLayoutFormAndBarGraph);
+        }
+        
+        return examDetailsFormAndBarGraphLayout;
+        
+    }
    
-    public  Component getSelectedExamDetails(Object object) {
+    public  Component getSelectedExamDetailsForm() {
         FormLayout formLayout = new FormLayout();
         formLayout.setMargin(true);
       
@@ -334,8 +398,7 @@ public class StudentExam extends VerticalLayout implements View  {
         //throw new UnsupportedOperationException("Not yet implemented");
         return formLayout;
     }
-
-
+    
 //    private CssLayout createPanel(Component content) {
 //        CssLayout panel = new CssLayout();
 //        panel.addStyleName("layout-panel");

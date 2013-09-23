@@ -49,6 +49,10 @@ public class ExamBean {
      private String result;
      private String examTypeName;
      private String questionId;
+     
+     private float examTopScore;
+     private float examAvgScore;
+     private float examLowScore;
 
     public String getQuestionId() {
         return questionId;
@@ -316,6 +320,8 @@ public class ExamBean {
     public void setExamTypeName(String examTypeName) {
         this.examTypeName = examTypeName;
     }
+    
+    
 
     @Override
     public int hashCode() {
@@ -337,6 +343,30 @@ public class ExamBean {
             return false;
         }
         return true;
+    }
+
+    public float getExamTopScore() {
+        return examTopScore;
+    }
+
+    public void setExamTopScore(float examTopScore) {
+        this.examTopScore = examTopScore;
+    }
+
+    public float getExamAvgScore() {
+        return examAvgScore;
+    }
+
+    public void setExamAvgScore(float examAvgScore) {
+        this.examAvgScore = examAvgScore;
+    }
+
+    public float getExamLowScore() {
+        return examLowScore;
+    }
+
+    public void setExamLowScore(float examLowScore) {
+        this.examLowScore = examLowScore;
     }
 
  
