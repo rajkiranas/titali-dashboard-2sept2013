@@ -53,6 +53,8 @@ public class ExamBean {
      private float examTopScore;
      private float examAvgScore;
      private float examLowScore;
+     
+     private Short totalObtMarksObj;
 
     public String getQuestionId() {
         return questionId;
@@ -367,6 +369,20 @@ public class ExamBean {
 
     public void setExamLowScore(float examLowScore) {
         this.examLowScore = examLowScore;
+    }
+
+    /**
+     * @return the totalObtMarksObj
+     */
+    public Short getTotalObtMarksObj() {
+        return totalObtMarksObj;
+    }
+
+    /**
+     * @param totalObtMarksObj the totalObtMarksObj to set
+     */
+    public void setTotalObtMarksObj(Short totalObtMarksObj) {
+        this.totalObtMarksObj = totalObtMarksObj;
     }
 
  

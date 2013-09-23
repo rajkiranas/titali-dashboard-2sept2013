@@ -706,9 +706,10 @@
 		}
 	}
 
-.blueTextColorStyle
-{
-    color: blue;
-}
 
+.v-table-cell-content-blueTextColorStyle {   
+    color:gray!important; 
+    background-color: #ffffff!important;
+    font-size: 5px!important;
+}
 }

@@ -336,7 +336,7 @@ public class AdminExam extends VerticalLayout implements View  {
             examDetailsFormAndBarGraphLayout.addComponent(examDeatils);
             String[] title = new String[] {"Low Score","Avg Score","Top Score"};
             Number[] scores = new Number[] { getSelectedExam().get(0).getExamLowScore(),getSelectedExam().get(0).getExamAvgScore(), getSelectedExam().get(0).getExamTopScore()};
-            Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks");
+            Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks","260px","300px");
             examDetailsFormAndBarGraphLayout.addComponent(barChart);
 
 
