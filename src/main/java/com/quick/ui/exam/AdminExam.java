@@ -42,6 +42,18 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.vaadin.addon.charts.Chart;
+import com.vaadin.addon.charts.model.ChartType;
+import com.vaadin.addon.charts.model.Configuration;
+import com.vaadin.addon.charts.model.HorizontalAlign;
+import com.vaadin.addon.charts.model.Labels;
+import com.vaadin.addon.charts.model.Legend;
+import com.vaadin.addon.charts.model.ListSeries;
+import com.vaadin.addon.charts.model.PlotOptionsColumn;
+import com.vaadin.addon.charts.model.Tooltip;
+import com.vaadin.addon.charts.model.XAxis;
+import com.vaadin.addon.charts.model.YAxis;
+import com.vaadin.addon.charts.model.style.SolidColor;
+import com.vaadin.addon.charts.model.style.Style;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.demo.dashboard.QuickUpload;
@@ -275,6 +287,7 @@ public class AdminExam extends VerticalLayout implements View  {
                ExamBean eb = (ExamBean) event.getProperty().getValue(); 
                setSelectedExam(getSelectedExamDetailsById(eb.getExamId()));
                updateExamDetails();
+               getExamDetailsAndComparisonBarChartLayout();
                updateExamSummary();
             }
         };
@@ -296,7 +309,8 @@ public class AdminExam extends VerticalLayout implements View  {
         
        
         //UIUtils.getVerticalPaneView(examdtls, examdetailspieChart))
-        row2.addComponent(UIUtils.createPanel(examdtls));
+        ////row2.addComponent(UIUtils.createPanel(examdtls));
+        getExamDetailsAndComparisonBarChartLayout();
 
        // row.addComponent(UIUtils.createPanel(AdminExamDataProvider.getExamResult()));
         Component examChart = getExamDetailsPieChart();
@@ -306,6 +320,55 @@ public class AdminExam extends VerticalLayout implements View  {
         row2.addComponent(examsummaryPannel);
 
     }
+    
+    CssLayout cssLayoutFormAndBarGraph;
+    private Component getExamDetailsAndComparisonBarChartLayout()
+    {
+         HorizontalLayout examDetailsFormAndBarGraphLayout  = new HorizontalLayout();
+
+        if(row2!=null)
+        {
+            if(cssLayoutFormAndBarGraph!=null)
+            {
+                row2.removeComponent(cssLayoutFormAndBarGraph);            
+            }
+            Component examDeatils = getSelectedExamDetailsForm();
+            examDetailsFormAndBarGraphLayout.addComponent(examDeatils);
+            String[] title = new String[] {"Low Score","Avg Score","Top Score"};
+            Number[] scores = new Number[] { getSelectedExam().get(0).getExamLowScore(),getSelectedExam().get(0).getExamAvgScore(), getSelectedExam().get(0).getExamTopScore()};
+            Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks");
+            examDetailsFormAndBarGraphLayout.addComponent(barChart);
+
+
+            examDetailsFormAndBarGraphLayout.setComponentAlignment(examDeatils,Alignment.TOP_CENTER);
+            examDetailsFormAndBarGraphLayout.setExpandRatio(examDeatils, 1);     
+
+
+            examDetailsFormAndBarGraphLayout.setComponentAlignment(barChart,Alignment.MIDDLE_CENTER);
+            examDetailsFormAndBarGraphLayout.setExpandRatio(barChart, 2.5f);
+
+            cssLayoutFormAndBarGraph=UIUtils.createPanel(examDetailsFormAndBarGraphLayout);
+
+            row2.addComponent(cssLayoutFormAndBarGraph);
+        }
+        
+        return examDetailsFormAndBarGraphLayout;
+        
+    }
+    
+    public  Component getSelectedExamDetailsForm() {
+        FormLayout formLayout = new FormLayout();
+        formLayout.setMargin(true);
+      
+        formLayout.addComponent(subtxt);
+        formLayout.addComponent(markstxt);
+        formLayout.addComponent(scoretxt);
+        formLayout.addComponent(questionstxt);
+        //throw new UnsupportedOperationException("Not yet implemented");
+        return formLayout;
+    }
+    
+    
     
      
    
@@ -411,13 +474,13 @@ public class AdminExam extends VerticalLayout implements View  {
      private void updateSelectedExamDetailsPanel() {
         ExamBean eb = getSelectedExam().get(0);
       
-        subtxt.setValue(""+eb.getSub());
+        subtxt.setValue(GlobalConstants.emptyString+eb.getSub());
        
-        markstxt.setValue(""+eb.getTotalMarks());
+        markstxt.setValue(GlobalConstants.emptyString+eb.getTotalMarks());
         
-        scoretxt.setValue(""+eb.getPassingMarks());
+        scoretxt.setValue(GlobalConstants.emptyString+eb.getPassingMarks());
         
-        questionstxt.setValue(""+eb.getNoOfQuestions());
+        questionstxt.setValue(GlobalConstants.emptyString+eb.getNoOfQuestions());
     }
     
   
