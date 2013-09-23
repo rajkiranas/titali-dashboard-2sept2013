@@ -4,11 +4,13 @@
  */
 package com.quick.table;
 
+import com.google.gwt.thirdparty.javascript.jscomp.mozilla.rhino.tools.shell.Global;
 import com.quick.bean.MasteParmBean;
 import com.quick.entity.Notices;
 import com.quick.entity.Whatsnew;
 import com.quick.entity.Whoisdoingwhat;
 import com.quick.data.MyDashBoardContainer;
+import com.quick.global.GlobalConstants;
 import com.vaadin.data.Property;
 import com.vaadin.demo.dashboard.DashboardView;
 import com.vaadin.ui.Table;
@@ -45,12 +47,13 @@ public class MyDashBoardDataProvider {
 
             @Override
             public String getStyle(Table source, Object itemId, Object propertyId) {
-                 if (propertyId == "dateTime") 
+                
+                if (propertyId != null && propertyId.equals("dateTime"))
                  {
                     return "blueTextColorStyle";
                  }
                  else
-                     return "";
+                     return GlobalConstants.emptyString;
             }
         });
         

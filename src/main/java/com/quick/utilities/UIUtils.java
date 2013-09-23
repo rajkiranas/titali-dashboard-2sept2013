@@ -87,7 +87,7 @@ public class UIUtils {
         return mainVertical;
     }
     
-    public static Component getBarChart(String[] xAxisCategories,Number[] scores, String graphTitle, String xAxisTitle, String yAxisTitle) {
+    public static Component getBarChart(String[] xAxisCategories,Number[] scores, String graphTitle, String xAxisTitle, String yAxisTitle, String height, String width) {
         VerticalLayout l = new VerticalLayout();
         Chart chart = new Chart(ChartType.COLUMN);
 
@@ -139,8 +139,8 @@ public class UIUtils {
         serie.setPlotOptions(plotOptionsColumn);
         conf.addSeries(serie);
 
-        chart.setWidth("300px");
-        chart.setHeight("260px");
+        chart.setWidth(width);
+        chart.setHeight(height);
         
         chart.drawChart(conf);
         l.addComponent(chart);
