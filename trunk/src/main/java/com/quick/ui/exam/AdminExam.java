@@ -80,20 +80,21 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class AdminExam extends VerticalLayout implements View  {
 
-         TextField subtxt ;
-         TextField markstxt;
-         TextField scoretxt;
-         TextField questionstxt;
-         Button newExamBtn;
-         Button viewExam;
-         Table examlistTbl;
-         ValueChangeListener exmlistListner;
-        HorizontalLayout row1;
-        HorizontalLayout row2;
+         private TextField subtxt ;
+         private TextField markstxt;
+         private TextField scoretxt;
+         private TextField questionstxt;
+         private String widthForExamDetailsFormFields="125px";
+         private Button newExamBtn;
+         private Button viewExam;
+         private Table examlistTbl;
+         private ValueChangeListener exmlistListner;
+        private HorizontalLayout row1;
+        private HorizontalLayout row2;
         private CssLayout examsummaryPannel;
         
-    Table t;
-    MyDashBoardDataProvider boardDataProvider = new MyDashBoardDataProvider();
+    private Table t;
+    //private MyDashBoardDataProvider boardDataProvider = new MyDashBoardDataProvider();
     private List<ExamBean> selectedExam;
 
    
@@ -336,7 +337,7 @@ public class AdminExam extends VerticalLayout implements View  {
             examDetailsFormAndBarGraphLayout.addComponent(examDeatils);
             String[] title = new String[] {"Low Score","Avg Score","Top Score"};
             Number[] scores = new Number[] { getSelectedExam().get(0).getExamLowScore(),getSelectedExam().get(0).getExamAvgScore(), getSelectedExam().get(0).getExamTopScore()};
-            Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks","260px","300px");
+            Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks","260px","325px");
             examDetailsFormAndBarGraphLayout.addComponent(barChart);
 
 
@@ -359,11 +360,12 @@ public class AdminExam extends VerticalLayout implements View  {
     public  Component getSelectedExamDetailsForm() {
         FormLayout formLayout = new FormLayout();
         formLayout.setMargin(true);
-      
+        formLayout.setCaption("Exam details");
         formLayout.addComponent(subtxt);
+        formLayout.addComponent(questionstxt);
         formLayout.addComponent(markstxt);
         formLayout.addComponent(scoretxt);
-        formLayout.addComponent(questionstxt);
+        
         //throw new UnsupportedOperationException("Not yet implemented");
         return formLayout;
     }
@@ -377,23 +379,29 @@ public class AdminExam extends VerticalLayout implements View  {
         formLayout.setMargin(true);
         subtxt =new TextField();
         subtxt.setImmediate(true);
-        subtxt.setCaption("subject");
+        subtxt.setCaption("Subject");
+        subtxt.setWidth(widthForExamDetailsFormFields);
         
         markstxt =new TextField();
-        markstxt.setCaption("Marks");
+        markstxt.setCaption("Total marks");
         markstxt.setImmediate(true);
+        markstxt.setWidth(widthForExamDetailsFormFields);
         
         scoretxt =new TextField();
-        scoretxt.setCaption("Score");
+        scoretxt.setCaption("Obtained marks");
         scoretxt.setImmediate(true);
+        scoretxt.setWidth(widthForExamDetailsFormFields);
         
         questionstxt =new TextField();
         questionstxt.setCaption("Questions");
         questionstxt.setImmediate(true);
+        questionstxt.setWidth(widthForExamDetailsFormFields);
+        
         formLayout.addComponent(subtxt);
+        formLayout.addComponent(questionstxt);
         formLayout.addComponent(markstxt);
         formLayout.addComponent(scoretxt);
-        formLayout.addComponent(questionstxt);
+        
         //throw new UnsupportedOperationException("Not yet implemented");
         return formLayout;
     }
@@ -478,7 +486,7 @@ public class AdminExam extends VerticalLayout implements View  {
        
         markstxt.setValue(GlobalConstants.emptyString+eb.getTotalMarks());
         
-        scoretxt.setValue(GlobalConstants.emptyString+eb.getPassingMarks());
+        scoretxt.setValue(GlobalConstants.emptyString+eb.getTotalObtMarksObj());
         
         questionstxt.setValue(GlobalConstants.emptyString+eb.getNoOfQuestions());
     }
@@ -507,7 +515,7 @@ public class AdminExam extends VerticalLayout implements View  {
                  ex.printStackTrace();
              }
             
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);
