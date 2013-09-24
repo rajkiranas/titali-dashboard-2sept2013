@@ -84,6 +84,7 @@ public class StudentExam extends VerticalLayout implements View  {
         private HorizontalLayout row1;
         private HorizontalLayout row2;
         private CssLayout examsummaryPannel;
+        private String widthForExamDetailsFormFields="125px";
         
     Table t;
     MyDashBoardDataProvider boardDataProvider = new MyDashBoardDataProvider();
@@ -105,25 +106,29 @@ public class StudentExam extends VerticalLayout implements View  {
     }
     
     private static final String Subject ="Subject";
-    private static final String Marks ="Marks";
+    private static final String Marks ="Total marks";
     private static final String Questions ="Questions";
-    private static final String Score ="Score";
+    private static final String Score ="Obtained marks";
     public StudentExam() {
         subtxt =new TextField();
         subtxt.setImmediate(true);
         subtxt.setCaption(Subject);
+        subtxt.setWidth(widthForExamDetailsFormFields);
         
         markstxt =new TextField();
         markstxt.setCaption(Marks);
         markstxt.setImmediate(true);
+        markstxt.setWidth(widthForExamDetailsFormFields);
         
         scoretxt =new TextField();
         scoretxt.setCaption(Score);
         scoretxt.setImmediate(true);
+        scoretxt.setWidth(widthForExamDetailsFormFields);
         
         questionstxt =new TextField();
         questionstxt.setCaption(Questions);
         questionstxt.setImmediate(true);
+        questionstxt.setWidth(widthForExamDetailsFormFields);
         
         startExamBtn = new Button(GlobalConstants.startExam);
         startExamBtn.setImmediate(true);
@@ -294,7 +299,7 @@ public class StudentExam extends VerticalLayout implements View  {
         
         examlistTbl.select(examlistTbl.firstItemId());
         row1.addComponent(UIUtils.createPanel(examlistTbl));
-        row1.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(null)));
+        row1.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
 
         row2 = new HorizontalLayout();
         row2.setMargin(true);
@@ -367,7 +372,7 @@ public class StudentExam extends VerticalLayout implements View  {
             examDetailsFormAndBarGraphLayout.addComponent(examDeatils);
             String[] title = new String[] {"My Score","Avg Score","Top Score"};
             Number[] scores = new Number[] { getSelectedExam().get(0).getTotalObtMarksObj(),getSelectedExam().get(0).getExamAvgScore(), getSelectedExam().get(0).getExamTopScore()};
-            Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks","260px","300px");
+            Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks","260px","325px");
             examDetailsFormAndBarGraphLayout.addComponent(barChart);
 
 
@@ -389,12 +394,14 @@ public class StudentExam extends VerticalLayout implements View  {
    
     public  Component getSelectedExamDetailsForm() {
         FormLayout formLayout = new FormLayout();
+        formLayout.setCaption("Exam details");
         formLayout.setMargin(true);
       
         formLayout.addComponent(subtxt);
+        formLayout.addComponent(questionstxt);
         formLayout.addComponent(markstxt);
         formLayout.addComponent(scoretxt);
-        formLayout.addComponent(questionstxt);
+        
         //throw new UnsupportedOperationException("Not yet implemented");
         return formLayout;
     }
@@ -495,7 +502,7 @@ public class StudentExam extends VerticalLayout implements View  {
        
         markstxt.setValue(GlobalConstants.emptyString+eb.getTotalMarks());
         
-        scoretxt.setValue(GlobalConstants.emptyString+eb.getPassingMarks());
+        scoretxt.setValue(GlobalConstants.emptyString+eb.getTotalObtMarksObj());
         
         questionstxt.setValue(GlobalConstants.emptyString+eb.getNoOfQuestions());
         
@@ -523,11 +530,14 @@ public class StudentExam extends VerticalLayout implements View  {
             WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_EXAM_LIST));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
-             try{           
+             try
+             {           
+                Userprofile userprofile = (Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile);
                 inputJson.put("std", std);
                 inputJson.put("div", div);
+                inputJson.put("username",userprofile.getUsername());
              }catch(Exception ex){
-                 
+                 ex.printStackTrace();
              }
             
             ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
@@ -540,15 +550,20 @@ public class StudentExam extends VerticalLayout implements View  {
             }.getType();
             
             examList= new Gson().fromJson(outNObject.getString(GlobalConstants.EXAMLIST), listType);
+            
+            subjectWiseAvgPerformanceList = new Gson().fromJson(outNObject.getString(GlobalConstants.subjectWiseAvgPerformance), listType);
+            subwiseAvgScoreForStud = new Gson().fromJson(outNObject.getString(GlobalConstants.subwiseAvgScoreForStud), listType);
         } catch (JSONException ex) 
         {
             ex.printStackTrace();
           //  L.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return examList;
-            
+        return examList;            
     }
     
+    private List<ExamBean> subjectWiseAvgPerformanceList;
+    
+    private List<ExamBean> subwiseAvgScoreForStud;
     
     private List<ExamBean> getSelectedExamDetailsById(int examId){
          List<ExamBean> selectedExamDetails = null;
@@ -621,6 +636,34 @@ public class StudentExam extends VerticalLayout implements View  {
         } else {
             startExamBtn.setVisible(false);
         }
+    }
+
+    /**
+     * @return the subjectWiseAvgPerformanceList
+     */
+    public List<ExamBean> getSubjectWiseAvgPerformanceList() {
+        return subjectWiseAvgPerformanceList;
+    }
+
+    /**
+     * @param subjectWiseAvgPerformanceList the subjectWiseAvgPerformanceList to set
+     */
+    public void setSubjectWiseAvgPerformanceList(List<ExamBean> subjectWiseAvgPerformanceList) {
+        this.subjectWiseAvgPerformanceList = subjectWiseAvgPerformanceList;
+    }
+
+    /**
+     * @return the subwiseAvgScoreForStud
+     */
+    public List<ExamBean> getSubwiseAvgScoreForStud() {
+        return subwiseAvgScoreForStud;
+    }
+
+    /**
+     * @param subwiseAvgScoreForStud the subwiseAvgScoreForStud to set
+     */
+    public void setSubwiseAvgScoreForStud(List<ExamBean> subwiseAvgScoreForStud) {
+        this.subwiseAvgScoreForStud = subwiseAvgScoreForStud;
     }
 
 }

@@ -11,10 +11,12 @@ import com.vaadin.addon.charts.model.ChartType;
 import com.vaadin.addon.charts.model.Configuration;
 import com.vaadin.addon.charts.model.HorizontalAlign;
 import com.vaadin.addon.charts.model.Labels;
+import com.vaadin.addon.charts.model.LayoutDirection;
 import com.vaadin.addon.charts.model.Legend;
 import com.vaadin.addon.charts.model.ListSeries;
 import com.vaadin.addon.charts.model.PlotOptionsColumn;
 import com.vaadin.addon.charts.model.Tooltip;
+import com.vaadin.addon.charts.model.VerticalAlign;
 import com.vaadin.addon.charts.model.XAxis;
 import com.vaadin.addon.charts.model.YAxis;
 import com.vaadin.addon.charts.model.style.SolidColor;
@@ -118,7 +120,7 @@ public class UIUtils {
         conf.setLegend(legend);
 
         Tooltip tooltip = new Tooltip();
-        tooltip.setFormatter(GlobalConstants.emptyString);
+        tooltip.setFormatter("this.x +': '+ this.y +' marks'");
         conf.setTooltip(tooltip);
 
         ListSeries serie = new ListSeries(xAxisTitle, scores);
@@ -143,6 +145,57 @@ public class UIUtils {
         chart.setHeight(height);
         
         chart.drawChart(conf);
+        l.addComponent(chart);
+        l.setSizeFull();
+        return l;
+    }
+    
+    public static Component getColumnChart(String[] xAxisCategories,Number[] classAvgScore,Number[] studAvgScore, String graphTitle, String xAxisTitle, String yAxisTitle, String height, String width) 
+    {
+        VerticalLayout l = new VerticalLayout();
+        Chart chart = new Chart(ChartType.COLUMN);
+
+        Configuration conf = chart.getConfiguration();
+
+        conf.setTitle(graphTitle);
+        //conf.setSubTitle("Source: WorldClimate.com");
+
+        XAxis x = new XAxis();
+        x.setCategories(xAxisCategories);
+        conf.addxAxis(x);
+
+        YAxis y = new YAxis();
+        y.setMin(0);
+        y.setTitle(yAxisTitle);
+        conf.addyAxis(y);
+
+        Legend legend = new Legend();
+        legend.setLayout(LayoutDirection.VERTICAL);
+        legend.setBackgroundColor("#FFFFFF");
+        legend.setHorizontalAlign(HorizontalAlign.LEFT);
+        legend.setVerticalAlign(VerticalAlign.TOP);
+        legend.setX(490);
+        legend.setY(30);
+        legend.setFloating(true);
+        legend.setShadow(true);
+        conf.setLegend(legend);
+
+        Tooltip tooltip = new Tooltip();
+         tooltip.setFormatter("this.x +': '+ this.y +' marks'");
+        conf.setTooltip(tooltip);
+
+        PlotOptionsColumn plot = new PlotOptionsColumn();
+        plot.setPointPadding(0.2);
+        plot.setBorderWidth(0);
+
+        conf.addSeries(new ListSeries("My Score",studAvgScore));
+        conf.addSeries(new ListSeries("Avg Score", classAvgScore));
+
+        chart.drawChart(conf);
+        
+        chart.setHeight(height);
+        chart.setWidth(width);
+        
         l.addComponent(chart);
         l.setSizeFull();
         return l;

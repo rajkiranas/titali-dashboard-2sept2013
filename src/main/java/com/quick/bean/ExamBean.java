@@ -54,6 +54,8 @@ public class ExamBean {
      private float examAvgScore;
      private float examLowScore;
      
+     private double subjectWiseAvgPerformance;
+     
      private Short totalObtMarksObj;
 
     public String getQuestionId() {
@@ -385,7 +387,18 @@ public class ExamBean {
         this.totalObtMarksObj = totalObtMarksObj;
     }
 
- 
-   
+    /**
+     * @return the subjectWiseAvgPerformance
+     */
+    public double getSubjectWiseAvgPerformance() {
+        return subjectWiseAvgPerformance;
+    }
+
+    /**
+     * @param subjectWiseAvgPerformance the subjectWiseAvgPerformance to set
+     */
+    public void setSubjectWiseAvgPerformance(double subjectWiseAvgPerformance) {
+        this.subjectWiseAvgPerformance = subjectWiseAvgPerformance;
+    }
 
 }

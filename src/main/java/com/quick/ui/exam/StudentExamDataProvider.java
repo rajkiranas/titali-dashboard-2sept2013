@@ -8,6 +8,7 @@ import com.quick.bean.ExamBean;
 import com.quick.container.StudQuickLearnContainer;
 import com.quick.container.StudentExamListContainer;
 import com.quick.global.GlobalConstants;
+import com.quick.utilities.UIUtils;
 import com.vaadin.data.Property;
 import com.vaadin.demo.dashboard.TopGrossingMoviesChart;
 import com.vaadin.demo.dashboard.TopSixTheatersChart;
@@ -80,16 +81,31 @@ public class StudentExamDataProvider {
         return t1;
     }
 
-    public static Component getMyExamPieChart(Object object) {
+    public static Component getMyExamPieChart(List<ExamBean> subjectWiseAvgPerformanceList, List<ExamBean> subwiseAvgScoreForStud) {
         HorizontalLayout baseLayout = new HorizontalLayout();
         baseLayout.setSizeFull();
-//        Component c1 = createPanel(new TopSixTheatersChart());
-//        baseLayout.addComponent(c1);
-//        baseLayout.setExpandRatio(c1, 1.5f);
-//         Component c2 = createPanel(new TopGrossingMoviesChart());
-//        baseLayout.addComponent(c2);
-//        baseLayout.setExpandRatio(c2,2);
-           Label l1= new Label("exam pie chart comes here");
+        
+        String[] xAxisCategories =  new String[subjectWiseAvgPerformanceList.size()];
+        Number[] classAvgScore = new Number[subjectWiseAvgPerformanceList.size()];
+        int i=0;
+        for(ExamBean bean:subjectWiseAvgPerformanceList)
+        {
+            xAxisCategories[i]=bean.getSub();
+            classAvgScore[i]=bean.getSubjectWiseAvgPerformance();
+            i++;
+        }
+        
+        Number[] studAvgScore = new Number[subwiseAvgScoreForStud.size()];
+        
+        int j=0;
+         for(ExamBean bean:subwiseAvgScoreForStud)
+        {
+            //xAxisCategories[i]=bean.getSub();
+            studAvgScore[j]=bean.getSubjectWiseAvgPerformance();
+            j++;
+        }
+
+          /*  Label l1= new Label("exam pie chart comes here");
           baseLayout.addComponent(l1);
           baseLayout.setExpandRatio(l1, 1.5f);
           
@@ -97,7 +113,10 @@ public class StudentExamDataProvider {
           
           Label l2= new Label("2  chart comes here");
           baseLayout.addComponent(l2);
-          baseLayout.setExpandRatio(l2, 2);
+          baseLayout.setExpandRatio(l2, 2); */
+        //UIUtils.getBarChart(xAxisCategories, scores, "Subjectwise comparison", "Score", "Marks", "300px", "300px");
+        
+        baseLayout.addComponent(UIUtils.getColumnChart(xAxisCategories, classAvgScore,studAvgScore, "Subjectwise comparison", "Score", "Marks", "250px", "600px"));
         return baseLayout;
     }
 
