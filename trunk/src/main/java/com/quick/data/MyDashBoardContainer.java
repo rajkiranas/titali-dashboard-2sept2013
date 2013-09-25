@@ -11,6 +11,7 @@ import com.quick.entity.Whatsnew;
 import com.quick.entity.Whoisdoingwhat;
 import com.quick.global.GlobalConstants;
 import com.vaadin.data.util.BeanItemContainer;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -59,7 +60,9 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
         */
     public static final String[] COL_HEADERS_ENGLISH_Activity = new String[]{
         "Notification's",GlobalConstants.emptyString};
-
+    
+    private static final String format="EEE MMM dd";
+    private static SimpleDateFormat sdf = new SimpleDateFormat(format);
     
 
     public MyDashBoardContainer(){
@@ -126,7 +129,7 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
                 if(days==1)
                     returnTime=days+" day ago";
                 else
-                    returnTime=days+" days ago";
+                    returnTime=days+" days ago on "+sdf.format(releasedate);
             }
             
         }

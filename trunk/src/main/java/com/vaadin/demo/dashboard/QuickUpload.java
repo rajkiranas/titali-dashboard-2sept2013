@@ -135,7 +135,7 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
            //player = new DashBoardVideoPlayer();
            editors.addTab(getVideoPathLayout(videoPath),"Video");
            editors.addTab(getNotesLayout(notes), "Notes");
-           editors.addTab(getOtherNotesLayout(otherNotes), "Other Notes");
+           editors.addTab(getOtherNotesLayout(otherNotes), "Other references");
            editors.addTab(getPreviousQuestionsLayout(previousQuestions), "Previous Questions");
            CssLayout cssTabsheetLayout = UIUtils.createPanel(editors);
            
@@ -144,7 +144,8 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
            mainVertical.setWidth("100%");
            mainVertical.setHeight("97%");
            
-           CssLayout aboutLearnLayout =  UIUtils.createPanel(buildTopicDetailsLayout());
+           //CssLayout aboutLearnLayout =  UIUtils.createPanel(buildTopicDetailsLayout());
+           Component aboutLearnLayout =  buildTopicDetailsLayout();
            aboutLearnLayout.setCaption("Topic Information");
            
            mainVertical.addComponent(aboutLearnLayout);
@@ -172,6 +173,42 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
            //vPlayer.addSource(new ExternalResource("file:/"+videoPath));
            layout.addComponent(vPlayer);
            layout.setComponentAlignment(vPlayer, Alignment.MIDDLE_CENTER);
+           layout.setExpandRatio(vPlayer, 2.5f);
+           
+           HorizontalLayout h = new HorizontalLayout();
+           h.setImmediate(true);
+           h.setMargin(true);
+           //h.setSpacing(true);
+           h.setWidth("97%");
+           h.setHeight("92%");
+           
+           Button play = new Button("Play");
+           play.setImmediate(true);
+           play.setWidth("100%");
+           play.addListener(new Button.ClickListener() {
+
+               @Override
+               public void buttonClick(ClickEvent event) {
+                   vPlayer.play();
+               }
+           });
+           
+           Button stop = new Button("Stop");
+           stop.setImmediate(true);
+           stop.setWidth("100%");
+           stop.addListener(new Button.ClickListener() {
+
+               @Override
+               public void buttonClick(ClickEvent event) {
+                   vPlayer.pause();
+               }
+           });
+           
+           h.addComponent(play);
+           h.addComponent(stop);
+           
+           layout.addComponent(h); 
+           layout.setExpandRatio(h, 0.5f);
            
            
        }
@@ -281,18 +318,23 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
         
         VerticalLayout baseLayout=new VerticalLayout();
         baseLayout.setSpacing(true);
+        baseLayout.setMargin(new MarginInfo(true, true, false, true));
 
-        subjecttxt = new ComboBox();
+        subjecttxt = new ComboBox("Subject");
+        subjecttxt.setImmediate(true);
         subjecttxt.setInputPrompt("Subject");
         subjecttxt.setNullSelectionAllowed(false);
-        subjecttxt.setImmediate(true);
+        subjecttxt.setWidth("185px");
         
-        standardtxt = new ComboBox();
+        
+        standardtxt = new ComboBox("Standard");
+        standardtxt.setImmediate(true);
         standardtxt.setInputPrompt("Standard");
         standardtxt.addItem("Select");
         standardtxt.setValue("Select"); 
-        standardtxt.setImmediate(true);
         standardtxt.setNullSelectionAllowed(false);
+        standardtxt.setWidth("185px");
+        
         
         Iterator it=getStandardList().iterator();
         while(it.hasNext()){
@@ -321,26 +363,29 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
         topictxt.setInputPrompt("Topic");        
                 
         baseLayout.addComponent(standardtxt);
-        baseLayout.setExpandRatio(standardtxt, 1);
+        //baseLayout.setExpandRatio(standardtxt, 1);
         
         baseLayout.addComponent(subjecttxt);
-        baseLayout.setExpandRatio(subjecttxt, 1);
+        //baseLayout.setExpandRatio(subjecttxt, 1);
         
-        baseLayout.addComponent(topictxt);
-        baseLayout.setExpandRatio(topictxt, 1);
+//        baseLayout.addComponent(topictxt);
+//        baseLayout.setExpandRatio(topictxt, 1);
         
         topicInformationLayout.addComponent(baseLayout);
         
         VerticalLayout secondVerticalyt=new VerticalLayout();
         secondVerticalyt.setSpacing(true);
+        secondVerticalyt.setCaption("Topic");
         
-        topicTagstxt=new TextField();
+        topicTagstxt=new TextField("TAGS");
         topicTagstxt.setInputPrompt("TAGS");
-        topicTagstxt.setWidth("200px");
-        topicTagstxt.setHeight("100px");       
+        topicTagstxt.setWidth("185px");
+        topicTagstxt.setHeight("50px");       
         
+        
+        secondVerticalyt.addComponent(topictxt);
         secondVerticalyt.addComponent(topicTagstxt);
-        secondVerticalyt.setExpandRatio(topicTagstxt, 1);        
+        //secondVerticalyt.setExpandRatio(topicTagstxt, 1);        
         
         topicInformationLayout.addComponent(secondVerticalyt);
         //topicInformationLayout.setVisible(visibility);
