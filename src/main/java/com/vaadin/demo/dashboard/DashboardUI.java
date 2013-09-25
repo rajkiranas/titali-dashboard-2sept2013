@@ -93,16 +93,18 @@ public class DashboardUI extends UI{
         {
             put("/dashboard", DashboardView.class);
             put("/learn", StudQuickLearn.class);
+            put("/Technology",CreateUpcomingTechnology.class);
+            put("/Exams",StudentExam.class);            
+            put("/Notices",CreateNotices.class);
+            
+            put("/upload",QuickUpload.class);            
+            put("/Exam-Admin",AdminExam.class);
+            put("/students",StudentView.class);
+            put("/teachers",TeacherView.class);
+            
             //put("/transactions", TransactionsView.class);
             //put("/reports", ReportsView.class);
             //put("/schedule", ScheduleView.class);
-            put("/students",StudentView.class);
-            put("/teachers",TeacherView.class);
-            put("/upload",QuickUpload.class);
-            put("/MyExam",StudentExam.class);
-            put("/AdminExam",AdminExam.class);
-             put("/Notices",CreateNotices.class);
-             put("/Technology",CreateUpcomingTechnology.class);
         }
     };
 
@@ -377,9 +379,9 @@ public class DashboardUI extends UI{
         menu.removeAllComponents();
 
         /*for (final String view : new String[] { "dashboard", "learn",
-                "transactions", "reports", "schedule","student","teacher","upload","MyExam" }) {*/
-        for (final String view : new String[] { "dashboard", "learn",
-                "students","teachers","upload","MyExam","AdminExam","Notices","Technology" }) {
+                "transactions", "reports", "schedule","student","teacher","upload","Exams" }) {*/
+        for (final String view : new String[] { "dashboard", "learn","Technology","Exams","Notices",
+            "upload","Exam-Admin","students","teachers" }) {
             
             Button b = new NativeButton(view.substring(0, 1).toUpperCase()
                     + view.substring(1).replace('-', ' '));

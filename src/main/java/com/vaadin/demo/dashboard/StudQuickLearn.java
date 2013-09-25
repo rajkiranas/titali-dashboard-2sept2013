@@ -34,6 +34,7 @@ import com.vaadin.server.FileResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeListener;
 import java.io.File;
@@ -417,8 +418,8 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
            //player = new DashBoardVideoPlayer();
            editors.addTab(getVideoPathLayout(videoPath),"Video");
            editors.addTab(getNotesLayout(notes), "Notes");
-           editors.addTab(getOtherNotesLayout(otherNotes), "Other Notes");
-           editors.addTab(getPreviousQuestionsLayout(previousQuestions), "Previous Questions");
+           editors.addTab(getOtherNotesLayout(otherNotes), "Other references");
+           editors.addTab(getPreviousQuestionsLayout(previousQuestions), "Previous questions");
 //           CssLayout cssTabsheetLayout = UIUtils.createPanel(editors);
 //           
 //           mainVertical.addComponent(cssTabsheetLayout);
@@ -456,7 +457,37 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
            //vPlayer.addSource(new ExternalResource("file:/"+videoPath));
            layout.addComponent(vPlayer);
            layout.setComponentAlignment(vPlayer, Alignment.TOP_CENTER);
+           layout.setExpandRatio(vPlayer, 2.5f);
            
+           HorizontalLayout h = new HorizontalLayout();
+           h.setWidth("100%");
+           Button play = new Button("Play");
+           play.setImmediate(true);
+           play.setWidth("100%");
+           play.addListener(new Button.ClickListener() {
+
+               @Override
+               public void buttonClick(ClickEvent event) {
+                   vPlayer.play();
+               }
+           });
+           
+           Button stop = new Button("Stop");
+           stop.setImmediate(true);
+           stop.setWidth("100%");
+           stop.addListener(new Button.ClickListener() {
+
+               @Override
+               public void buttonClick(ClickEvent event) {
+                   vPlayer.pause();
+               }
+           });
+           
+           h.addComponent(play);
+           h.addComponent(stop);
+           
+           layout.addComponent(h);
+           layout.setExpandRatio(h, 0.5f);
            
        }
        else

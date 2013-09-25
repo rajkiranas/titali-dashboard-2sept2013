@@ -97,6 +97,22 @@ public class MyDashBoardDataProvider {
         t.setColumnHeaders(MyDashBoardContainer.COL_HEADERS_ENGLISH_Activity);
         
         t.addValueChangeListener((Property.ValueChangeListener)dashBoardView);
+        t.setColumnWidth("notification", 350);
+        
+        t.setCellStyleGenerator(new Table.CellStyleGenerator(){
+    
+
+            @Override
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+                
+                if (propertyId != null && propertyId.equals("dateTime"))
+                 {
+                    return "blueTextColorStyle";
+                 }
+                 else
+                     return GlobalConstants.emptyString;
+            }
+        });
         
         return t;
     }
