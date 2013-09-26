@@ -10,6 +10,7 @@ import com.quick.entity.Notices;
 import com.quick.entity.Whatsnew;
 import com.quick.entity.Whoisdoingwhat;
 import com.quick.global.GlobalConstants;
+import com.quick.utilities.DateUtil;
 import com.vaadin.data.util.BeanItemContainer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,20 +36,20 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
         * NATURAL_COL_ORDER_DAILY_CALLS.
         */
     public static final String[] COL_HEADERS_ENGLISH_WHATS_NEW = new String[]{
-        "Notification's",GlobalConstants.emptyString};
+        "Whats New",GlobalConstants.emptyString};
     //"Notification's"};
     
     
     
     
      public static final Object[] NATURAL_COL_ORDER_NOtice = new Object[]{
-       "notification","dateTime"};
+       "notification"};
         /**
         * "Human readable" captions for properties in same order as in
         * NATURAL_COL_ORDER_DAILY_CALLS.
         */
     public static final String[] COL_HEADERS_ENGLISH__NOtice = new String[]{
-        "Notification's",GlobalConstants.emptyString};
+        "Notification's"};
     
     
     
@@ -59,10 +60,9 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
         * NATURAL_COL_ORDER_DAILY_CALLS.
         */
     public static final String[] COL_HEADERS_ENGLISH_Activity = new String[]{
-        "Notification's",GlobalConstants.emptyString};
+        "Who's doing what",GlobalConstants.emptyString};
     
-    private static final String format="EEE MMM dd";
-    private static SimpleDateFormat sdf = new SimpleDateFormat(format);
+    
     
 
     public MyDashBoardContainer(){
@@ -95,7 +95,7 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
 		System.out.print("****** "+Hours.hoursBetween(new DateTime(new Date()), new DateTime(w.getReleasedate())).getHours() % 24 + " hours, ");
 		System.out.print("****** "+Minutes.minutesBetween(new DateTime(new Date()), new DateTime(w.getReleasedate())).getMinutes() % 60 + " minutes, ");
 		System.out.print("****** "+Seconds.secondsBetween(new DateTime(new Date()), new DateTime(w.getReleasedate())).getSeconds() % 60 + " seconds."); */
-                String timeInterval = getTimeIntervalOfTheActivity(w.getReleasedate());
+                String timeInterval = DateUtil.getTimeIntervalOfTheActivity(w.getReleasedate());
                 bean.setDateTime(timeInterval);
                 
                  boardContainer.addItem(bean);
@@ -107,35 +107,7 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
         
     }
     
-    private static String getTimeIntervalOfTheActivity(Date releasedate) 
-    {
-        String returnTime=GlobalConstants.emptyString;
-        Date now =new Date();
-        int minutes = Minutes.minutesBetween(new DateTime(releasedate), new DateTime(now)).getMinutes();
-        if(minutes<60)
-        {
-            returnTime=minutes+" minutes ago";
-        }
-        else
-        {
-            int hours=Hours.hoursBetween(new DateTime(releasedate), new DateTime(now)).getHours();
-            if(hours<24)
-            {
-                returnTime=hours+" hours ago";
-            }
-            else
-            {
-                int days=Days.daysBetween(new DateTime(releasedate), new DateTime(now)).getDays();
-                if(days==1)
-                    returnTime=days+" day ago";
-                else
-                    returnTime=days+" days ago on "+sdf.format(releasedate);
-            }
-            
-        }
-         
-        return returnTime;
-    }
+    
     
     
       public static MyDashBoardContainer getNoticesForMeContainer(List<Notices>noticeses) {
@@ -147,7 +119,7 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
                  bean=new MyDashBoardBean();
                  bean.setNotification(notices.getNoticeline());
                  
-                 String timeInterval = getTimeIntervalOfTheActivity(notices.getNoticedate());
+                 String timeInterval = DateUtil.getTimeIntervalOfTheActivity(notices.getNoticedate());
                  bean.setDateTime(timeInterval);
                  boardContainer.addItem(bean);
            }
@@ -172,7 +144,7 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
                 bean.setNotification(whoisdoingwhat.getDisplaynotification());
                 bean.setUploadId(String.valueOf(whoisdoingwhat.getUploadId()));   
                 
-                String timeInterval = getTimeIntervalOfTheActivity(whoisdoingwhat.getUploadDate());
+                String timeInterval = DateUtil.getTimeIntervalOfTheActivity(whoisdoingwhat.getUploadDate());
                 bean.setDateTime(timeInterval);
                 
                 

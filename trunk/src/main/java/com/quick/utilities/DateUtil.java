@@ -4,8 +4,14 @@
  */
 package com.quick.utilities;
 
+import com.quick.global.GlobalConstants;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Hours;
+import org.joda.time.Minutes;
 
 /**
  *
@@ -13,6 +19,8 @@ import java.util.Date;
  */
 public class DateUtil {   
         
+    private static final String format="EEE MMM dd";
+    private static SimpleDateFormat sdf = new SimpleDateFormat(format);
     
   public static Calendar getCalenderInstance(){
          Calendar c= Calendar.getInstance();
@@ -36,6 +44,37 @@ public class DateUtil {
     public static int getDateDifference(Date startDate, Date endDate ) {
 
         return (int) ((startDate.getTime() - endDate.getTime()) / (1000 * 60 * 60 * 24));
+    }
+    
+    public static String getTimeIntervalOfTheActivity(Date releasedate) 
+    {
+        String returnTime=GlobalConstants.emptyString;
+        Date now =new Date();
+        int minutes = Minutes.minutesBetween(new DateTime(releasedate), new DateTime(now)).getMinutes();
+        if(minutes<60)
+        {
+            returnTime=minutes+" minutes ago";
+        }
+        else
+        {
+            int hours=Hours.hoursBetween(new DateTime(releasedate), new DateTime(now)).getHours();
+            if(hours<24)
+            {
+                returnTime=hours+" hours ago";
+            }
+            else
+            {
+//                int days=Days.daysBetween(new DateTime(releasedate), new DateTime(now)).getDays();
+//                if(days==1)
+//                    returnTime=days+" day ago";
+//                else
+//                    returnTime=days+" days ago on "+sdf.format(releasedate);
+                returnTime="on "+sdf.format(releasedate);
+            }
+            
+        }
+         
+        return returnTime;
     }
     
 }

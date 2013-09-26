@@ -29,19 +29,20 @@ public class MyDashBoardDataProvider {
     public Table getWhatsNewForme(List<Whatsnew>whatsnews,DashboardView dashBoardView){
         
         Table t =new Table();
-        t.setCaption("Whats New");
-        t.addStyleName("plain");
+        //t.setCaption("Whats New");
+        //t.addStyleName("plain");
         t.addStyleName("borderless");
         t.setSortEnabled(false);
         t.setWidth("100%");
-        //t.setPageLength(0);
+        t.setHeight("100%");
+        t.setPageLength(8);
         t.setSelectable(true);
         t.addValueChangeListener((Property.ValueChangeListener)dashBoardView);
         t.setImmediate(true); // react at once when something is selected
         t.setContainerDataSource(MyDashBoardContainer.getWhatsNewForMeContainer(whatsnews));
         t.setVisibleColumns(MyDashBoardContainer.NATURAL_COL_ORDER_WHATS_NEW);
         t.setColumnHeaders(MyDashBoardContainer.COL_HEADERS_ENGLISH_WHATS_NEW);
-        
+        t.setColumnWidth("notification", 285);
         t.setCellStyleGenerator(new Table.CellStyleGenerator(){
     
 
@@ -81,13 +82,14 @@ public class MyDashBoardDataProvider {
     public Table getWhoIsDoingWhat(List<MasteParmBean>whoisdoingwhats,DashboardView dashBoardView){
         
         Table t =new Table();
-        t.setCaption("Who's doing what");
-        t.addStyleName("plain");
+//        t.setCaption("Who's doing what");
+        //t.addStyleName("plain");
         t.addStyleName("borderless");
         t.setSortEnabled(false);
-         t.setPageLength(0);
+        t.setPageLength(8);
         //t.setRowHeaderMode(Table.RowHeaderMode.INDEX);
         t.setWidth("100%");
+        t.setHeight("100%");
         t.setSelectable(true);
         
         t.setMultiSelect(false);
@@ -97,7 +99,7 @@ public class MyDashBoardDataProvider {
         t.setColumnHeaders(MyDashBoardContainer.COL_HEADERS_ENGLISH_Activity);
         
         t.addValueChangeListener((Property.ValueChangeListener)dashBoardView);
-        t.setColumnWidth("notification", 350);
+        t.setColumnWidth("notification", 285);
         
         t.setCellStyleGenerator(new Table.CellStyleGenerator(){
     

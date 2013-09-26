@@ -540,18 +540,15 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         relatedTechnologiesAndPieChartLayout.setSpacing(true);
         
         Component table=getRelatedTechnologiesTable();
+        
         updateRelatedTechnologiesTable();
 
-        relatedTechnologiesAndPieChartLayout.addComponent(table);
-        relatedTechnologiesAndPieChartLayout.setComponentAlignment(table,Alignment.TOP_CENTER);
-        relatedTechnologiesAndPieChartLayout.setExpandRatio(table, 1);        
-        
-        
-        
+//        relatedTechnologiesAndPieChartLayout.addComponent(table);
+//        relatedTechnologiesAndPieChartLayout.setComponentAlignment(table,Alignment.TOP_CENTER);
+//        relatedTechnologiesAndPieChartLayout.setExpandRatio(table, 0.5f);        
         
         HashMap map = getDataMapForRelatedTechnologiesPieChart(getCategorywiseTechnologyList());
         buildPieChart(map);
-        
         
         //adding below table and peichart to the left vertical layout
         leftFirstComponentLayout.addComponent(relatedTechnologiesAndPieChartLayout);
@@ -591,9 +588,10 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         
     }
 
-    Table relatedTechnologiesTable = new Table();
+    Table relatedTechnologiesTable;
     private Component getRelatedTechnologiesTable() 
     {
+        relatedTechnologiesTable = new Table();
         
         relatedTechnologiesTable.addStyleName("borderless");
         ///noticetbl.setSortEnabled(false);
@@ -605,6 +603,9 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         relatedTechnologiesTable.setContainerDataSource(CategoryTechnologyContainer.getRelatedTechnologiesContainer(getCategorywiseTechnologyList()));
         relatedTechnologiesTable.setVisibleColumns(CategoryTechnologyContainer.NATURAL_COL_ORDER_TECHNOLOGIES);
         relatedTechnologiesTable.setColumnHeaders(CategoryTechnologyContainer.COL_HEADERS_ENGLISH_TECHNOLOGIES);
+        
+        relatedTechnologiesTable.setColumnWidth("technologyName",50);
+        relatedTechnologiesTable.setColumnWidth("percentage",8);
         /* utTblValueChangeListener = new Property.ValueChangeListener() {
 
             @Override

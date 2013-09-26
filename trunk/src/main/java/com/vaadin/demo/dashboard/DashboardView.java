@@ -29,6 +29,8 @@ import java.text.DecimalFormat;
 import com.vaadin.data.Property;
 import com.quick.data.DataProvider;
 import com.quick.data.Generator;
+import com.quick.utilities.DateUtil;
+import com.quick.utilities.UIUtils;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
@@ -134,7 +136,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         title.addStyleName("h1");
         top.addComponent(title);
         top.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
-        top.setExpandRatio(title, 1);
+        top.setExpandRatio(title, 0.5f);
 
         Button notify = new Button("2");
         notify.setDescription("Notifications (2 unread)");
@@ -255,7 +257,8 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         
         whatsNewTable = boardDataProvider.getWhatsNewForme(whatsnewsList,this);
         //row.addComponent(createPanel(getWhatsNewLayout()));
-        row.addComponent(createPanel(whatsNewTable));
+        //row.addComponent(UIUtils.createPanel(whatsNewTable));
+        row.addComponent(whatsNewTable);
         
         /* TextArea notes = new TextArea("Notes");
         notes.setValue("Remember to:\n· Zoom in and out in the Sales view\n· Filter the transactions and drag a set of them to the Reports tab\n· Create a new report\n· Change the schedule of the movie theater");
@@ -264,6 +267,11 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         CssLayout panel = createPanel(boardDataProvider.getMyNoticeBoard(noticeses));
         panel.addStyleName("notes");
         row.addComponent(panel);
+        
+//        row.setExpandRatio(whatsNewTable, 3);
+//        row.setExpandRatio(panel, 1);
+        
+        
 
         row = new HorizontalLayout();
         row.setMargin(true);
@@ -299,11 +307,16 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         t.setRowHeaderMode(RowHeaderMode.INDEX); */
 
         whosDoingWhatTable=boardDataProvider.getWhoIsDoingWhat(whosDoingWhatFromDB,this);
-        row.addComponent(createPanel(whosDoingWhatTable));
+        //row.addComponent(createPanel(whosDoingWhatTable));
+        row.addComponent(whosDoingWhatTable);
         
         
         //row.addComponent(createPanel(new TopSixTheatersChart()));
-        row.addComponent(createPanel(getMyPerformance()));
+        Component c=createPanel(getMyPerformance());
+        row.addComponent(c);
+        
+//        row.setExpandRatio(whosDoingWhatTable, 3);
+//        row.setExpandRatio(c, 1);
 
         
     }
@@ -316,7 +329,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         l.setMargin(true);
         l.setSpacing(true);
         notifications.setContent(l);
-        notifications.setWidth("300px");
+        notifications.setWidth("350px");
         notifications.addStyleName("notifications");
         notifications.setClosable(false);
         notifications.setResizable(false);
@@ -327,17 +340,16 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
 
         Label label = new Label(
                 "<hr><b>"
-                        + Generator.randomFirstName()
-                        + " "
-                        + Generator.randomLastName()
-                        + " created a new report</b><br><span>25 minutes ago</span><br>"
-                        + Generator.randomText(18), ContentMode.HTML);
+                        +whatsnewsList.get(0).getDisplaynotification()
+                +"</b><br><span>"+DateUtil.getTimeIntervalOfTheActivity(whatsnewsList.get(0).getReleasedate())+"</span><br>"
+                        , ContentMode.HTML);
         l.addComponent(label);
 
-        label = new Label("<hr><b>" + Generator.randomFirstName() + " "
-                + Generator.randomLastName()
-                + " changed the schedule</b><br><span>2 days ago</span><br>"
-                + Generator.randomText(10), ContentMode.HTML);
+        label = new Label(
+                "<hr><b>"
+                        +whatsnewsList.get(1).getDisplaynotification()
+                +"</b><br><span>"+DateUtil.getTimeIntervalOfTheActivity(whatsnewsList.get(0).getReleasedate())+"</span><br>"
+                        , ContentMode.HTML);
         l.addComponent(label);
     }
     
