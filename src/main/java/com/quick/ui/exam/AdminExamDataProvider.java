@@ -118,6 +118,7 @@ public class AdminExamDataProvider {
         t1.setVisibleColumns(StudentExamListContainer.NATURAL_COL_ORDER_EXAM_LIST);
         t1.setColumnHeaders(StudentExamListContainer.COL_HEADERS_ENGLISH_EXAM_LIST);
         t1.sort(new Object[]{"examId"}, new boolean[]{true});
+        t1.setColumnWidth("examTypeName", 70);
         
         t1.addGeneratedColumn("Remove", new Table.ColumnGenerator() 
             {

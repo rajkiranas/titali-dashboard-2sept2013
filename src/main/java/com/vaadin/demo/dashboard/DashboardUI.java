@@ -380,8 +380,21 @@ public class DashboardUI extends UI{
 
         /*for (final String view : new String[] { "dashboard", "learn",
                 "transactions", "reports", "schedule","student","teacher","upload","Exams" }) {*/
-        for (final String view : new String[] { "dashboard", "learn","Technology","Exams","Notices",
-            "upload","Exam-Admin","students","teachers" }) {
+        String[]  actions;
+               actions= new String[] { "dashboard", "learn","Technology","Exams","Notices",
+            "upload","Exam-Admin","students","teachers" };
+        
+//        if(userRole.equalsIgnoreCase(GlobalConstants.student))
+//        {
+//                   actions= new String[] { "dashboard", "learn","Technology","Exams","Notices"};
+//            
+//        }else
+//        {
+//                actions= new String[] { "dashboard", "learn","Technology","Exams","Notices",
+//            "upload","Exam-Admin","students","teachers" };
+//        }
+        
+        for (final String view : actions) {
             
             Button b = new NativeButton(view.substring(0, 1).toUpperCase()
                     + view.substring(1).replace('-', ' '));
@@ -552,6 +565,7 @@ public class DashboardUI extends UI{
                 List<Userprofile> list =new Gson().fromJson(response1.getString(GlobalConstants.CurrentUserProfile), listType);
                 loggedinProfile=list.get(0);
                 getSession().setAttribute(GlobalConstants.CurrentUserProfile,loggedinProfile);
+                userRole=response1.getString(GlobalConstants.role);
                 
             } else {
                  Notification.show(GlobalNotifications.INVALID_CREDENTIALS);
@@ -565,4 +579,5 @@ public class DashboardUI extends UI{
     }
     
     private Userprofile loggedinProfile;
+    private String userRole;
 }

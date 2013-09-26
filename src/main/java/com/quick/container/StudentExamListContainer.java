@@ -16,8 +16,10 @@ import java.util.List;
  * @author rajkiran
  */
 public class StudentExamListContainer extends BeanItemContainer<ExamBean> {
-    public static Object[] NATURAL_COL_ORDER_EXAM_LIST={"examId","exName","examTypeName","startDt","endDt"};
-    public static String[] COL_HEADERS_ENGLISH_EXAM_LIST={"Exam Id","Exam name","Exam type","Start date","End date"};
+//    public static Object[] NATURAL_COL_ORDER_EXAM_LIST={"examId","exName","examTypeName","startDt","endDt"};
+//    public static String[] COL_HEADERS_ENGLISH_EXAM_LIST={"Exam Id","Exam name","Exam type","Start date","End date"};
+    public static Object[] NATURAL_COL_ORDER_EXAM_LIST={"exName","examTypeName","startDt","endDt"};
+    public static String[] COL_HEADERS_ENGLISH_EXAM_LIST={"Exam name","Exam type","Start date","End date"};
     
     
    public static Object[] NATURAL_COL_ORDER_EXAM_PRESENT={"username","responseDt","totalMarks","result"};

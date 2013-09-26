@@ -85,6 +85,7 @@ public class StudentExam extends VerticalLayout implements View  {
         private HorizontalLayout row2;
         private CssLayout examsummaryPannel;
         private String widthForExamDetailsFormFields="125px";
+        private CssLayout cssExamScoreComparisonLayout;
         
     Table t;
     MyDashBoardDataProvider boardDataProvider = new MyDashBoardDataProvider();
@@ -146,6 +147,7 @@ public class StudentExam extends VerticalLayout implements View  {
     }
     
     private static final String Student_Exams="Student Exams";
+    private int barchartAdded=0;
     private void buildUi(){
         
         HorizontalLayout top = new HorizontalLayout();
@@ -290,16 +292,25 @@ public class StudentExam extends VerticalLayout implements View  {
                ExamBean eb = (ExamBean) event.getProperty().getValue(); 
                setSelectedExam(getSelectedExamDetailsById(eb.getExamId()));
                updateExamDetails();
-               getExamDetailsAndComparisonBarChartLayout();
+               getExamDetailsLayout(getSelectedExam());
                updateExamSummary();
                decidevisibilityAndCaptionOfStartExamBtn(eb);
+               if(barchartAdded==1)
+               {
+                    getExamScoreComparisonBarChart();
+               }
                
             }
         });
         
         examlistTbl.select(examlistTbl.firstItemId());
         row1.addComponent(UIUtils.createPanel(examlistTbl));
-        row1.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
+        
+        //row1.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
+        
+        getExamScoreComparisonBarChart();
+        barchartAdded=1;
+        
 
         row2 = new HorizontalLayout();
         row2.setMargin(true);
@@ -339,7 +350,7 @@ public class StudentExam extends VerticalLayout implements View  {
 
         ///Component examDetails=UIUtils.createPanel(getExamDetailsAndComparisonBarChartLayout());
         
-        getExamDetailsAndComparisonBarChartLayout();
+        getExamDetailsLayout(null);
         
 
         Component examChart = getExamDetailsPieChart();
@@ -358,9 +369,9 @@ public class StudentExam extends VerticalLayout implements View  {
     }
     
     CssLayout cssLayoutFormAndBarGraph;
-    private Component getExamDetailsAndComparisonBarChartLayout()
+    private void getExamDetailsLayout(List<ExamBean> ebList)
     {
-         HorizontalLayout examDetailsFormAndBarGraphLayout  = new HorizontalLayout();
+         //HorizontalLayout examDetailsForm  = new HorizontalLayout();
 
         if(row2!=null)
         {
@@ -368,31 +379,40 @@ public class StudentExam extends VerticalLayout implements View  {
             {
                 row2.removeComponent(cssLayoutFormAndBarGraph);            
             }
-            Component examDeatils = getSelectedExamDetailsForm();
-            examDetailsFormAndBarGraphLayout.addComponent(examDeatils);
-            String[] title = new String[] {"My Score","Avg Score","Top Score"};
-            Number[] scores = new Number[] { getSelectedExam().get(0).getTotalObtMarksObj(),getSelectedExam().get(0).getExamAvgScore(), getSelectedExam().get(0).getExamTopScore()};
-            Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks","260px","325px");
-            examDetailsFormAndBarGraphLayout.addComponent(barChart);
+            
+            Component examDeatils = getSelectedExamDetailsForm(ebList);
+            
+            //examDetailsFormAndBarGraphLayout.addComponent(barChart);
+//            examDetailsForm.addComponent(examDeatils);
+//            examDetailsForm.setComponentAlignment(examDeatils,Alignment.TOP_CENTER);
+//            examDetailsForm.setExpandRatio(examDeatils, 1);     
 
+//            examDetailsFormAndBarGraphLayout.setComponentAlignment(barChart,Alignment.MIDDLE_CENTER);
+//            examDetailsFormAndBarGraphLayout.setExpandRatio(barChart, 2.5f);
 
-            examDetailsFormAndBarGraphLayout.setComponentAlignment(examDeatils,Alignment.TOP_CENTER);
-            examDetailsFormAndBarGraphLayout.setExpandRatio(examDeatils, 1);     
-
-
-            examDetailsFormAndBarGraphLayout.setComponentAlignment(barChart,Alignment.MIDDLE_CENTER);
-            examDetailsFormAndBarGraphLayout.setExpandRatio(barChart, 2.5f);
-
-            cssLayoutFormAndBarGraph=UIUtils.createPanel(examDetailsFormAndBarGraphLayout);
+            VerticalLayout v = new VerticalLayout();
+            v.setSizeFull();
+            v.addComponent(examDeatils);
+            v.setComponentAlignment(examDeatils,Alignment.MIDDLE_CENTER);
+            v.setExpandRatio(examDeatils, 2);
+            
+            if(ebList!=null && ebList.size()>0)
+            {
+                Label contestLine=new Label("<b><h3>"+ebList.get(0).getContestLine()+"</h3></b>", ContentMode.HTML);
+                v.addComponent(contestLine);
+                v.setComponentAlignment(contestLine,Alignment.MIDDLE_CENTER);
+                v.setExpandRatio(contestLine, 1);
+            }
+            
+            cssLayoutFormAndBarGraph=UIUtils.createPanel(v);
 
             row2.addComponent(cssLayoutFormAndBarGraph);
         }
         
-        return examDetailsFormAndBarGraphLayout;
-        
+        //return examDetailsForm;
     }
    
-    public  Component getSelectedExamDetailsForm() {
+    public  Component getSelectedExamDetailsForm(List<ExamBean> ebList) {
         FormLayout formLayout = new FormLayout();
         formLayout.setCaption("Exam details");
         formLayout.setMargin(true);
@@ -402,7 +422,6 @@ public class StudentExam extends VerticalLayout implements View  {
         formLayout.addComponent(markstxt);
         formLayout.addComponent(scoretxt);
         
-        //throw new UnsupportedOperationException("Not yet implemented");
         return formLayout;
     }
     
@@ -664,6 +683,23 @@ public class StudentExam extends VerticalLayout implements View  {
      */
     public void setSubwiseAvgScoreForStud(List<ExamBean> subwiseAvgScoreForStud) {
         this.subwiseAvgScoreForStud = subwiseAvgScoreForStud;
+    }
+
+    
+    private void getExamScoreComparisonBarChart() 
+    {
+        if(cssExamScoreComparisonLayout!=null)
+        {
+            row1.removeComponent(cssExamScoreComparisonLayout);
+        }
+        
+        String[] title = new String[] {"My Score","Avg Score","Top Score"};
+        Number[] scores = new Number[] { getSelectedExam().get(0).getTotalObtMarksObj(),getSelectedExam().get(0).getExamAvgScore(), getSelectedExam().get(0).getExamTopScore()};
+        Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks","100%","100%");
+        cssExamScoreComparisonLayout=UIUtils.createPanel(barChart);
+        
+        row1.addComponent(cssExamScoreComparisonLayout);
+        //return barChart;
     }
 
 }
