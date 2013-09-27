@@ -29,8 +29,8 @@ public class MyDashBoardDataProvider {
     public Table getWhatsNewForme(List<Whatsnew>whatsnews,DashboardView dashBoardView){
         
         Table t =new Table();
-        //t.setCaption("Whats New");
-        //t.addStyleName("plain");
+        t.setCaption("Whats New");
+        t.addStyleName("plain");
         t.addStyleName("borderless");
         t.setSortEnabled(false);
         t.setWidth("100%");
@@ -57,7 +57,9 @@ public class MyDashBoardDataProvider {
                      return GlobalConstants.emptyString;
             }
         });
-        
+        t.setColumnExpandRatio("notification", 3);
+        t.setColumnExpandRatio("dateTime", 1);
+        t.setColumnHeaderMode(Table.ColumnHeaderMode.HIDDEN);
         return t;
     }
     
@@ -82,8 +84,8 @@ public class MyDashBoardDataProvider {
     public Table getWhoIsDoingWhat(List<MasteParmBean>whoisdoingwhats,DashboardView dashBoardView){
         
         Table t =new Table();
-//        t.setCaption("Who's doing what");
-        //t.addStyleName("plain");
+        t.setCaption("Who's doing what");
+        t.addStyleName("plain");
         t.addStyleName("borderless");
         t.setSortEnabled(false);
         t.setPageLength(8);
@@ -116,6 +118,9 @@ public class MyDashBoardDataProvider {
             }
         });
         
+        t.setColumnExpandRatio("notification", 3);
+        t.setColumnExpandRatio("dateTime", 1);
+        t.setColumnHeaderMode(Table.ColumnHeaderMode.HIDDEN);
         return t;
     }
 }

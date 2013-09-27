@@ -29,6 +29,7 @@ import java.text.DecimalFormat;
 import com.vaadin.data.Property;
 import com.quick.data.DataProvider;
 import com.quick.data.Generator;
+import com.quick.ui.exam.StudentExamDataProvider;
 import com.quick.utilities.DateUtil;
 import com.quick.utilities.UIUtils;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -257,8 +258,8 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         
         whatsNewTable = boardDataProvider.getWhatsNewForme(whatsnewsList,this);
         //row.addComponent(createPanel(getWhatsNewLayout()));
-        //row.addComponent(UIUtils.createPanel(whatsNewTable));
-        row.addComponent(whatsNewTable);
+        row.addComponent(UIUtils.createPanel(whatsNewTable));
+        //row.addComponent(whatsNewTable);
         
         /* TextArea notes = new TextArea("Notes");
         notes.setValue("Remember to:\n· Zoom in and out in the Sales view\n· Filter the transactions and drag a set of them to the Reports tab\n· Create a new report\n· Change the schedule of the movie theater");
@@ -308,7 +309,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
 
         whosDoingWhatTable=boardDataProvider.getWhoIsDoingWhat(whosDoingWhatFromDB,this);
         //row.addComponent(createPanel(whosDoingWhatTable));
-        row.addComponent(whosDoingWhatTable);
+        row.addComponent(UIUtils.createPanel(whosDoingWhatTable));
         
         
         //row.addComponent(createPanel(new TopSixTheatersChart()));
@@ -467,12 +468,18 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
 
     private Component getMyPerformance() 
     {
+        
+        //UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud()));
+        String[] xAxisCategories =  new String[]{"my","avg","top","low"};
+        Number[] classAvgScore = new Number[]{20,40,50,60};
+        Number[] studAvgScore = new Number[]{20,40,50,60};
+        
         HorizontalLayout hl = new HorizontalLayout();
-        hl.setCaption("My Achievement");
+        hl.setCaption("My score");
         hl.setSizeFull();
         Label l = new Label("<table width='50%' height='100%' border='0' bgcolor='purple'><tr><td align=center><font face='verdana' color='white' align=center><h1><b>4.5</b></h1> out of 5</font></td></tr></table>", ContentMode.HTML);
         l.setSizeFull();
-        hl.addComponent(l);
+        hl.addComponent(UIUtils.getColumnChart(xAxisCategories, classAvgScore,studAvgScore, "My score comparison", "Score", "Marks", "230px", "100%"));
         return hl;
     }
 
