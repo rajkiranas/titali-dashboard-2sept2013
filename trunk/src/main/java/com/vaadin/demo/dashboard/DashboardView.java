@@ -139,8 +139,8 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         top.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
         top.setExpandRatio(title, 0.5f);
 
-        Button notify = new Button("2");
-        notify.setDescription("Notifications (2 unread)");
+        Button notify = new Button("5");
+        notify.setDescription("Notifications (5 unread)");
         // notify.addStyleName("borderless");
         notify.addStyleName("notifications");
         notify.addStyleName("unread");
@@ -339,19 +339,37 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         notifications.setPositionY(event.getClientY() - event.getRelativeY());
         notifications.setCloseShortcut(KeyCode.ESCAPE, null);
 
-        Label label = new Label(
+        Label label;
+        int i=0;
+        for(Whatsnew n : whatsnewsList)
+        {
+            label= new Label(
                 "<hr><b>"
-                        +whatsnewsList.get(0).getDisplaynotification()
-                +"</b><br><span>"+DateUtil.getTimeIntervalOfTheActivity(whatsnewsList.get(0).getReleasedate())+"</span><br>"
+                        +n.getDisplaynotification()
+                +"</b><br><span>"+DateUtil.getTimeIntervalOfTheActivity(n.getReleasedate())+"</span><br>"
                         , ContentMode.HTML);
-        l.addComponent(label);
-
-        label = new Label(
-                "<hr><b>"
-                        +whatsnewsList.get(1).getDisplaynotification()
-                +"</b><br><span>"+DateUtil.getTimeIntervalOfTheActivity(whatsnewsList.get(0).getReleasedate())+"</span><br>"
-                        , ContentMode.HTML);
-        l.addComponent(label);
+            l.addComponent(label);
+            i++;
+            if(i==5)
+            {
+                break;
+            }
+        }
+        
+        
+//        label= new Label(
+//                "<hr><b>"
+//                        +whatsnewsList.get(0).getDisplaynotification()
+//                +"</b><br><span>"+DateUtil.getTimeIntervalOfTheActivity(whatsnewsList.get(0).getReleasedate())+"</span><br>"
+//                        , ContentMode.HTML);
+//        l.addComponent(label);
+//
+//        label = new Label(
+//                "<hr><b>"
+//                        +whatsnewsList.get(1).getDisplaynotification()
+//                +"</b><br><span>"+DateUtil.getTimeIntervalOfTheActivity(whatsnewsList.get(0).getReleasedate())+"</span><br>"
+//                        , ContentMode.HTML);
+//        l.addComponent(label);
     }
     
     
@@ -477,9 +495,9 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         HorizontalLayout hl = new HorizontalLayout();
         hl.setCaption("My score");
         hl.setSizeFull();
-        Label l = new Label("<table width='50%' height='100%' border='0' bgcolor='purple'><tr><td align=center><font face='verdana' color='white' align=center><h1><b>4.5</b></h1> out of 5</font></td></tr></table>", ContentMode.HTML);
-        l.setSizeFull();
-        hl.addComponent(UIUtils.getColumnChart(xAxisCategories, classAvgScore,studAvgScore, "My score comparison", "Score", "Marks", "230px", "100%"));
+//        Label l = new Label("<table width='50%' height='100%' border='0' bgcolor='purple'><tr><td align=center><font face='verdana' color='white' align=center><h1><b>4.5</b></h1> out of 5</font></td></tr></table>", ContentMode.HTML);
+//        l.setSizeFull();
+        hl.addComponent(UIUtils.getColumnChart(xAxisCategories, classAvgScore,studAvgScore, "My score comparison", "Score", "Marks", "200px", "100%"));
         return hl;
     }
 

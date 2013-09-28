@@ -26,7 +26,7 @@ public class NoticesContainer extends BeanItemContainer<NoticeBean> {
         * NATURAL_COL_ORDER_DAILY_CALLS.
         */
     public static final String[] COL_HEADERS_ENGLISH_NOTICES = new String[]{
-       "Notice date", "By whom", "Subject"};
+       "Date", "By whom", "Subject"};
     //"Std","Div",
     
     public NoticesContainer(){

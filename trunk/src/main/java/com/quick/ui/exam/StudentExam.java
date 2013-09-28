@@ -195,8 +195,8 @@ public class StudentExam extends VerticalLayout implements View  {
 
             }
         });
-        top.addComponent(notify);
-        top.setComponentAlignment(notify, Alignment.MIDDLE_LEFT);
+//        top.addComponent(notify);
+//        top.setComponentAlignment(notify, Alignment.MIDDLE_LEFT);
 
         Button edit = new Button();
         edit.addStyleName("icon-edit");
@@ -269,7 +269,7 @@ public class StudentExam extends VerticalLayout implements View  {
 
             }
         });
-        top.setComponentAlignment(edit, Alignment.MIDDLE_LEFT);
+        //top.setComponentAlignment(edit, Alignment.MIDDLE_LEFT);
         top.addComponent(startExamBtn);
         top.setComponentAlignment(startExamBtn, Alignment.MIDDLE_LEFT);
         
@@ -695,7 +695,7 @@ public class StudentExam extends VerticalLayout implements View  {
         
         String[] title = new String[] {"My Score","Avg Score","Top Score"};
         Number[] scores = new Number[] { getSelectedExam().get(0).getTotalObtMarksObj(),getSelectedExam().get(0).getExamAvgScore(), getSelectedExam().get(0).getExamTopScore()};
-        Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks","100%","100%");
+        Component barChart=UIUtils.getBarChart(title,scores,"Exam score comparison","Score","Marks","100%","100%");
         cssExamScoreComparisonLayout=UIUtils.createPanel(barChart);
         
         row1.addComponent(cssExamScoreComparisonLayout);
