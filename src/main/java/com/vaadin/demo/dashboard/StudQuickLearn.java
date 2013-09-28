@@ -737,7 +737,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
             JSONObject inputRequest = new JSONObject();
             
                
-                inputRequest.put("name",loggedInUserProfile.getName());
+                inputRequest.put("name",loggedInUserProfile.getName().toUpperCase());
                 inputRequest.put("uploadId",uploadId);
                 inputRequest.put("doingwhat",activity);
                 inputRequest.put("div",loggedInUserProfile.getDiv());

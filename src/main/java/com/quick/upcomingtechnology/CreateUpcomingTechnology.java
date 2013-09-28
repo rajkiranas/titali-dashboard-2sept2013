@@ -287,7 +287,9 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
                 {
                     html = new Label("<table height='100%'>" //+" <tr><td align='right'><b>Create by :</b></td><td>"+bean.getBywhom()+"</td></tr>"
                         +"<tr><td align='right' width='15%'><b>Name:</b></td><td width='85%'>"+bean.getTechnologyline()+"</td></tr>"
+                            +"<tr><td align='right' width='15%'></td><td width='85%'>"+GlobalConstants.emptyString+"</td></tr>"
                         +"<tr width='100%'><td align='right' width='15%'><b>Category:</b></td><td width='85%'>"+bean.getCategory()+"</td></tr>"
+                            +"<tr><td align='right' width='15%'></td><td width='85%'>"+GlobalConstants.emptyString+"</td></tr>"
                         +"<tr><td align='right' width='15%'><b>Details:</b></td><td width='85%'>"+bean.getTechnologybody()+"</td></tr>"
                         + "</table>", ContentMode.HTML);
                     setSelectedUTId(bean.getTechnologyid());
@@ -721,9 +723,9 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         
         Component pieChart;
         pieChart =getTechnologyUsageDistributionPieChart(dataMap);
-        relatedTechnologiesAndPieChartLayout.addComponent(pieChart);
-        relatedTechnologiesAndPieChartLayout.setComponentAlignment(pieChart,Alignment.MIDDLE_CENTER);
-        relatedTechnologiesAndPieChartLayout.setExpandRatio(pieChart, 2.5f);
+        relatedTechnologiesAndPieChartLayout.addComponent(UIUtils.createPanel(pieChart));
+//        relatedTechnologiesAndPieChartLayout.setComponentAlignment(pieChart,Alignment.MIDDLE_CENTER);
+//        relatedTechnologiesAndPieChartLayout.setExpandRatio(pieChart, 2.5f);
         
     }
     
@@ -736,7 +738,7 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
 //        dataMap.put("C", 5d);
 //        dataMap.put("C++", 15d);
 
-        Component chart =CustomPieChart.createChart(map,(String)map.keySet().iterator().next(),"Industry popularity");
+        Component chart =CustomPieChart.createChart(map,(String)map.keySet().iterator().next(),"Related technologies with industry popularity");
         chart.setSizeFull();
         
         return chart;

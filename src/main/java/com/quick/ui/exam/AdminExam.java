@@ -169,8 +169,8 @@ public class AdminExam extends VerticalLayout implements View  {
 
             }
         });
-        top.addComponent(notify);
-        top.setComponentAlignment(notify, Alignment.MIDDLE_LEFT);
+//        top.addComponent(notify);
+//        top.setComponentAlignment(notify, Alignment.MIDDLE_LEFT);
 
         Button edit = new Button();
         edit.addStyleName("icon-edit");
@@ -243,7 +243,7 @@ public class AdminExam extends VerticalLayout implements View  {
 
             }
         });
-        top.setComponentAlignment(edit, Alignment.MIDDLE_LEFT);
+        //top.setComponentAlignment(edit, Alignment.MIDDLE_LEFT);
         newExamBtn = new Button("New Exam");
         newExamBtn.addStyleName("default");
         newExamBtn.addClickListener(new ClickListener() {

@@ -25,7 +25,7 @@ public class UpcomingTechnologyContainer extends BeanItemContainer<UpcomingTechn
         * NATURAL_COL_ORDER_DAILY_CALLS.
         */
     public static final String[] COL_HEADERS_ENGLISH_TECHNOLOGIES = new String[]{
-       "Technology date", "Name", "Category", "Created by"};
+       "Date", "Name", "Category", "Created by"};
     //"Std","Div",
     
     public UpcomingTechnologyContainer(){
