@@ -8,25 +8,31 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.quick.bean.CategoryDistributionBean;
 import com.quick.bean.ExamBean;
+import com.quick.bean.MasteParmBean;
 import com.quick.bean.UpcomingTechnologyBean;
 import com.quick.bean.Userprofile;
 import com.quick.container.CategoryTechnologyContainer;
 import com.quick.container.UpcomingTechnologyContainer;
 import com.quick.global.GlobalConstants;
+import com.quick.table.QuickUploadTable;
 import com.quick.ui.exam.CustomPieChart;
+import com.quick.utilities.ConfirmationDialogueBox;
 import com.quick.utilities.UIUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.demo.dashboard.QuickUpload;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -35,7 +41,9 @@ import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.BaseTheme;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,8 +66,8 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
     private TextField utLine;
     private TextField utCategory;
     private TextArea utBody;
-    private Button createnUT;
-    private Button clear;
+    private Button editSaveBtn;
+    private Button newTechnologyBtn;
     private Button delete;
     private int selectedUTId;
     private Userprofile profile;
@@ -94,6 +102,9 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         
     }
     
+    private HorizontalLayout row;
+    private VerticalLayout blankVerticalLayout;
+    private UpcomingTechnologyBean lastSelectedTechnologyBean;
     public CreateUpcomingTechnology(){
         setTechnologiesList(fetchAllTechnologies());
         HorizontalLayout top = new HorizontalLayout();
@@ -109,9 +120,12 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         top.addComponent(title);
         top.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
         top.setExpandRatio(title, 1);
+        HorizontalLayout buttonLayout=getNewSaveButtonLayout();
+        top.addComponent(buttonLayout);
+        top.setComponentAlignment(buttonLayout, Alignment.MIDDLE_RIGHT);
 
         
-        HorizontalLayout row = new HorizontalLayout();
+        row = new HorizontalLayout();
         row.setSizeFull();
         row.setMargin(new MarginInfo(true, true, false, true));
         row.setSpacing(true);
@@ -120,17 +134,22 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
        // Component c=buildTabSheetLayout();
         
         //form created first because below method tries to set its values on table value change
-        Component form = UIUtils.createPanel(getUTForm());
+        getUTForm();
         
+        blankVerticalLayout = new VerticalLayout();
+        blankVerticalLayout.setSizeFull();
+        row.addComponent(blankVerticalLayout);
         Component l = getTechnologyListingAndGraphLayout();
+        blankVerticalLayout.addComponent(l);
         
-        row.addComponent(l);
+        //showSelectedTechnologyDetailsOnHtmlFrom(null);
+        //blankHtmlFromAdded=1;
         
-        row.addComponent(form);
-        row.setComponentAlignment(form, Alignment.MIDDLE_RIGHT);
+//        row.addComponent(form);
+//        row.setComponentAlignment(form, Alignment.MIDDLE_RIGHT);
     }
 
-    private Component getUTListView() 
+    private Table getUTListView() 
     {
         //noticetbl = new Table();
         
@@ -169,31 +188,149 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
 
             @Override
             public void valueChange(ValueChangeEvent event) {
-                UpcomingTechnologyBean bean =(UpcomingTechnologyBean)event.getProperty().getValue();
-               updateUtFormField(bean);
-               setCategorywiseTechnologyList(fetchRelatedTechnologies(bean.getCategory()));               
+               UpcomingTechnologyBean bean =(UpcomingTechnologyBean)event.getProperty().getValue();
                
-               if(mailTableAddedFlag==1)
+               if(bean!=null)
                {
-                getRelatedTechnologiesAndPieChartLayout();
+                   showSelectedTechnologyDetailsOnHtmlFrom(bean);
+
+                   setCategorywiseTechnologyList(fetchRelatedTechnologies(bean.getCategory()));               
+
+                   if(mailTableAddedFlag==1)
+                   {
+                        getRelatedTechnologiesAndPieChartLayout();
+                   }
+                   lastSelectedTechnologyBean=bean;
                }
             }
+
+            
         };
         
         upcomingTechnologyTbl.addValueChangeListener(utTblValueChangeListener);
         upcomingTechnologyTbl.sort(new Object[]{"technologydate"}, new boolean[]{false});
         upcomingTechnologyTbl.select(upcomingTechnologyTbl.firstItemId());
+        
+        upcomingTechnologyTbl.addGeneratedColumn("Remove", new Table.ColumnGenerator() 
+            {
+            @Override
+                public Object generateCell(Table source, Object rowItemBean, Object columnId) 
+                {
+                    Button btnRemove=new Button("Remove");
+                    btnRemove.setImmediate(true);
+                    btnRemove.setStyleName(BaseTheme.BUTTON_LINK);
+                    setItemData(btnRemove,rowItemBean);
+                    addListenertoBtn(btnRemove);               
+                    return btnRemove;
+                }
+            });
+        
         return upcomingTechnologyTbl;
     }
+    
+    public void setItemData(Button btnRemove, Object rowItemBean)
+        {
+            Object arr[]=new Object[]{upcomingTechnologyTbl,rowItemBean,GlobalConstants.emptyString};
+            btnRemove.setData(arr);
+        }
+    
+    /**
+      * adding listener to the remove button for delete topic from upload screen
+      * */
+     public void addListenertoBtn(Button btnRemove) 
+    {
+        
+        btnRemove.addListener(new Button.ClickListener() 
+        {
+            public void buttonClick(final Button.ClickEvent event) 
+            {
+                //UI.getCurrent().addWindow(new ConfirmationDialogueBox());
+                
+                UI.getCurrent().addWindow(new ConfirmationDialogueBox("Confirmation", "Are you sure you want to remove this topic ?", new ConfirmationDialogueBox.Callback() {
 
+                    @Override
+                    public void onDialogResult(boolean flag) 
+                    {
+                        if(flag)
+                        {
+                            Object data[] = (Object[]) event.getButton().getData();
+                            
+                            Table t = (Table) data[0];
+                            
+                            //System.out.println("****"+((MasteParmBean)data[1]));
+                            
+                            deleteTechnology();
+                            
+                            // temporary removing value change listener of the quick upload table so that after removing item it will not attempt to display that particular item
+                            t.removeValueChangeListener(utTblValueChangeListener);
+        
+                            t.removeItem(data[1]);
+                            
+                            //restoring the value change listener so that selected uploaded item will be displayed in the right panel
+                            t.addValueChangeListener(utTblValueChangeListener);
+                            //updateUtList();   
+
+                            t.select(t.firstItemId());
+                        }
+                    }
+                }));
+            }
+        });
+        
+        
+    }
+    
+    private void showSelectedTechnologyDetailsOnHtmlFrom(UpcomingTechnologyBean bean) {
+                
+                Label html;
+                if(bean!=null)
+                {
+                    html = new Label("<table height='100%'>" //+" <tr><td align='right'><b>Create by :</b></td><td>"+bean.getBywhom()+"</td></tr>"
+                        +"<tr><td align='right' width='15%'><b>Name:</b></td><td width='85%'>"+bean.getTechnologyline()+"</td></tr>"
+                        +"<tr width='100%'><td align='right' width='15%'><b>Category:</b></td><td width='85%'>"+bean.getCategory()+"</td></tr>"
+                        +"<tr><td align='right' width='15%'><b>Details:</b></td><td width='85%'>"+bean.getTechnologybody()+"</td></tr>"
+                        + "</table>", ContentMode.HTML);
+                    setSelectedUTId(bean.getTechnologyid());
+                    updateUtFormField(bean);
+                    
+                    
+                }
+                else
+                {
+                    html = new Label("<table>"// + "<tr><td align='right'><b>Create by :</b></td><td>"+"</td></tr>"
+                        +"<tr><td align='right'><b>Name :</b></td><td>"+"</td></tr>"
+                        +"<tr><td align='right'><b>Category :</b></td><td>"+"</td></tr>"
+                        +"<tr><td align='right'><b>Details :</b></td><td>"+"</td></tr>"
+                        + "</table>", ContentMode.HTML);
+                    
+                }
+                
+                if(topicDetailsHtmlCssLayout!=null)
+                {
+                    row.removeComponent(topicDetailsHtmlCssLayout);                    
+                }   
+                VerticalLayout htmlLayoutForDetails;
+                htmlLayoutForDetails= new VerticalLayout();
+                htmlLayoutForDetails.setCaption(technology_details);
+                htmlLayoutForDetails.setSizeFull();
+                htmlLayoutForDetails.addComponent(html);
+                topicDetailsHtmlCssLayout = UIUtils.createPanel(htmlLayoutForDetails);
+                //topicDetailsHtmlCssLayout.setHeight("100%");
+                row.addComponent(topicDetailsHtmlCssLayout);
+            }
+
+    
+    private CssLayout topicDetailsHtmlCssLayout;
+    //private int blankHtmlFromAdded=0;
     private List<CategoryDistributionBean> categorywiseTechnologyList=null;
     private static final String technology_details="Technology Details";
+    private VerticalLayout utFormLayout;
     
     private Component getUTForm() {
-        VerticalLayout utForm = new VerticalLayout();
-        //utForm.setCaption(technology_details);
-        //utForm.setSizeFull();
-        utForm.setSpacing(true);
+        utFormLayout = new VerticalLayout();
+        utFormLayout.setCaption(technology_details);
+        //utFormLayout.setSizeFull();
+        utFormLayout.setSpacing(true);
         
         utId = new TextField("Technology Id");
         utId.setImmediate(true);
@@ -236,54 +373,33 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
        // utBody.setHeight("100%");
         utBody.setRows(14);
         
-        Component utBodyLayout = getHorizontalLayoutForTwoComponents("Description",utBody);
+        Component utBodyLayout = getHorizontalLayoutForTwoComponents("Details",utBody);
        
         
         //utForm.addComponent(utId);
         //utForm.addComponent(utDate);
-        utForm.addComponent(bywhomLayout);
-        utForm.addComponent(utLineLayout);
-        utForm.addComponent(utCategoryLayout);
-        utForm.addComponent(utBodyLayout);
+        utFormLayout.addComponent(bywhomLayout);
+        utFormLayout.addComponent(utLineLayout);
+        utFormLayout.addComponent(utCategoryLayout);
+        utFormLayout.addComponent(utBodyLayout);
         
         //profile=(Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile);
         //if(profile.get)
         
-        createnUT = new Button("Save technology");
-        createnUT.setStyleName(GlobalConstants.default_style);
-        createnUT.addClickListener((Button.ClickListener)this);
-        createnUT.setImmediate(true);
         
         
-        clear = new Button("New technology");
-        clear.addClickListener((Button.ClickListener)this);
-        clear.setImmediate(true);
-        clear.setStyleName(GlobalConstants.default_style);
         
-         
-        delete = new Button("Delete technology");
-        delete.addClickListener((Button.ClickListener)this);
-        delete.setImmediate(true);
-        delete.setStyleName(GlobalConstants.default_style);
-        
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setSpacing(true);
-        
-        buttonLayout.addComponent(clear);
-        buttonLayout.addComponent(createnUT);        
-        buttonLayout.addComponent(delete);
-        
-        
-        VerticalLayout mainVertical = new VerticalLayout();
-        mainVertical.setSizeFull();
-        mainVertical.addComponent(utForm);
-        mainVertical.addComponent(buttonLayout);
-        
-        mainVertical.setExpandRatio(utForm, 3f);
-        mainVertical.setExpandRatio(buttonLayout, 0.5f);
-        mainVertical.setComponentAlignment(buttonLayout, Alignment.MIDDLE_CENTER);
-        
-        return mainVertical;
+//        VerticalLayout mainVertical = new VerticalLayout();
+//        mainVertical.setSizeFull();
+//        mainVertical.addComponent(utForm);
+//        //mainVertical.addComponent(buttonLayout);
+//        
+//        mainVertical.setExpandRatio(utForm, 3f);
+//        //mainVertical.setExpandRatio(buttonLayout, 0.5f);
+//        //mainVertical.setComponentAlignment(buttonLayout, Alignment.MIDDLE_CENTER);
+//        
+//        return mainVertical;
+          return utFormLayout;
     }
     
     private Component getHorizontalLayoutForTwoComponents(String s, Component c)
@@ -293,7 +409,7 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         h.setSizeFull();
         h.addComponent(l);
         h.addComponent(c);
-        h.setExpandRatio(l, 0.5f);
+        h.setExpandRatio(l, 1f);
         h.setExpandRatio(c, 3f);
         return h;
     }
@@ -367,15 +483,51 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
     @Override
     public void buttonClick(ClickEvent event) {
         Button source = event.getButton();
-        if(source==createnUT){
-            createNewTechnology();
-            updateUtList();
-        }else if(source==clear){
+        if(source==editSaveBtn)
+        {
+            if(editSaveBtn.getCaption().equals("Edit technology"))
+            {
+                editSaveBtn.setCaption("Save technology");
+                newTechnologyBtn.setCaption("Cancel");
+                row.removeComponent(topicDetailsHtmlCssLayout);
+                row.addComponent(utFormLayout);
+            }
+            else if(editSaveBtn.getCaption().equals("Save technology"))
+            {
+                createNewTechnology();
+                updateUtList();
+                row.removeComponent(utFormLayout);
+                editSaveBtn.setCaption("Edit technology");
+                newTechnologyBtn.setCaption("New technology");
+            }
+            
+            
+        }else if(source==newTechnologyBtn){
+            
             clearForm();
-        }else if(source==delete){
-            deleteTechnology();
-            updateUtList();            
+            if(newTechnologyBtn.getCaption().equals("New technology"))
+            {
+                editSaveBtn.setCaption("Save technology");
+                newTechnologyBtn.setCaption("Cancel");
+                
+                row.removeComponent(topicDetailsHtmlCssLayout);
+                row.addComponent(utFormLayout);
+                
+            }
+            else if(newTechnologyBtn.getCaption().equals("Cancel"))
+            {
+                updateUtFormField(null);
+                editSaveBtn.setCaption("Edit technology");
+                newTechnologyBtn.setCaption("New technology");
+                
+                row.removeComponent(utFormLayout);
+                row.addComponent(topicDetailsHtmlCssLayout);
+            }
         }
+        //else if(source==delete){
+//            deleteTechnology();
+//            updateUtList();            
+//        }
     }
     
     
@@ -428,11 +580,11 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
             
             if(status == GlobalConstants.YES)
             {
-                Notification.show("Successfully created technology", Notification.Type.WARNING_MESSAGE);
+                Notification.show("Successfully saved technology", Notification.Type.WARNING_MESSAGE);
             }
             else
             {
-                Notification.show("Technology creation failed", Notification.Type.WARNING_MESSAGE);
+                Notification.show("Technology saving failed", Notification.Type.WARNING_MESSAGE);
             }
 
           
@@ -482,7 +634,10 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
 
     
     private void updateUtFormField(UpcomingTechnologyBean bean) {
-        
+        if(bean==null)
+        {
+            bean=lastSelectedTechnologyBean;
+        }
         utId.setReadOnly(false);
         utId.setValue(String.valueOf(bean.getTechnologyid()));
         utId.setReadOnly(true);
@@ -656,6 +811,37 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
      */
     public void setCategorywiseTechnologyList(List<CategoryDistributionBean> categorywiseTechnologyList) {
         this.categorywiseTechnologyList = categorywiseTechnologyList;
+    }
+
+    private HorizontalLayout getNewSaveButtonLayout() 
+    {
+        
+        editSaveBtn = new Button("Edit technology");
+        editSaveBtn.setStyleName(GlobalConstants.default_style);
+        editSaveBtn.addClickListener((Button.ClickListener)this);
+        editSaveBtn.setImmediate(true);
+        
+        
+        newTechnologyBtn = new Button("New technology");
+        newTechnologyBtn.addClickListener((Button.ClickListener)this);
+        newTechnologyBtn.setImmediate(true);
+        newTechnologyBtn.setStyleName(GlobalConstants.default_style);
+        
+//         
+//        delete = new Button("Delete technology");
+//        delete.addClickListener((Button.ClickListener)this);
+//        delete.setImmediate(true);
+//        delete.setStyleName(GlobalConstants.default_style);
+        
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout.setSpacing(true);
+        
+        buttonLayout.addComponent(newTechnologyBtn);
+        buttonLayout.addComponent(editSaveBtn);        
+        //buttonLayout.addComponent(delete);
+        
+        return buttonLayout;
+        
     }
 
    
