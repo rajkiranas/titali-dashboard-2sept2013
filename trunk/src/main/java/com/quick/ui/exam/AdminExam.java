@@ -175,7 +175,7 @@ public class AdminExam extends VerticalLayout implements View  {
         Button edit = new Button();
         edit.addStyleName("icon-edit");
         edit.addStyleName("icon-only");
-        top.addComponent(edit);
+        //top.addComponent(edit);
         edit.setDescription("Edit Dashboard");
         edit.addClickListener(new ClickListener() {
             @Override
@@ -756,9 +756,13 @@ public class AdminExam extends VerticalLayout implements View  {
             row1.removeComponent(cssExamScoreComparisonLayout);
         }
         
-        String[] title = new String[] {"My Score","Avg Score","Top Score"};
-        Number[] scores = new Number[] { getSelectedExam().get(0).getTotalObtMarksObj(),getSelectedExam().get(0).getExamAvgScore(), getSelectedExam().get(0).getExamTopScore()};
-        Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks","100%","100%");
+//        String[] title = new String[] {"My Score","Avg Score","Top Score"};
+//        Number[] scores = new Number[] { getSelectedExam().get(0).getTotalObtMarksObj(),getSelectedExam().get(0).getExamAvgScore(), getSelectedExam().get(0).getExamTopScore()};
+//        Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks","100%","100%");
+        
+        String[] title = new String[] {"Low Score","Avg Score","Top Score"};
+            Number[] scores = new Number[] { getSelectedExam().get(0).getExamLowScore(),getSelectedExam().get(0).getExamAvgScore(), getSelectedExam().get(0).getExamTopScore()};
+            Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks","100%","100%");
         cssExamScoreComparisonLayout=UIUtils.createPanel(barChart);
         
         row1.addComponent(cssExamScoreComparisonLayout);

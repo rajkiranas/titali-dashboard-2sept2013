@@ -18,13 +18,13 @@ public class StudQuickLearnContainer extends BeanItemContainer<MasteParmBean> {
     
 
       public static final Object[] NATURAL_COL_ORDER_QUICKLEARN = new Object[]{
-       "uploadDate","topic"};
+       "uploadId","uploadDate","sub","topic"};
         /**
         * "Human readable" captions for properties in same order as in
         * NATURAL_COL_ORDER_DAILY_CALLS.
         */
     public static final String[] COL_HEADERS_ENGLISH_QUICKLEARN = new String[]{
-        "Date","Topic"};
+       "Id", "Date","Subject","Topic"};
     
     public StudQuickLearnContainer(){
         super(MasteParmBean.class);
@@ -41,6 +41,7 @@ public class StudQuickLearnContainer extends BeanItemContainer<MasteParmBean> {
            bean.setTopic(mpb.getTopic());
            //upload id is not displayed but used to fetch all information on value select of the topic table
            bean.setUploadId(mpb.getUploadId());
+           bean.setSub(mpb.getSub());
            container.addItem(bean);
         }
        }
