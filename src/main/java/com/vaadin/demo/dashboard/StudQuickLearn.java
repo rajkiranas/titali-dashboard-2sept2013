@@ -160,7 +160,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
         top.setMargin(new MarginInfo(true, true, false, true));
         top.addStyleName("toolbar");
         addComponent(top);
-        final Label title = new Label("Learn now");
+        final Label title = new Label("Learn");
         title.setSizeUndefined();
         title.addStyleName("h1");
         top.addComponent(title);
@@ -168,18 +168,18 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
         top.setExpandRatio(title, 1);
 
         //top.addComponent();
-        HorizontalLayout h = new HorizontalLayout();
-        Label lblSubject =new Label("Subject");
+//        HorizontalLayout h = new HorizontalLayout();
+//        Label lblSubject =new Label("Subject");
+//        
+//        h.addComponent(lblSubject);
+//        h.setComponentAlignment(lblSubject,Alignment.MIDDLE_LEFT);
+//        h.addComponent(cbSubject);
+//        h.setComponentAlignment(cbSubject,Alignment.MIDDLE_RIGHT);
+//        h.setSpacing(true);
+//        h.setMargin(true);
         
-        h.addComponent(lblSubject);
-        h.setComponentAlignment(lblSubject,Alignment.MIDDLE_LEFT);
-        h.addComponent(cbSubject);
-        h.setComponentAlignment(cbSubject,Alignment.MIDDLE_RIGHT);
-        h.setSpacing(true);
-        h.setMargin(true);
-        
-        top.addComponent(h);
-        top.setComponentAlignment(h, Alignment.MIDDLE_RIGHT);
+//        top.addComponent(h);
+//        top.setComponentAlignment(h, Alignment.MIDDLE_RIGHT);
       
         HorizontalLayout row = new HorizontalLayout();
         row.setSizeFull();
@@ -187,10 +187,10 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
         row.setSpacing(true);
         addComponent(row);
         setExpandRatio(row, 1.5f);
-        Component c=buildTabSheetLayout();
+        //Component c=buildTabSheetLayout();
         row.addComponent(CreateFirstPaneview());
         //row.addComponent(createPanel(boardDataProvider.getWhatsNewForme(whatsnewsList)));
-        row.addComponent(c);
+        //row.addComponent(c);
 
     }
 
@@ -237,44 +237,46 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
     }
 
     private Component CreateFirstPaneview() {
-        
+        getTopicList();
         quickLearnTable = new StudQuickLearnTable(this);
-        notes = new TextArea("My short notes for the topic");
+        //notes = new TextArea("My short notes for the topic");
         
-        column.setSpacing(true);
-        cbSubject.setInputPrompt("subject");
-        cbSubject.setImmediate(true);
+        //column.setSpacing(true);
+//        cbSubject.setInputPrompt("subject");
+//        cbSubject.setImmediate(true);
         
-         if (stdlist!=null && !stdlist.isEmpty()) {
-            for (MasteParmBean mpb : stdlist) {
-                cbSubject.addItem(mpb.getSub());
-            }
-            
-            
-             cbSubject.addValueChangeListener(new Property.ValueChangeListener() {
-
-            
-            @Override
-            public void valueChange(ValueChangeEvent event) {
-                setSelectedSub(""+event.getProperty().getValue());
-                updateTopicsTable();
-                notes.setValue("");
-                uploadId=0;
-                
-            }
-        });
-        
-            cbSubject.setValue(stdlist.get(0).getSub());
-            
-            if (uploadIdToNavigate == 0) {
+//         if (stdlist!=null && !stdlist.isEmpty()) {
+//            for (MasteParmBean mpb : stdlist) {
+//                cbSubject.addItem(mpb.getSub());
+//            }
+//            
+//            
+//             cbSubject.addValueChangeListener(new Property.ValueChangeListener() {
+//
+//            
+//            @Override
+//            public void valueChange(ValueChangeEvent event) {
+//                setSelectedSub(""+event.getProperty().getValue());
+//                updateTopicsTable();
+//                notes.setValue("");
+//                uploadId=0;
+//                
+//            }
+//        });
+//        
+//            cbSubject.setValue(stdlist.get(0).getSub());
+//            
+//            
+//
+//
+//        }
+         
+         if (uploadIdToNavigate == 0) {
                 quickLearnTable.select(quickLearnTable.firstItemId());
             } else {
                
                 quickLearnTable.select(quickLearnTable.getData());
             }
-
-
-        }
 
        
         
@@ -285,32 +287,32 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
         // 
         
           
-          column.addComponent(quickLearnTable);
-          column.setExpandRatio(quickLearnTable,1);
+          //column.addComponent(quickLearnTable);
+          //column.setExpandRatio(quickLearnTable,1);
             
       
         
         
-        notes.setSizeFull();
-        notes.setInputPrompt("My short notes");
-        
-        notes.addBlurListener(new FieldEvents.BlurListener() {
-
-            @Override
-            public void blur(BlurEvent event) {
-                setUserNotes(notes.getValue());
-                if(uploadId!=0)
-                updateUserShortNotes();
-            }
-        });
-        
-        
-        CssLayout panel = createPanel(notes);
-        panel.addStyleName("notes");
-        
-        column.addComponent(panel);
-        column.setExpandRatio(panel, 0.5f);
-        return column;
+//        notes.setSizeFull();
+//        notes.setInputPrompt("My short notes");
+//        
+//        notes.addBlurListener(new FieldEvents.BlurListener() {
+//
+//            @Override
+//            public void blur(BlurEvent event) {
+//                setUserNotes(notes.getValue());
+//                if(uploadId!=0)
+//                updateUserShortNotes();
+//            }
+//        });
+//        
+//        
+//        CssLayout panel = createPanel(notes);
+//        panel.addStyleName("notes");
+//        
+//        column.addComponent(panel);
+//        column.setExpandRatio(panel, 0.5f);
+        return UIUtils.createPanel(quickLearnTable);
        
     }
 
@@ -368,26 +370,27 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
             MasteParmBean selectedTopicRow=(MasteParmBean) property.getValue();
             
              uploadId = selectedTopicRow.getUploadId();  
-             setTopicForNotification(selectedTopicRow.getTopic());         
+             setTopicForNotification(selectedTopicRow.getTopic());
              setStudQuikLearnDetails(getStudentQuickLearnDetails());
              
              //Temp removing Listner to avoid multiple notifiaction on tab change
              
-             editors.removeSelectedTabChangeListener(tabChangeListener);
+             /////editors.removeSelectedTabChangeListener(tabChangeListener);
              updateQuickLearnTabSheet();
              
              // Restoring after Tabsheet Load
-             editors.addSelectedTabChangeListener(tabChangeListener);
-             notes.setValue(getUserNotes());
+             /////editors.addSelectedTabChangeListener(tabChangeListener);
+             //notes.setValue(getUserNotes());
              
               //loggedInUserProfile will be null when this quick learn screen loads
                 // and the control comes first to this tab change method before user profile gets its value in enter method
              if(loggedInUserProfile!=null){
                 
-                    sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through);
+                    //sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through);
                 }
              
-             stopVideoBuffering();
+             //stopVideoBuffering();
+             
         }
     }
        
@@ -405,8 +408,8 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
 //           editors.addTab(new MyOtherNotes(getStudQuikLearnDetails()), "OtherNotes");
 //           editors.addTab(new PreviousQuestion(getStudQuikLearnDetails()), "Previous Questions");
 //           
-           buildTabSheetLayout(getStudQuikLearnDetails().getVideoPath(),getStudQuikLearnDetails().getLectureNotes(),getStudQuikLearnDetails().getOtherNotes(),getStudQuikLearnDetails().getPreviousQuestion());
-
+           //buildTabSheetLayout(getStudQuikLearnDetails().getVideoPath(),getStudQuikLearnDetails().getLectureNotes(),getStudQuikLearnDetails().getOtherNotes(),getStudQuikLearnDetails().getPreviousQuestion());
+           UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes()));
       }
         
         /////////////////////////////////////////////////

@@ -146,7 +146,7 @@ public class StudentExam extends VerticalLayout implements View  {
        // addStyleName("dashboard-view");
     }
     
-    private static final String Student_Exams="Student Exams";
+    private static final String Student_Exams="Exams";
     private int barchartAdded=0;
     private void buildUi(){
         
@@ -201,7 +201,7 @@ public class StudentExam extends VerticalLayout implements View  {
         Button edit = new Button();
         edit.addStyleName("icon-edit");
         edit.addStyleName("icon-only");
-        top.addComponent(edit);
+        //top.addComponent(edit);
         edit.setDescription("Edit Dashboard");
         edit.addClickListener(new ClickListener() {
             @Override
