@@ -172,42 +172,42 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
            //vPlayer.addSource(new ExternalResource("file:/"+videoPath));
            layout.addComponent(vPlayer);
            layout.setComponentAlignment(vPlayer, Alignment.MIDDLE_CENTER);
-           layout.setExpandRatio(vPlayer, 2.5f);
+           //layout.setExpandRatio(vPlayer, 2.5f);
            
-           HorizontalLayout h = new HorizontalLayout();
-           h.setImmediate(true);
-           h.setMargin(true);
-           //h.setSpacing(true);
-           h.setWidth("97%");
-           h.setHeight("92%");
-           
-           Button play = new Button("Play");
-           play.setImmediate(true);
-           play.setWidth("100%");
-           play.addListener(new Button.ClickListener() {
-
-               @Override
-               public void buttonClick(ClickEvent event) {
-                   vPlayer.play();
-               }
-           });
-           
-           Button stop = new Button("Stop");
-           stop.setImmediate(true);
-           stop.setWidth("100%");
-           stop.addListener(new Button.ClickListener() {
-
-               @Override
-               public void buttonClick(ClickEvent event) {
-                   vPlayer.pause();
-               }
-           });
-           
-           h.addComponent(play);
-           h.addComponent(stop);
-           
-           layout.addComponent(h); 
-           layout.setExpandRatio(h, 0.5f);
+//           HorizontalLayout h = new HorizontalLayout();
+//           h.setImmediate(true);
+//           h.setMargin(true);
+//           //h.setSpacing(true);
+//           h.setWidth("97%");
+//           h.setHeight("92%");
+//           
+//           Button play = new Button("Play");
+//           play.setImmediate(true);
+//           play.setWidth("100%");
+//           play.addListener(new Button.ClickListener() {
+//
+//               @Override
+//               public void buttonClick(ClickEvent event) {
+//                   vPlayer.play();
+//               }
+//           });
+//           
+//           Button stop = new Button("Stop");
+//           stop.setImmediate(true);
+//           stop.setWidth("100%");
+//           stop.addListener(new Button.ClickListener() {
+//
+//               @Override
+//               public void buttonClick(ClickEvent event) {
+//                   vPlayer.pause();
+//               }
+//           });
+//           
+//           h.addComponent(play);
+//           h.addComponent(stop);
+//           
+//           layout.addComponent(h); 
+//           layout.setExpandRatio(h, 0.5f);
            
            
        }

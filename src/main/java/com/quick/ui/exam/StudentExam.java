@@ -306,7 +306,7 @@ public class StudentExam extends VerticalLayout implements View  {
         examlistTbl.select(examlistTbl.firstItemId());
         row1.addComponent(UIUtils.createPanel(examlistTbl));
         
-        //row1.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
+        row1.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
         
         getExamScoreComparisonBarChart();
         barchartAdded=1;
@@ -559,7 +559,7 @@ public class StudentExam extends VerticalLayout implements View  {
                  ex.printStackTrace();
              }
             
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);

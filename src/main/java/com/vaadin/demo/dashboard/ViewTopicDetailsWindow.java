@@ -56,7 +56,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         center();        
         setClosable(true);
         setWidth("50%");
-        setHeight("90%"); 
+        setHeight("95%"); 
         buildBaseStudentLayout();
         addTopicDetails();
         addUserNotes();

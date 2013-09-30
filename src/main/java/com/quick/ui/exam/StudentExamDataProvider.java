@@ -117,7 +117,7 @@ public class StudentExamDataProvider {
           baseLayout.setExpandRatio(l2, 2); */
         //UIUtils.getBarChart(xAxisCategories, scores, "Subjectwise comparison", "Score", "Marks", "300px", "300px");
         
-        baseLayout.addComponent(UIUtils.getColumnChart(xAxisCategories, classAvgScore,studAvgScore, "My subjectwise performance", "Score", "Marks", "250px", "600px"));
+        baseLayout.addComponent(UIUtils.getColumnChart(xAxisCategories, classAvgScore,studAvgScore, "My subjectwise performance", "Score", "Marks", "100%", "100%"));
         return baseLayout;
     }
 

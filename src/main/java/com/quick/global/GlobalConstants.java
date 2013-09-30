@@ -108,6 +108,7 @@ public class GlobalConstants
    public static  final String DELETE_TECHNOLOGY="DELETE_TECHNOLOGY";
    public static  final String GET_ALL_TECHNOLOGY="GET_ALL_TECHNOLOGY";
    public static  final String GET_TECHNOLOGY_BY_CATEGORY="GET_TECHNOLOGY_BY_CATEGORY";
+   public static  final String GET_SUB_WISE_COMPARISON="GET_SUB_WISE_COMPARISON";
    
    //public static final String UserMasterResource = "/UserMaster";
     
