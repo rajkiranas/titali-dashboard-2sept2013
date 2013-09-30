@@ -29,7 +29,8 @@ public class QuickUploadTable extends Table {
         //addStyleName("borderless");
         setSortEnabled(true);
         setWidth("100%");
-        setPageLength(10);
+        setHeight("100%");
+        //setPageLength(10);
         setMultiSelect(true);
         setImmediate(true); // react at once when something is selected
         setContainerDataSource(quickUpload.getQuickUploadMasterContainer());

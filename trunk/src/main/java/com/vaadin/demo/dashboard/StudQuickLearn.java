@@ -64,7 +64,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
     private String userNotes;
     VerticalLayout column = new VerticalLayout();
     QuickLearn studQuikLearnDetails;
-    ComboBox cbSubject = new ComboBox();
+    //private ComboBox cbSubject = new ComboBox();
     private int uploadIdToNavigate;
     private String topicForNotification;
     private  Userprofile loggedInUserProfile = null;
@@ -185,7 +185,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
         HorizontalLayout row = new HorizontalLayout();
         //row.setSizeFull();
         row.setHeight("100%");
-        row.setWidth("95%");
+        row.setWidth("100%");
         row.setMargin(new MarginInfo(true, true, false, true));
         row.setSpacing(true);
         addComponent(row);
@@ -752,7 +752,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
                 inputRequest.put("doingwhat",activity);
                 inputRequest.put("div",loggedInUserProfile.getDiv());
                 inputRequest.put("std",loggedInUserProfile.getStd());
-                inputRequest.put("sub",cbSubject.getValue());
+                inputRequest.put("sub","English");
                 inputRequest.put("topic",getTopicForNotification());
                                    
             Client client = Client.create();
@@ -787,7 +787,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
                 setUploadId(bean.getUploadId());
                 setTopicForNotification(bean.getTopic());
                 setStudQuikLearnDetails(getStudentQuickLearnDetails());
-
+                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through);
                 UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes(),getUploadId()));
                     
             }
