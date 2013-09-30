@@ -40,30 +40,31 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
     
     private VerticalLayout baseLayout;
     private TabSheet tabsheet;
-    private QuickLearn learnRow;
+    private QuickLearn quickLearnPojo;
     private String strUserNotes;
     private TextArea userNotesTxtArea;
+    private int selectedUploadId;
     
     
     
-    public ViewTopicDetailsWindow(QuickLearn learnRow, String strUserNotes){
-        this.learnRow=learnRow;
+    public ViewTopicDetailsWindow(QuickLearn learnRow, String strUserNotes, int selectedUploadId){
+        this.selectedUploadId=selectedUploadId;
+        this.quickLearnPojo=learnRow;
         this.strUserNotes=strUserNotes;
         setModal(true);
         setCaption("View topic details");
         center();        
         setClosable(true);
-        setWidth("70%");
-        setHeight("80%"); 
+        setWidth("50%");
+        setHeight("90%"); 
         buildBaseStudentLayout();
         addTopicDetails();
         addUserNotes();
         setContent(baseLayout);
-        
-        
+        addStyleName("schedule");
     }
     
-    public ViewTopicDetailsWindow(StudentView studentView, List<Userprofile> studentList) {
+   /*  public ViewTopicDetailsWindow(StudentView studentView, List<Userprofile> studentList) {
             
         setModal(true);       
         setCaption("Welcome to Edit Student");
@@ -71,9 +72,9 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         center();        
         setClosable(false);
         setWidth("70%");
-        setHeight("90%");
+        setHeight("100%");
         buildBaseStudentLayout();
-    }
+    } */
     
      private void buildBaseStudentLayout(){
               
@@ -101,21 +102,22 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         tabsheet.addTab(getPreviousQuestionsLayout(),"Previous questions");
         CssLayout tabsheetLayout = UIUtils.createPanel(tabsheet);
         baseLayout.addComponent(tabsheetLayout);
-        baseLayout.setExpandRatio(tabsheetLayout,2);
+        baseLayout.setExpandRatio(tabsheetLayout,2.5f);
     }
     
     private Component getVideoPathLayout() {
        
        
-       if(this.learnRow.getVideoPath()!=null)
+       if(this.quickLearnPojo.getVideoPath()!=null)
        {
            final Video vPlayer;
            // video is available, show it on video player
            vPlayer = new Video();
            vPlayer.setImmediate(true);
            vPlayer.setWidth("100%");
-           vPlayer.setHeight("60%");
-           vPlayer.addSource(new FileResource(new File(this.learnRow.getVideoPath())));
+           vPlayer.setHeight("40%");
+           vPlayer.setMuted(false);
+           vPlayer.addSource(new FileResource(new File(this.quickLearnPojo.getVideoPath())));
            vPlayer.setShowControls(true);
            return vPlayer;
            
@@ -184,9 +186,9 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         notesTextArea = new TextArea();
         
         notesTextArea.setSizeFull();
-        if(this.learnRow.getLectureNotes()!=null)
+        if(this.quickLearnPojo.getLectureNotes()!=null)
         {
-            notesTextArea.setValue(this.learnRow.getLectureNotes());
+            notesTextArea.setValue(this.quickLearnPojo.getLectureNotes());
         }
         
         notesTextArea.setImmediate(true);
@@ -209,9 +211,9 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         TextArea otherNotesTextArea = new TextArea();
         
         otherNotesTextArea.setSizeFull();
-        if(this.learnRow.getOtherNotes()!=null)
+        if(this.quickLearnPojo.getOtherNotes()!=null)
         {
-            otherNotesTextArea.setValue(this.learnRow.getOtherNotes());
+            otherNotesTextArea.setValue(this.quickLearnPojo.getOtherNotes());
         }
         
         otherNotesTextArea.setImmediate(true);
@@ -235,9 +237,9 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         previousQuestionsTextArea = new TextArea();
         
         previousQuestionsTextArea.setSizeFull();
-        if(this.learnRow.getPreviousQuestion()!=null)
+        if(this.quickLearnPojo.getPreviousQuestion()!=null)
         {
-            previousQuestionsTextArea.setValue(this.learnRow.getPreviousQuestion());
+            previousQuestionsTextArea.setValue(this.quickLearnPojo.getPreviousQuestion());
         }
         
         previousQuestionsTextArea.setImmediate(true);
@@ -265,8 +267,10 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
             @Override
             public void blur(BlurEvent event) {
                 setUserNotes(userNotesTxtArea.getValue());
-                if(learnRow.getUploadId()!=0)
+                if(selectedUploadId!=0)
+                {
                     updateUserShortNotes();
+                }
             }
         });
         
@@ -298,7 +302,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             try {
-                inputJson.put("uploadId", learnRow.getUploadId());
+                inputJson.put("uploadId", selectedUploadId);
                 inputJson.put("userNotes", getUserNotes());
                 Userprofile loggedinProfile= (Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile);
                 inputJson.put("userName", loggedinProfile.getUsername());

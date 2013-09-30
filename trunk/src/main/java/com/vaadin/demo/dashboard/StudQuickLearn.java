@@ -19,6 +19,7 @@ import com.quick.ui.QuickLearn.MyNotes;
 import com.quick.ui.QuickLearn.MyOtherNotes;
 import com.quick.ui.QuickLearn.MyVideo;
 import com.quick.ui.QuickLearn.PreviousQuestion;
+import com.quick.utilities.ConfirmationDialogueBox;
 import com.quick.utilities.UIUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -182,13 +183,18 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
 //        top.setComponentAlignment(h, Alignment.MIDDLE_RIGHT);
       
         HorizontalLayout row = new HorizontalLayout();
-        row.setSizeFull();
+        //row.setSizeFull();
+        row.setHeight("100%");
+        row.setWidth("95%");
         row.setMargin(new MarginInfo(true, true, false, true));
         row.setSpacing(true);
         addComponent(row);
         setExpandRatio(row, 1.5f);
+        setComponentAlignment(row, Alignment.MIDDLE_CENTER);
         //Component c=buildTabSheetLayout();
-        row.addComponent(CreateFirstPaneview());
+        CssLayout tablePanel=CreateFirstPaneview();
+        row.addComponent(tablePanel);
+        row.setComponentAlignment(tablePanel, Alignment.MIDDLE_CENTER);
         //row.addComponent(createPanel(boardDataProvider.getWhatsNewForme(whatsnewsList)));
         //row.addComponent(c);
 
@@ -236,7 +242,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
         l.addComponent(label);
     }
 
-    private Component CreateFirstPaneview() {
+    private CssLayout CreateFirstPaneview() {
         getTopicList();
         quickLearnTable = new StudQuickLearnTable(this);
         //notes = new TextArea("My short notes for the topic");
@@ -365,18 +371,19 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
        @Override
     public void valueChange(ValueChangeEvent event) {
        Property property=event.getProperty();
-        if(property==quickLearnTable){  
+        if(property==quickLearnTable){
             
-            MasteParmBean selectedTopicRow=(MasteParmBean) property.getValue();
+            /* MasteParmBean selectedTopicRow=(MasteParmBean) property.getValue();
             
              uploadId = selectedTopicRow.getUploadId();  
              setTopicForNotification(selectedTopicRow.getTopic());
              setStudQuikLearnDetails(getStudentQuickLearnDetails());
+                          updateQuickLearnTabSheet(); */
+
              
              //Temp removing Listner to avoid multiple notifiaction on tab change
              
              /////editors.removeSelectedTabChangeListener(tabChangeListener);
-             updateQuickLearnTabSheet();
              
              // Restoring after Tabsheet Load
              /////editors.addSelectedTabChangeListener(tabChangeListener);
@@ -409,7 +416,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
 //           editors.addTab(new PreviousQuestion(getStudQuikLearnDetails()), "Previous Questions");
 //           
            //buildTabSheetLayout(getStudQuikLearnDetails().getVideoPath(),getStudQuikLearnDetails().getLectureNotes(),getStudQuikLearnDetails().getOtherNotes(),getStudQuikLearnDetails().getPreviousQuestion());
-           UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes()));
+           UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes(),getUploadId()));
       }
         
         /////////////////////////////////////////////////
@@ -670,7 +677,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             try {
-                inputJson.put("uploadId", uploadId);
+                inputJson.put("uploadId", getUploadId());
               
             } catch (JSONException ex) {
                 ex.printStackTrace();
@@ -710,7 +717,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             try {
-                inputJson.put("uploadId", uploadId);
+                inputJson.put("uploadId", getUploadId());
                 inputJson.put("userNotes", getUserNotes());
                 Userprofile loggedinProfile= (Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile);
                 inputJson.put("userName", loggedinProfile.getUsername());
@@ -741,7 +748,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
             
                
                 inputRequest.put("name",loggedInUserProfile.getName().toUpperCase());
-                inputRequest.put("uploadId",uploadId);
+                inputRequest.put("uploadId", getUploadId());
                 inputRequest.put("doingwhat",activity);
                 inputRequest.put("div",loggedInUserProfile.getDiv());
                 inputRequest.put("std",loggedInUserProfile.getStd());
@@ -763,7 +770,45 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
         }
     }
 
-    
+    /**
+      * adding listener to the btnViewDetails button for view topic from quick learn
+      * */
+     public void addListenertoBtn(Button btnViewDetails) 
+    {
+        
+        btnViewDetails.addListener(new Button.ClickListener() 
+        {
+            public void buttonClick(final Button.ClickEvent event) 
+            {
+                Object data[] = (Object[]) event.getButton().getData();
+
+                StudQuickLearnTable t = (StudQuickLearnTable) data[0];
+                MasteParmBean bean = (MasteParmBean) data[1];
+                setUploadId(bean.getUploadId());
+                setTopicForNotification(bean.getTopic());
+                setStudQuikLearnDetails(getStudentQuickLearnDetails());
+
+                UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes(),getUploadId()));
+                    
+            }
+        });
+        
+        
+    }
+
+    /**
+     * @return the uploadId
+     */
+    public int getUploadId() {
+        return uploadId;
+    }
+
+    /**
+     * @param uploadId the uploadId to set
+     */
+    public void setUploadId(int uploadId) {
+        this.uploadId = uploadId;
+    }
 
    
 }
