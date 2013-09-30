@@ -41,7 +41,6 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.TabSheet.SelectedTabChangeEvent;
-import java.awt.peer.TextFieldPeer;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;

@@ -7,10 +7,13 @@ package com.quick.table;
 import com.quick.bean.MasteParmBean;
 import com.quick.container.StudQuickLearnContainer;
 import com.quick.data.MyDashBoardContainer;
+import com.quick.global.GlobalConstants;
 import com.vaadin.data.Property;
 import com.vaadin.demo.dashboard.StudQuickLearn;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.themes.BaseTheme;
 
 /**
  *
@@ -33,7 +36,27 @@ public class StudQuickLearnTable extends Table {
         setVisibleColumns(StudQuickLearnContainer.NATURAL_COL_ORDER_QUICKLEARN);
         setColumnHeaders(StudQuickLearnContainer.COL_HEADERS_ENGLISH_QUICKLEARN);
         addValueChangeListener((Property.ValueChangeListener)quickLearn);
+        
+        addGeneratedColumn("View details", new Table.ColumnGenerator() 
+            {
+            @Override
+                public Object generateCell(Table source, Object rowItemBean, Object columnId) 
+                {
+                    Button btnRemove=new Button("View details");
+                    btnRemove.setImmediate(true);
+                    btnRemove.setStyleName(BaseTheme.BUTTON_LINK);
+                    setItemData(btnRemove,rowItemBean);
+                    quickLearn.addListenertoBtn(btnRemove);               
+                    return btnRemove;
+                }
+            });
        
+        }
+    
+    public void setItemData(Button btnRemove, Object rowItemBean)
+        {
+            Object arr[]=new Object[]{this,rowItemBean,GlobalConstants.emptyString};
+            btnRemove.setData(arr);
         }
     
     
