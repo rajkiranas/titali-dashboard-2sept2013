@@ -361,10 +361,16 @@ public class AdminExam extends VerticalLayout implements View  {
             
             if(ebList!=null && ebList.size()>0)
             {
+                HorizontalLayout h = new HorizontalLayout();
+                h.setSizeFull();
                 Label contestLine=new Label("<b><h3>"+ebList.get(0).getContestLine()+"</h3></b>", ContentMode.HTML);
-                v.addComponent(contestLine);
-                v.setComponentAlignment(contestLine,Alignment.MIDDLE_LEFT);
-                v.setExpandRatio(contestLine, 1);
+                h.addComponent(contestLine);
+                h.setComponentAlignment(contestLine, Alignment.MIDDLE_CENTER);
+                h.addStyleName("YellowBackground");
+                
+                v.addComponent(h);
+                v.setComponentAlignment(h,Alignment.MIDDLE_CENTER);
+                v.setExpandRatio(h, 0.5f);
             }
             
             

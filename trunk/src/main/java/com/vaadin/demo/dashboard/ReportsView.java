@@ -85,9 +85,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class ReportsView extends VerticalLayout implements View {
 
-    private List<ExamBean> subjectWiseAvgPerformanceList;
     
-    private List<ExamBean> subwiseAvgScoreForStud;
 
     @Override
     public void enter(ViewChangeEvent event) {
@@ -118,83 +116,38 @@ public class ReportsView extends VerticalLayout implements View {
     
     
 private void buildBodyView() {
-        HorizontalLayout row = new HorizontalLayout();
+    //first row    
+    HorizontalLayout row = new HorizontalLayout();
         row.setSizeFull();
         row.setMargin(new MarginInfo(true, true, false, true));
         row.setSpacing(true);
-        getSubWiseComparisonList();
-        row.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
-
+        
+//        getSubWiseComparisonList();
+//        row.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
+        
+        row.addComponent(UIUtils.createPanel(UIUtils.getSubwiseProgressChart()));
+        
+        addComponent(row);
+        setExpandRatio(row, 1.5f);
+        setComponentAlignment(row, Alignment.MIDDLE_CENTER);
+        
+        
+        row = new HorizontalLayout();
+        row.setSizeFull();
+        row.setMargin(new MarginInfo(true, true, false, true));
+        row.setSpacing(true);
+        
+        CssLayout activityChart=UIUtils.createPanel(UIUtils.getMyActivityLogsPeiChart());
+        activityChart.setSizeFull();
+        row.addComponent(activityChart);
+        
+        CssLayout attendanceChart=UIUtils.createPanel(UIUtils.getMyAttendancePeiChart());
+        attendanceChart.setSizeFull();
+        row.addComponent(attendanceChart);
+        
         addComponent(row);
         setExpandRatio(row, 1.5f);
         setComponentAlignment(row, Alignment.MIDDLE_CENTER);
         
     }
-
-public  List<ExamBean> getSubWiseComparisonList() {
-       
-         List<ExamBean> subWiseComparisonList = null;
-        try {
-            Client client = Client.create();
-            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_SUB_WISE_COMPARISON));
-            //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
-            JSONObject inputJson = new JSONObject();
-             try
-             {           
-                Userprofile userprofile = (Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile);
-                inputJson.put("std", userprofile.getStd());
-                inputJson.put("div", userprofile.getDiv());
-                inputJson.put("username",userprofile.getUsername());
-             }catch(Exception ex){
-                 ex.printStackTrace();
-             }
-            
-            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
-            
-            JSONObject outNObject = null;
-            String output = response.getEntity(String.class);
-            outNObject = new JSONObject(output);
-
-            java.lang.reflect.Type listType = new TypeToken<ArrayList<ExamBean>>() {
-            }.getType();
-            
-            subjectWiseAvgPerformanceList = new Gson().fromJson(outNObject.getString(GlobalConstants.subjectWiseAvgPerformance), listType);
-            subwiseAvgScoreForStud = new Gson().fromJson(outNObject.getString(GlobalConstants.subwiseAvgScoreForStud), listType);
-        } catch (JSONException ex) 
-        {
-            ex.printStackTrace();
-          //  L.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return subWiseComparisonList;            
-    }
-
-/**
-     * @return the subjectWiseAvgPerformanceList
-     */
-    public List<ExamBean> getSubjectWiseAvgPerformanceList() {
-        return subjectWiseAvgPerformanceList;
-    }
-
-    /**
-     * @param subjectWiseAvgPerformanceList the subjectWiseAvgPerformanceList to set
-     */
-    public void setSubjectWiseAvgPerformanceList(List<ExamBean> subjectWiseAvgPerformanceList) {
-        this.subjectWiseAvgPerformanceList = subjectWiseAvgPerformanceList;
-    }
-
-    /**
-     * @return the subwiseAvgScoreForStud
-     */
-    public List<ExamBean> getSubwiseAvgScoreForStud() {
-        return subwiseAvgScoreForStud;
-    }
-
-    /**
-     * @param subwiseAvgScoreForStud the subwiseAvgScoreForStud to set
-     */
-    public void setSubwiseAvgScoreForStud(List<ExamBean> subwiseAvgScoreForStud) {
-        this.subwiseAvgScoreForStud = subwiseAvgScoreForStud;
-    }
-    
-
 }

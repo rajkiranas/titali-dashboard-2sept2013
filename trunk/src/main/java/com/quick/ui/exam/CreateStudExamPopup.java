@@ -554,16 +554,16 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
                 int status = Integer.parseInt(outNObject.getString(GlobalConstants.STATUS));
                 if(status == GlobalConstants.YES)
                 {
-                    Notification.show("Successfully created exam", Notification.Type.WARNING_MESSAGE);
+                    Notification.show("Successfully submitted exam", Notification.Type.WARNING_MESSAGE);
                 }
                 else
                 {
-                    Notification.show("Exam creation failed", Notification.Type.WARNING_MESSAGE);
+                    Notification.show("Exam submission failed", Notification.Type.WARNING_MESSAGE);
                 }
             } 
             catch (JSONException ex) 
             {
-                Notification.show("Exam creation failed", Notification.Type.WARNING_MESSAGE);
+                Notification.show("Exam submission failed", Notification.Type.WARNING_MESSAGE);
                 ex.printStackTrace();
             }
     }

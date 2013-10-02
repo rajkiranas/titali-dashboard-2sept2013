@@ -347,9 +347,9 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
             public void selectedTabChange(SelectedTabChangeEvent event) {
                  //loggedInUserProfile will be null when this quick learn screen loads
                 // and the control comes first to this tab change method before user profile gets its value in enter method
-                if(loggedInUserProfile!=null){
-                    sendWhosDoingWhatNotificationToStudents(editors.getTab(event.getTabSheet().getSelectedTab()).getCaption());
-                }
+//                if(loggedInUserProfile!=null){
+//                   // sendWhosDoingWhatNotificationToStudents(editors.getTab(event.getTabSheet().getSelectedTab()).getCaption());
+//                }
             }
         };
             
@@ -391,10 +391,10 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
              
               //loggedInUserProfile will be null when this quick learn screen loads
                 // and the control comes first to this tab change method before user profile gets its value in enter method
-             if(loggedInUserProfile!=null){
-                
-                    //sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through);
-                }
+//             if(loggedInUserProfile!=null){
+//                
+//                    //sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through);
+//                }
              
              //stopVideoBuffering();
              
@@ -742,7 +742,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
     }  
     
     
-    private void sendWhosDoingWhatNotificationToStudents(String activity){
+    private void sendWhosDoingWhatNotificationToStudents(String activity, String subject){
         try {
             JSONObject inputRequest = new JSONObject();
             
@@ -752,7 +752,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
                 inputRequest.put("doingwhat",activity);
                 inputRequest.put("div",loggedInUserProfile.getDiv());
                 inputRequest.put("std",loggedInUserProfile.getStd());
-                inputRequest.put("sub","English");
+                inputRequest.put("sub",subject);
                 inputRequest.put("topic",getTopicForNotification());
                                    
             Client client = Client.create();
@@ -787,7 +787,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
                 setUploadId(bean.getUploadId());
                 setTopicForNotification(bean.getTopic());
                 setStudQuikLearnDetails(getStudentQuickLearnDetails());
-                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through);
+                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub());
                 UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes(),getUploadId()));
                     
             }

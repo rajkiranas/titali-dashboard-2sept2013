@@ -123,8 +123,8 @@ public class CustomPieChart extends Chart {
         
         conf.setSeries(series);
         chart.drawChart(conf);
-        chart.setWidth("70%");
-        chart.setHeight("85%");
+        chart.setWidth("100%");
+        chart.setHeight("100%");
         return chart;
     }
      
