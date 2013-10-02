@@ -306,7 +306,7 @@ public class StudentExam extends VerticalLayout implements View  {
         examlistTbl.select(examlistTbl.firstItemId());
         row1.addComponent(UIUtils.createPanel(examlistTbl));
         
-        row1.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
+        //row1.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
         
         getExamScoreComparisonBarChart();
         barchartAdded=1;
@@ -394,14 +394,20 @@ public class StudentExam extends VerticalLayout implements View  {
             v.setSizeFull();
             v.addComponent(examDeatils);
             v.setComponentAlignment(examDeatils,Alignment.MIDDLE_CENTER);
-            v.setExpandRatio(examDeatils, 2);
+            v.setExpandRatio(examDeatils, 2.5f);
             
             if(ebList!=null && ebList.size()>0)
             {
+                HorizontalLayout h = new HorizontalLayout();
+                h.setSizeFull();
                 Label contestLine=new Label("<b><h3>"+ebList.get(0).getContestLine()+"</h3></b>", ContentMode.HTML);
-                v.addComponent(contestLine);
-                v.setComponentAlignment(contestLine,Alignment.MIDDLE_CENTER);
-                v.setExpandRatio(contestLine, 1);
+                h.addComponent(contestLine);
+                h.setComponentAlignment(contestLine, Alignment.MIDDLE_CENTER);
+                h.addStyleName("YellowBackground");
+                
+                v.addComponent(h);
+                v.setComponentAlignment(h,Alignment.MIDDLE_CENTER);
+                v.setExpandRatio(h, 0.5f);
             }
             
             cssLayoutFormAndBarGraph=UIUtils.createPanel(v);

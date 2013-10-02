@@ -84,6 +84,7 @@ public class StudentExamDataProvider {
 
     public static Component getMyExamPieChart(List<ExamBean> subjectWiseAvgPerformanceList, List<ExamBean> subwiseAvgScoreForStud) {
         HorizontalLayout baseLayout = new HorizontalLayout();
+        baseLayout.setCaption("My score");
         baseLayout.setSizeFull();
         
         String[] xAxisCategories =  new String[subjectWiseAvgPerformanceList.size()];
@@ -117,7 +118,7 @@ public class StudentExamDataProvider {
           baseLayout.setExpandRatio(l2, 2); */
         //UIUtils.getBarChart(xAxisCategories, scores, "Subjectwise comparison", "Score", "Marks", "300px", "300px");
         
-        baseLayout.addComponent(UIUtils.getColumnChart(xAxisCategories, classAvgScore,studAvgScore, "My subjectwise performance", "Score", "Marks", "100%", "100%"));
+        baseLayout.addComponent(UIUtils.getColumnChart(xAxisCategories, classAvgScore,studAvgScore, "Subjectwise comparison", "Score", "Marks", "100%", "100%"));
         return baseLayout;
     }
 

@@ -102,24 +102,34 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         tabsheet.addTab(getPreviousQuestionsLayout(),"Previous questions");
         CssLayout tabsheetLayout = UIUtils.createPanel(tabsheet);
         baseLayout.addComponent(tabsheetLayout);
-        baseLayout.setExpandRatio(tabsheetLayout,2.5f);
+        baseLayout.setExpandRatio(tabsheetLayout,2);
     }
     
-    private Component getVideoPathLayout() {
-       
+    private Component getVideoPathLayout() 
+    {
+           VerticalLayout layout = new VerticalLayout();
+           //layout.setSpacing(true);
+           layout.setWidth("100%");
+           layout.setHeight("100%");
+           layout.setMargin(new MarginInfo(true, true, false, true));
        
        if(this.quickLearnPojo.getVideoPath()!=null)
        {
-           final Video vPlayer;
+           Video vPlayer;
            // video is available, show it on video player
            vPlayer = new Video();
            vPlayer.setImmediate(true);
            vPlayer.setWidth("100%");
-           vPlayer.setHeight("40%");
+           vPlayer.setHeight("100%");
            vPlayer.setMuted(false);
            vPlayer.addSource(new FileResource(new File(this.quickLearnPojo.getVideoPath())));
            vPlayer.setShowControls(true);
-           return vPlayer;
+           vPlayer.setHtmlContentAllowed(true);
+           vPlayer.setAltText("Can't play media");
+           //return vPlayer;
+           layout.addComponent(vPlayer);
+           layout.setComponentAlignment(vPlayer, Alignment.MIDDLE_CENTER);
+         return layout;
            
 //           HorizontalLayout h = new HorizontalLayout();
 //           h.setWidth("100%");
@@ -156,11 +166,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
        }
        else
        {
-           VerticalLayout layout = new VerticalLayout();
-           layout.setSpacing(true);
-           layout.setWidth("100%");
-           layout.setHeight("58%");
-           layout.setMargin(new MarginInfo(true, true, false, true));
+           
            // not video available, accept path from user
            Label lableNoVideo = new Label("<b><h3>No video available for this topic.</h3></b>", ContentMode.HTML);
            lableNoVideo.setImmediate(true);

@@ -13,6 +13,7 @@ package com.vaadin.demo.dashboard;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.quick.bean.ExamBean;
 import com.quick.bean.MasteParmBean;
 import com.quick.bean.MyDashBoardBean;
 import com.quick.bean.Userprofile;
@@ -313,13 +314,89 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         
         
         //row.addComponent(createPanel(new TopSixTheatersChart()));
-        Component c=createPanel(getMyPerformance());
-        row.addComponent(c);
+//        Component c=createPanel(getMyPerformance());
+//        row.addComponent(c);
+        
+        getSubWiseComparisonList();
+//        HorizontalLayout hl = new HorizontalLayout();
+//        hl.setCaption("My score");
+//        hl.setSizeFull();
+//        hl.addComponent(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud()));
+        row.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
         
 //        row.setExpandRatio(whosDoingWhatTable, 3);
 //        row.setExpandRatio(c, 1);
 
         
+    }
+    
+    public  List<ExamBean> getSubWiseComparisonList() {
+       
+         List<ExamBean> subWiseComparisonList = null;
+        try {
+            Client client = Client.create();
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_SUB_WISE_COMPARISON));
+            //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
+            JSONObject inputJson = new JSONObject();
+             try
+             {           
+                Userprofile userprofile = (Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile);
+                inputJson.put("std", userprofile.getStd());
+                inputJson.put("div", userprofile.getDiv());
+                inputJson.put("username",userprofile.getUsername());
+             }catch(Exception ex){
+                 ex.printStackTrace();
+             }
+            
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
+            
+            JSONObject outNObject = null;
+            String output = response.getEntity(String.class);
+            outNObject = new JSONObject(output);
+
+            java.lang.reflect.Type listType = new TypeToken<ArrayList<ExamBean>>() {
+            }.getType();
+            
+            subjectWiseAvgPerformanceList = new Gson().fromJson(outNObject.getString(GlobalConstants.subjectWiseAvgPerformance), listType);
+            subwiseAvgScoreForStud = new Gson().fromJson(outNObject.getString(GlobalConstants.subwiseAvgScoreForStud), listType);
+        } catch (JSONException ex) 
+        {
+            ex.printStackTrace();
+          //  L.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return subWiseComparisonList;            
+    }
+    
+    private List<ExamBean> subjectWiseAvgPerformanceList;
+    
+    private List<ExamBean> subwiseAvgScoreForStud;
+    
+    /**
+     * @return the subjectWiseAvgPerformanceList
+     */
+    public List<ExamBean> getSubjectWiseAvgPerformanceList() {
+        return subjectWiseAvgPerformanceList;
+    }
+
+    /**
+     * @param subjectWiseAvgPerformanceList the subjectWiseAvgPerformanceList to set
+     */
+    public void setSubjectWiseAvgPerformanceList(List<ExamBean> subjectWiseAvgPerformanceList) {
+        this.subjectWiseAvgPerformanceList = subjectWiseAvgPerformanceList;
+    }
+
+    /**
+     * @return the subwiseAvgScoreForStud
+     */
+    public List<ExamBean> getSubwiseAvgScoreForStud() {
+        return subwiseAvgScoreForStud;
+    }
+
+    /**
+     * @param subwiseAvgScoreForStud the subwiseAvgScoreForStud to set
+     */
+    public void setSubwiseAvgScoreForStud(List<ExamBean> subwiseAvgScoreForStud) {
+        this.subwiseAvgScoreForStud = subwiseAvgScoreForStud;
     }
 
     Window notifications;
@@ -497,7 +574,8 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         hl.setSizeFull();
 //        Label l = new Label("<table width='50%' height='100%' border='0' bgcolor='purple'><tr><td align=center><font face='verdana' color='white' align=center><h1><b>4.5</b></h1> out of 5</font></td></tr></table>", ContentMode.HTML);
 //        l.setSizeFull();
-        hl.addComponent(UIUtils.getColumnChart(xAxisCategories, classAvgScore,studAvgScore, "My score comparison", "Score", "Marks", "200px", "100%"));
+        //hl.addComponent(UIUtils.getColumnChart(xAxisCategories, classAvgScore,studAvgScore, "My score comparison", "Score", "Marks", "200px", "100%"));
+        hl.addComponent(UIUtils.getMyPerformanceChart());
         return hl;
     }
 
