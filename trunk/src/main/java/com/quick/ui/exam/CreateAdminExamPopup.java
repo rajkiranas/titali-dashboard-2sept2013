@@ -459,7 +459,7 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
         if(btn==createQueBtn){
             
             createNewQuestion();
-            noOfQue++;
+            
             
         }
         else if(btn == finishExamButton)
@@ -470,15 +470,15 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
         {   
             getNextQuestion();
              
-        }else if(btn==previousbtn){
+        }else if(btn==previousbtn)
+        {
             getPreviouseQuestion();
         }
-        else if(btn == createExamBtn){
+        else if(btn == createExamBtn)
+        {
             if(validateExmDtls()){
                  baseHorizontalSplit.setSecondComponent(getsecondComponent());
-                 
             }
-           
         }
     }
 
@@ -527,6 +527,8 @@ public class CreateAdminExamPopup extends Window implements Button.ClickListener
           op4txt.setValue(GlobalConstants.emptyString);
           question.setValue(GlobalConstants.emptyString); 
        
+          
+          noOfQue++;
         }
         
     }

@@ -445,7 +445,7 @@ public class DashboardUI extends UI{
 
         viewNameToMenuButton.get("/dashboard").setHtmlContentAllowed(true);
         viewNameToMenuButton.get("/dashboard").setCaption(
-                "Dashboard<span class=\"badge\">2</span>");
+                "Dashboard<span class=\"badge\">5</span>");
 
         String f = Page.getCurrent().getUriFragment();
         if (f != null && f.startsWith("!")) {
