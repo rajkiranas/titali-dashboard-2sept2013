@@ -14,6 +14,7 @@ import com.quick.bean.Userprofile;
 import com.quick.data.MasterDataProvider;
 import com.quick.entity.Std;
 import com.quick.global.GlobalConstants;
+import com.quick.utilities.UIUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -70,8 +71,8 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
     private static final List<String> examTypeList = Arrays.asList(new String[]{
         "Objective", "Descriptive"});
                 //"Objective", "Descriptive","Hybrid"});
-    HorizontalSplitPanel baseLayout;
-    HorizontalLayout examTypeLayout;
+    private HorizontalSplitPanel baseHorizontalSplit;
+    private HorizontalLayout examTypeLayout;
     private Button createExamBtn;
     private int noOfQue = 0;
     private Button previousbtn;
@@ -133,23 +134,23 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
     private void BuildUI() 
     {
         setStandardList(MasterDataProvider.getStandardList());
-        baseLayout = new HorizontalSplitPanel();
-        baseLayout.setSplitPosition(400,Sizeable.UNITS_PIXELS);
-        baseLayout.setSizeFull();
-        baseLayout.setImmediate(true);
+        baseHorizontalSplit = new HorizontalSplitPanel();
+        baseHorizontalSplit.setSplitPosition(380,Sizeable.UNITS_PIXELS);
+        baseHorizontalSplit.setSizeFull();
+        baseHorizontalSplit.setImmediate(true);
         
-        baseLayout.setFirstComponent(getfirstcomponet());
+        baseHorizontalSplit.setFirstComponent(getfirstcomponet());
         
-        baseLayout.setSecondComponent(getsecondComponent());
+        baseHorizontalSplit.setSecondComponent(getsecondComponent());
         createExamBtn.setVisible(false);
         
 //        Label l = new Label("<br><br><br><br><br><h1><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Please enter exam details <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and create the exam.</b></h1>", ContentMode.HTML);
 //        baseLayout.setSecondComponent(l);       
        
-        setContent(baseLayout);
+        setContent(baseHorizontalSplit);
     } 
     
-    private VerticalLayout getfirstcomponet(){
+    private CssLayout getfirstcomponet(){
         
         FormLayout examDetails = new FormLayout();
         
@@ -258,13 +259,15 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
        
        examDetailsVerticallayout.addComponent(examDetails);
        examDetailsVerticallayout.setComponentAlignment(examDetails, Alignment.MIDDLE_CENTER);
-       return examDetailsVerticallayout;
+       
+       CssLayout cl= UIUtils.createPanel(examDetailsVerticallayout);
+       cl.setCaption("Exam details");
+       return cl;
     }
 
     private VerticalLayout getsecondComponent() {
         
-       VerticalLayout  examDetailsBaselayput = new VerticalLayout();
-        examDetailsBaselayput.setSizeFull();
+       
       
 //         descriptiveBtn = new Button();
 //         descriptiveBtn.setVisible(false);
@@ -304,9 +307,8 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
 //        descAnsTextArea.setInputPrompt("Answer");
 //        descAnsTextArea.setWidth("100%");
 
-        AbsoluteLayout layout = new AbsoluteLayout();
-        layout.setHeight("300px");
-        layout.setWidth("500px");
+        VerticalLayout vertical = new VerticalLayout();
+        vertical.setSpacing(true);
         
         op1chk = new CheckBox();
         op1chk.setVisible(false);
@@ -341,7 +343,22 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
         op4txt.setVisible(false);
         op4txt.setInputPrompt("Option 4");
         examTypeLayout = new HorizontalLayout();
+        
+        vertical.addComponent(getHorizontalLayoutForTwoComponents(new Label(),question));
+        
+        vertical.addComponent(getHorizontalLayoutForTwoComponents(op1chk,op1txt));
+        
+        vertical.addComponent(getHorizontalLayoutForTwoComponents(op2chk,op2txt));
+        
+        vertical.addComponent(getHorizontalLayoutForTwoComponents(op3chk,op3txt));
+        
+        vertical.addComponent(getHorizontalLayoutForTwoComponents(op4chk,op4txt));
+        
        
+        HorizontalLayout buttonHorizontal = new HorizontalLayout();
+        buttonHorizontal.setSpacing(true);
+        buttonHorizontal.setMargin(true);
+        
        if(isNewExam){
            
            previousbtn = new Button("Previous");
@@ -359,9 +376,13 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
             finishExamButton.setImmediate(true);
             finishExamButton.setStyleName(GlobalConstants.default_style);
             
-            layout.addComponent(previousbtn, "left:5px;top:220px;");
-            layout.addComponent(nextBtn, "left:120px;top:220px;");
-            layout.addComponent(finishExamButton, "left:210px;top:220px;");
+            buttonHorizontal.addComponent(previousbtn);
+            buttonHorizontal.addComponent(nextBtn);
+            buttonHorizontal.addComponent(finishExamButton);
+            
+            buttonHorizontal.setComponentAlignment(previousbtn, Alignment.MIDDLE_CENTER);
+            buttonHorizontal.setComponentAlignment(nextBtn, Alignment.MIDDLE_CENTER);
+            buttonHorizontal.setComponentAlignment(finishExamButton, Alignment.MIDDLE_CENTER);
             
             /* createQueBtn.setVisible(true);
             finishExamButton.setVisible(true); */
@@ -374,33 +395,42 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
            previousbtn = new Button("Previous");
            previousbtn.addClickListener((Button.ClickListener)this);
            previousbtn.setImmediate(true);
-           previousbtn.setStyleName(GlobalConstants.default_style);  
-           layout.addComponent(previousbtn, "left:50px;top:220px;");
-           layout.addComponent(nextBtn, "left:140px;top:220px;");
-       }       
-       
-        examTypeLayout.addComponent(question);       
-        layout.addComponent(examTypeLayout, "left:50px;top:0px;");
-        
-        //layout.addComponent(descAnsTextArea, "left:50px;top:60px;");     
-        
-        layout.addComponent(op1chk, "left:20px;top:60px;");
-        layout.addComponent(op1txt, "left:50px;top:60px;");
-        
-        layout.addComponent(op2chk, "left:20px;top:95px;");
-        layout.addComponent(op2txt, "left:50px;top:95px;");
-        
-        layout.addComponent(op3chk, "left:20px;top:130px;");
-        layout.addComponent(op3txt, "left:50px;top:130px;");
-        
-        layout.addComponent(op4chk, "left:20px;top:165px;");
-        layout.addComponent(op4txt, "left:50px;top:165px;");  
-        
-//        layout.addComponent(descriptiveBtn,"left:265px;top:20px;");
+           previousbtn.setStyleName(GlobalConstants.default_style);
+           
+           buttonHorizontal.addComponent(previousbtn);
+           buttonHorizontal.addComponent(nextBtn);
+           
+           buttonHorizontal.setComponentAlignment(previousbtn, Alignment.MIDDLE_CENTER);
+            buttonHorizontal.setComponentAlignment(nextBtn, Alignment.MIDDLE_CENTER);
+       }
        
 
-        examDetailsBaselayput.addComponent(layout);
-        examDetailsBaselayput.setComponentAlignment(layout, Alignment.MIDDLE_CENTER);
+       CssLayout cl=UIUtils.createPanel(vertical);
+        cl.setCaption("Question-Answers");
+        cl.setWidth("98%");
+//        cl.setHeight("98%");
+        
+        CssLayout clButton=UIUtils.createPanel(buttonHorizontal);
+        
+        clButton.setWidth("98%");
+        clButton.setHeight("98%");
+        
+        
+        VerticalLayout  examDetailsBaselayput = new VerticalLayout();
+        examDetailsBaselayput.setSizeFull();
+        
+        examDetailsBaselayput.addComponent(cl);
+        examDetailsBaselayput.setComponentAlignment(cl, Alignment.BOTTOM_CENTER);
+        examDetailsBaselayput.setExpandRatio(cl, 2);
+        
+        examDetailsBaselayput.addComponent(clButton);
+        examDetailsBaselayput.setComponentAlignment(clButton, Alignment.TOP_CENTER);
+        examDetailsBaselayput.setExpandRatio(clButton, 1);
+        
+        
+//       
+//        examDetailsBaselayput.addComponent(vertical);
+//        examDetailsBaselayput.setComponentAlignment(vertical, Alignment.MIDDLE_CENTER);
 
         
        setVisibilityOfQuestionsLayoutAccordingToExamType();
@@ -408,43 +438,70 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
         examTypeOpt.setReadOnly(true);
         return examDetailsBaselayput;      
     }
+    
+    private Component getHorizontalLayoutForTwoComponents(Component a, Component b)
+    {
+        HorizontalLayout h = new HorizontalLayout();
+        
+        h.setSizeFull();
+        h.addComponent(a);
+        h.addComponent(b);
+        
+        h.setExpandRatio(a, 0.5f);
+        h.setExpandRatio(b, 3f);
+        return h;
+    }
 
    
     @Override
     public void buttonClick(ClickEvent event) {
         Button btn = event.getButton();
         if(btn==createQueBtn){
+            if(validateQuesAnsForm())
+            {
+                createQuestionAnswerResponse();
+                noOfQue++;
+            }
             
-            createQuestionAnswerResponse();
-            noOfQue++;
             
         }
         else if(btn == finishExamButton)
         {
-            createQuestionAnswerResponse();
-           submitStudentExamResponseToDB(); 
+            if(validateQuesAnsForm())
+            {
+                createQuestionAnswerResponse();
+                submitStudentExamResponseToDB(); 
+            }
         }
         else if(btn==nextBtn)
         {   
-            createQuestionAnswerResponse();
-            noOfQue++;
-            getNextQuestion();
+            if(validateQuesAnsForm())
+            {
+                createQuestionAnswerResponse();
+                noOfQue++;
+                getNextQuestion();
+            }
              
-        }else if(btn==previousbtn){
-            createQuestionAnswerResponse();
-            getPreviouseQuestion();
+        }else if(btn==previousbtn)
+        {
+            if(validateQuesAnsForm())
+            {
+                createQuestionAnswerResponse();
+                getPreviouseQuestion();                
+            }
+            
         }
         else if(btn == createExamBtn){
             if(validateExmDtls()){
-                 baseLayout.setSecondComponent(getsecondComponent());
-                 
+                 baseHorizontalSplit.setSecondComponent(getsecondComponent());
             }
-           
         }
     }
 
-    private void createQuestionAnswerResponse() {
-        if(validateQuesAnsForm()){
+    private void createQuestionAnswerResponse() 
+    {
+        
+        
             
          ExamBean examBean = new ExamBean();
          examBean.setExamId(examIdForSubmittingAnswers);
@@ -477,7 +534,7 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
           op4txt.setValue(GlobalConstants.emptyString);
           question.setValue(GlobalConstants.emptyString);  */
        
-        }
+      
         
     }
 
@@ -711,7 +768,7 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
         }
 
         else if (examType.equals("Descriptive")) {
-            if (baseLayout.getSecondComponent() != null) {
+            if (baseHorizontalSplit.getSecondComponent() != null) {
                 //  baseLayout.removeComponent(baseLayout.getSecondComponent()); 
 //                descriptiveBtn.setVisible(false);
 //                descriptiveBtn.setCaption("Descriptive");
