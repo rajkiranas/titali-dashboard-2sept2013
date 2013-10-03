@@ -126,7 +126,7 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
     }
     
     
-    private VerticalLayout buildTabSheetLayout(String videoPath, String notes, String otherNotes, String previousQuestions) {
+    private VerticalLayout buildTabSheetLayout(String videoPath, String notes, String otherNotes, String previousQuestions, String strQuiz) {
         VerticalLayout mainVertical=new VerticalLayout();
         
            editors = new TabSheet();
@@ -136,6 +136,8 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
            editors.addTab(getNotesLayout(notes), "Notes");
            editors.addTab(getOtherNotesLayout(otherNotes), "Other references");
            editors.addTab(getPreviousQuestionsLayout(previousQuestions), "Previous Questions");
+           editors.addTab(getQuizLayout(strQuiz), "Quiz");
+           
            CssLayout cssTabsheetLayout = UIUtils.createPanel(editors);
            
            mainVertical.addComponent(cssTabsheetLayout);
@@ -301,6 +303,31 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
         
         layout.addComponent(previousQuestionsTextArea);
         layout.setExpandRatio(previousQuestionsTextArea, 2);
+        
+        return layout;
+        
+    }
+    
+    private TextArea quizTextArea;
+    private VerticalLayout getQuizLayout(String strQuiz) {
+        VerticalLayout layout= new VerticalLayout();
+        layout.setSizeFull();
+        layout.setSpacing(true);
+        layout.setMargin(true);
+        
+        quizTextArea = new TextArea();
+        quizTextArea.setImmediate(true);
+        
+        quizTextArea.setSizeFull();
+        if(strQuiz!=null)
+        {
+            quizTextArea.setValue(strQuiz);
+        }
+        
+        quizTextArea.addValueChangeListener(this);
+        
+        layout.addComponent(quizTextArea);
+        layout.setExpandRatio(quizTextArea, 2);
         
         return layout;
         
@@ -483,6 +510,12 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
                 } else {
                     inputJson.put("pq", "no data");
                 }
+                
+                if (!quizTextArea.getValue().equals(GlobalConstants.emptyString)) {
+                    inputJson.put("quiz", quizTextArea.getValue());
+                } else {
+                    inputJson.put("quiz", "no data");
+                }
 
                 System.out.println("***** isNewQuickUpload="+isNewQuickUpload);
                 System.out.println("***** uploadId="+uploadId);
@@ -573,7 +606,7 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
         {
            row.removeComponent(cssTabSheetLayout);
         }
-        cssTabSheetLayout=UIUtils.createPanel(buildTabSheetLayout(getQuikLearnMasterParamDetails().getVideoPath(),getQuikLearnMasterParamDetails().getLectureNotes(),getQuikLearnMasterParamDetails().getOtherNotes(),getQuikLearnMasterParamDetails().getPreviousQuestion()));
+        cssTabSheetLayout=UIUtils.createPanel(buildTabSheetLayout(getQuikLearnMasterParamDetails().getVideoPath(),getQuikLearnMasterParamDetails().getLectureNotes(),getQuikLearnMasterParamDetails().getOtherNotes(),getQuikLearnMasterParamDetails().getPreviousQuestion(),getQuikLearnMasterParamDetails().getQuiz()));
        
 
         displayTopicInformation(getQuikLearnMasterParamDetails());
@@ -733,7 +766,7 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
             cancelbtn.setVisible(true);
             removeTabsheetLayout();
             //passing null below to create blank new video path layout,notes, other notes and questions so that admin can enter it
-            cssTabSheetLayout=UIUtils.createPanel(buildTabSheetLayout(null,null,null,null));
+            cssTabSheetLayout=UIUtils.createPanel(buildTabSheetLayout(null,null,null,null,null));
             row.addComponent(cssTabSheetLayout);
 
         } else if (source == savebtn) {
@@ -770,7 +803,7 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
              isNewQuickUpload=false;
              buildAndDisplaySelectedTopicInformation();
         }
-        else if(property==txtVideoPath || property==notesTextArea || property==otherNotesTextArea || property==previousQuestionsTextArea)
+        else if(property==txtVideoPath || property==notesTextArea || property==otherNotesTextArea || property==previousQuestionsTextArea || property==quizTextArea)
         {
             savebtn.setVisible(true);
         }
@@ -856,4 +889,6 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
             ex.printStackTrace();
         }
      }
+
+    
 }

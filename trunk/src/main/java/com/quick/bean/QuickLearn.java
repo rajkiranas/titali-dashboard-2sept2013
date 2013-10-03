@@ -27,6 +27,7 @@ public class QuickLearn {
      private String previousQuestion;
      private String previousQuestionInformation;
      private String topicTags;
+     private String quiz;
 
     public String getQuickNotes() {
         return QuickNotes;
@@ -156,6 +157,20 @@ public class QuickLearn {
 
     public void setVideoPath(String videoPath) {
         this.videoPath = videoPath;
+    }
+
+    /**
+     * @return the quiz
+     */
+    public String getQuiz() {
+        return quiz;
+    }
+
+    /**
+     * @param quiz the quiz to set
+     */
+    public void setQuiz(String quiz) {
+        this.quiz = quiz;
     }
    
     

@@ -36,6 +36,7 @@ public class MasteParmBean {
     private int activityId;
     private String byWhom;
     private String displaynotification;
+    private String quiz;
 
     public int getActivityId() {
         return activityId;
@@ -201,6 +202,20 @@ public class MasteParmBean {
      */
     public void setDisplaynotification(String displaynotification) {
         this.displaynotification = displaynotification;
+    }
+
+    /**
+     * @return the quiz
+     */
+    public String getQuiz() {
+        return quiz;
+    }
+
+    /**
+     * @param quiz the quiz to set
+     */
+    public void setQuiz(String quiz) {
+        this.quiz = quiz;
     }
 
    
