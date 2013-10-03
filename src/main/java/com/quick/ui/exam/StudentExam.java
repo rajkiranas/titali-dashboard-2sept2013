@@ -291,6 +291,7 @@ public class StudentExam extends VerticalLayout implements View  {
             public void valueChange(ValueChangeEvent event) {
                ExamBean eb = (ExamBean) event.getProperty().getValue(); 
                setSelectedExam(getSelectedExamDetailsById(eb.getExamId()));
+                System.out.println("//////////"+getSelectedExam().get(0).getResponseDt());
                updateExamDetails();
                getExamDetailsLayout(getSelectedExam());
                updateExamSummary();
@@ -655,10 +656,21 @@ public class StudentExam extends VerticalLayout implements View  {
         Date now = new Date();
         
         if (now.getTime() >= eb.getStartDt().getTime() && now.getTime() <= eb.getEndDt().getTime()) {
-            startExamBtn.setCaption(GlobalConstants.startExam);
-        } else if (now.getTime() > eb.getEndDt().getTime()) {
+            if( getSelectedExam().get(0).getResponseDt()==null)
+            {
+                startExamBtn.setCaption(GlobalConstants.startExam);
+            }
+            else
+            {
+                startExamBtn.setCaption(GlobalConstants.viewExam);
+            }
+        }
+        else if (now.getTime() > eb.getEndDt().getTime()) 
+        {
             startExamBtn.setCaption(GlobalConstants.viewExam);
-        } else {
+        } 
+        else 
+        {
             startExamBtn.setVisible(false);
         }
     }

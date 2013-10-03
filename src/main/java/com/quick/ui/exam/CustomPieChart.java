@@ -15,6 +15,7 @@ import com.vaadin.addon.charts.model.Labels;
 import com.vaadin.addon.charts.model.PlotOptionsPie;
 import com.vaadin.addon.charts.model.style.SolidColor;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -86,6 +87,7 @@ public class CustomPieChart extends Chart {
         Configuration conf = chart.getConfiguration();
 
         conf.setTitle(chartDescription);
+        conf.setSubTitle("Last updated - "+new Date());
 
         PlotOptionsPie plotOptions = new PlotOptionsPie();
         plotOptions.setCursor(Cursor.POINTER);

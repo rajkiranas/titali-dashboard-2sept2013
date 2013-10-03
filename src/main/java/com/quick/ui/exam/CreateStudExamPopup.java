@@ -59,7 +59,8 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
     private Button finishExamButton;
     private List<Std> standardList;
     private List<QuickLearn> subjectList;
-    private List<ExamBean> questionAnswerList = new ArrayList<ExamBean>();
+    private List<ExamBean> questionAnswerList;
+    private Map<String,ExamBean> questionAnswerMap = new HashMap<String,ExamBean>();
     private boolean isNewExam=false;
     private Button nextBtn;
     private List<ExamQueAnsBean> examQueAnsBeanList;
@@ -72,7 +73,7 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
         "Objective", "Descriptive"});
                 //"Objective", "Descriptive","Hybrid"});
     private HorizontalSplitPanel baseHorizontalSplit;
-    private HorizontalLayout examTypeLayout;
+    
     private Button createExamBtn;
     private int noOfQue = 0;
     private Button previousbtn;
@@ -119,7 +120,15 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
         setCaption(GlobalConstants.startExam);
         center();        
        // setClosable(false);
-        isNewExam=true;
+        if(this.studExamCaption.equals(GlobalConstants.viewExam))
+        {
+            isNewExam=false;
+        }
+        else
+        {
+            isNewExam=true;
+        }
+        
         setWidth("80%");
         setHeight("80%");        
         BuildUI();
@@ -314,21 +323,25 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
         op1chk.setVisible(false);
         op1chk.setImmediate(true);
         op1chk.addValueChangeListener(this);
+        op1chk.setEnabled(isNewExam);
         
         op2chk = new CheckBox();
         op2chk.setVisible(false);
         op2chk.setImmediate(true);
         op2chk.addValueChangeListener(this);
+        op2chk.setEnabled(isNewExam);
         
         op3chk = new CheckBox();
         op3chk.setVisible(false);
         op3chk.setImmediate(true);
         op3chk.addValueChangeListener(this);
+        op3chk.setEnabled(isNewExam);
         
         op4chk = new CheckBox();
         op4chk.setVisible(false);
         op4chk.setImmediate(true);
         op4chk.addValueChangeListener(this);
+        op4chk.setEnabled(isNewExam);
          
         op1txt = new TextField();
         op1txt.setVisible(false);
@@ -342,7 +355,7 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
         op4txt = new TextField();
         op4txt.setVisible(false);
         op4txt.setInputPrompt("Option 4");
-        examTypeLayout = new HorizontalLayout();
+        
         
         vertical.addComponent(getHorizontalLayoutForTwoComponents(new Label(),question));
         
@@ -474,7 +487,7 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
             }
         }
         else if(btn==nextBtn)
-        {   
+        {
             if(validateQuesAnsForm())
             {
                 createQuestionAnswerResponse();
@@ -540,10 +553,7 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
 
     private void addIntoQuestionList(ExamBean examBean)
     {
-        if(!questionAnswerList.contains(examBean)){
-             questionAnswerList.add(examBean);
-        }
-       
+        questionAnswerMap.put(examBean.getQuestionId(),examBean);        
     }
 
     private void submitStudentExamResponseToDB() {
@@ -581,6 +591,7 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
 
                 JSONObject examJSONObject = new JSONObject();
                 Gson gson = new Gson();
+                populateQuestionAnsWerListFromMap();
                 String questionAnswerListJSON = gson.toJson(questionAnswerList);
                 examJSONObject.put("examId",examIdForSubmittingAnswers);
                 examJSONObject.put("userId",((Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile)).getUsername());
@@ -844,6 +855,13 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
     
      private boolean validateQuesAnsForm()
     {
+        //first iff block 
+        //this will not validate if it is view only
+        //i.e student is just view the exam
+        if(!isNewExam)
+        {
+            return true;
+        }
         
         if(question.getValue().trim().equals(GlobalConstants.emptyString)){
             Notification.show("Please enter Question.", Notification.Type.WARNING_MESSAGE);
@@ -1071,6 +1089,19 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
     public void valueChange(ValueChangeEvent event) {
         CheckBox c = (CheckBox) event.getProperty();
         checkSelectedAnswer(c);
+    }
+
+    private void populateQuestionAnsWerListFromMap() 
+    {
+        questionAnswerList = new ArrayList<ExamBean>();
+        Set<String> keySet = questionAnswerMap.keySet();
+        Iterator<String> itr = keySet.iterator();
+        String key=GlobalConstants.emptyString;
+        while(itr.hasNext())
+        {
+            key = itr.next();
+            questionAnswerList.add(questionAnswerMap.get(key));
+        }
     }
     
 }

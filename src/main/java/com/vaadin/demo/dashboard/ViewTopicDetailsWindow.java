@@ -100,6 +100,8 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         tabsheet.addTab(getNotesLayout(),"Notes");
         tabsheet.addTab(getOtherNotesLayout(),"Other references");
         tabsheet.addTab(getPreviousQuestionsLayout(),"Previous questions");
+        tabsheet.addTab(getQuizLayout(),"Quiz");
+        
         CssLayout tabsheetLayout = UIUtils.createPanel(tabsheet);
         baseLayout.addComponent(tabsheetLayout);
         baseLayout.setExpandRatio(tabsheetLayout,2);
@@ -121,11 +123,11 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
            vPlayer.setImmediate(true);
            vPlayer.setWidth("100%");
            vPlayer.setHeight("100%");
-           vPlayer.setMuted(false);
+           
            vPlayer.addSource(new FileResource(new File(this.quickLearnPojo.getVideoPath())));
            vPlayer.setShowControls(true);
-           vPlayer.setHtmlContentAllowed(true);
-           vPlayer.setAltText("Can't play media");
+           vPlayer.setMuted(false);
+           
            //return vPlayer;
            layout.addComponent(vPlayer);
            layout.setComponentAlignment(vPlayer, Alignment.MIDDLE_CENTER);
@@ -253,6 +255,31 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         
         layout.addComponent(previousQuestionsTextArea);
         layout.setExpandRatio(previousQuestionsTextArea, 2);
+        
+        return layout;
+        
+    }
+    
+    private VerticalLayout getQuizLayout() {
+        VerticalLayout layout= new VerticalLayout();
+        layout.setSizeFull();
+        layout.setSpacing(true);
+        layout.setMargin(true);
+        
+        TextArea quizTextArea;
+        quizTextArea = new TextArea();
+        
+        quizTextArea.setSizeFull();
+        if(this.quickLearnPojo.getQuiz()!=null)
+        {
+            quizTextArea.setValue(this.quickLearnPojo.getQuiz());
+        }
+        
+        quizTextArea.setImmediate(true);
+        quizTextArea.setReadOnly(true);
+        
+        layout.addComponent(quizTextArea);
+        layout.setExpandRatio(quizTextArea, 2);
         
         return layout;
         
