@@ -70,6 +70,7 @@ public class GlobalConstants
     public static final String dateFormatMMddyyyy="MM/dd/yyyy";
     public static final String Technologies="Technologies";
     public static final String category_distribution = "category_distribution";
+    public static final String eventDetailsList="eventDetailsList";
 
     
     
@@ -109,6 +110,7 @@ public class GlobalConstants
    public static  final String GET_ALL_TECHNOLOGY="GET_ALL_TECHNOLOGY";
    public static  final String GET_TECHNOLOGY_BY_CATEGORY="GET_TECHNOLOGY_BY_CATEGORY";
    public static  final String GET_SUB_WISE_COMPARISON="GET_SUB_WISE_COMPARISON";
+   public static  final String GET_All_FORUM_EVENTS="GET_All_FORUM_EVENTS";
    
    //public static final String UserMasterResource = "/UserMaster";
     

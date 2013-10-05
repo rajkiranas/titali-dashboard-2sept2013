@@ -27,6 +27,7 @@ import com.vaadin.annotations.Title;
 import com.quick.data.DataProvider;
 import com.quick.data.Generator;
 import com.quick.data.MyConverterFactory;
+import com.quick.forum.ForumView;
 import com.quick.notices.CreateNotices;
 import com.quick.ui.exam.AdminExam;
 import com.quick.ui.exam.StudentExam;
@@ -96,6 +97,7 @@ public class DashboardUI extends UI{
             put("/Technology",CreateUpcomingTechnology.class);
             put("/Exams",StudentExam.class);            
             put("/Notices",CreateNotices.class);
+            put("/Forum",ForumView.class);
             put("/reports", ReportsView.class);
             put("/upload",QuickUpload.class);            
             put("/Exam-Admin",AdminExam.class);
@@ -377,11 +379,11 @@ public class DashboardUI extends UI{
         });
 
         menu.removeAllComponents();
-
+ 
         /*for (final String view : new String[] { "dashboard", "learn",
                 "transactions", "reports", "schedule","student","teacher","upload","Exams" }) {*/
         String[]  actions;
-               actions= new String[] { "dashboard", "learn","Technology","Exams","Notices","reports",
+               actions= new String[] { "dashboard", "learn","Technology","Exams","Notices","Forum","reports",
             "upload","Exam-Admin","students","teachers" };
         
 //        if(userRole.equalsIgnoreCase(GlobalConstants.student))
