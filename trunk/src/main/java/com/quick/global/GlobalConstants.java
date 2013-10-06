@@ -71,6 +71,8 @@ public class GlobalConstants
     public static final String Technologies="Technologies";
     public static final String category_distribution = "category_distribution";
     public static final String eventDetailsList="eventDetailsList";
+    public static final String FILE_UPLOAD_PATH="FILE_UPLOAD_PATH";
+    public static final String FILE_DOWNLOAD_PATH="FILE_DOWNLOAD_PATH";
 
     
     
@@ -111,6 +113,7 @@ public class GlobalConstants
    public static  final String GET_TECHNOLOGY_BY_CATEGORY="GET_TECHNOLOGY_BY_CATEGORY";
    public static  final String GET_SUB_WISE_COMPARISON="GET_SUB_WISE_COMPARISON";
    public static  final String GET_All_FORUM_EVENTS="GET_All_FORUM_EVENTS";
+   public static  final String SAVE_EVENT_DETAILS="SAVE_EVENT_DETAILS";
    
    //public static final String UserMasterResource = "/UserMaster";
     

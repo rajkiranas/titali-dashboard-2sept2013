@@ -5,12 +5,14 @@ import java.text.SimpleDateFormat;
 
 import com.quick.data.DataProvider.Movie;
 import com.quick.entity.ForumEventDetails;
+import com.quick.utilities.MyImageSource;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -48,8 +50,8 @@ public class ForumDetailWraper extends VerticalLayout {
 //        final Image coverImage = new Image("", new ExternalResource(
 //                ""));
 //        
-        Embedded coverImage =  new Embedded("Image from a theme resource",
-                new ThemeResource("./img/dashboard-pie.png"));
+//        Embedded coverImage =  new Embedded("Image from a theme resource",
+//                new ThemeResource("./img/dashboard-pie.png"));
 
 //        StreamResource imageResource = null;
 //        StreamResource.StreamSource source = new StreamResource.StreamSource() {
@@ -61,13 +63,23 @@ public class ForumDetailWraper extends VerticalLayout {
 //        };
 //        
 //     
-//         imageResource = new StreamResource(source, "dfs");
+//         imageResource = new StreamResource(source, eventDetails.getImageFileName());
 //      
 //          Embedded coverImage =  new Embedded("Image from a theme resource",
-//                imageResource);
-//
-
-
+//                 (Resource)imageResource);
+        
+        // Create an instance of our stream source.
+StreamResource.StreamSource imagesource = new MyImageSource (eventDetails.getEventImage());
+	
+// Create a resource that uses the stream source and give it a name.
+// The constructor will automatically register the resource in
+// the application.
+StreamResource resource = new StreamResource(imagesource, "myimage.png");
+ 
+// Create an image component that gets its contents
+// from the resource.
+//layout.addComponent(new Image("Image title", resource));
+Image coverImage =new Image("Image", resource);
 
 
         coverImage.setHeight("150px");
@@ -133,8 +145,8 @@ public class ForumDetailWraper extends VerticalLayout {
 //        }
 
         
-        String cap = "<h3><b>"+eventDetails.getEventDesc()+"</b></h3>"+"<h4><b> by "
-                +eventDetails.getEventOwner()+"</b></h4>"+"<h4><b> on "+eventDetails.getEventDate()+"</b></h4>";
+        String cap = "<h3><b>"+eventDetails.getEventDesc()+"</b></h3>"+"<h4> by <b>"
+                +eventDetails.getEventOwner()+"</b></h4>"+"<h4> on <b>"+eventDetails.getEventDate()+"</b></h4>";
         label = new Label(cap,ContentMode.HTML);
         label.setSizeUndefined();
         //label.setCaption("");

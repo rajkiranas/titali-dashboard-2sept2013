@@ -25,9 +25,12 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +39,8 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class ForumView extends VerticalLayout implements View {
 
-    Table forumTable;
+    private Table forumTable;
+    private String New="New";
     private List <ForumEventDetails> forumEventDetailsList;
 
     public List<ForumEventDetails> getForumEventDetailsList() {
@@ -51,6 +55,7 @@ public class ForumView extends VerticalLayout implements View {
     public void enter(ViewChangeEvent event) {
 //        setSizeFull();
         addStyleName("schedule");
+        addStyleName("dashboard");
         //addComponent(buildDraftsView());
         buildHeaderView();
         buildBodyView();
@@ -69,6 +74,20 @@ public class ForumView extends VerticalLayout implements View {
         top.addComponent(title);
         top.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
         top.setExpandRatio(title, 1);
+        
+        Button newEventBtn =  new Button(New);
+        newEventBtn.setImmediate(true);
+        newEventBtn.addStyleName("default");
+        newEventBtn.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                UI.getCurrent().addWindow(new NewEventWindow());
+            }
+        });
+        
+        top.addComponent(newEventBtn);
+        top.setComponentAlignment(newEventBtn, Alignment.MIDDLE_RIGHT);
+        top.setExpandRatio(newEventBtn, 1);
         
         addComponent(top);
     }
@@ -97,7 +116,7 @@ public class ForumView extends VerticalLayout implements View {
         };
           
         forumTable.addContainerProperty("", VerticalLayout.class, null);
-        forumTable.setCaption("Forum");
+        //forumTable.setCaption("Forum");
 
         forumTable.setWidth("100%");
         forumTable.setPageLength(2);
@@ -112,6 +131,7 @@ public class ForumView extends VerticalLayout implements View {
             forumTable.addItem(new Object[]{new ForumDetailWraper(eventDetails) },forumTable.size()+1);
         }
         
+        //forumTable.setColumnHeaderMode(Table.ColumnHeaderMode.HIDDEN);
         addComponent(forumTable);
         setExpandRatio(forumTable, 1.5f);
      
