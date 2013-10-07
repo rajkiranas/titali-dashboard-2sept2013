@@ -1,11 +1,13 @@
 package com.quick.forum;
 
+import com.quick.bean.ForumEventDetailsBean;
 import com.vaadin.demo.dashboard.*;
 import java.text.SimpleDateFormat;
 
 import com.quick.data.DataProvider.Movie;
 import com.quick.entity.ForumEventDetails;
 import com.quick.utilities.MyImageSource;
+import com.sun.jersey.core.util.Base64;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
@@ -36,7 +38,7 @@ public class ForumDetailWraper extends VerticalLayout {
 
     Label synopsis = new Label();
 
-    public ForumDetailWraper(final ForumEventDetails eventDetails) {
+    public ForumDetailWraper(final ForumEventDetailsBean eventDetails) {
        
         setCaption(eventDetails.getEventDesc());
         addStyleName("no-vertical-drag-hints");
@@ -69,7 +71,8 @@ public class ForumDetailWraper extends VerticalLayout {
 //                 (Resource)imageResource);
         
         // Create an instance of our stream source.
-StreamResource.StreamSource imagesource = new MyImageSource (eventDetails.getEventImage());
+        byte[] by=eventDetails.getStringImage().getBytes();
+StreamResource.StreamSource imagesource = new MyImageSource (Base64.decode(by));
 	
 // Create a resource that uses the stream source and give it a name.
 // The constructor will automatically register the resource in
@@ -196,7 +199,7 @@ Image coverImage =new Image("Image", resource);
 //        l.addComponent(footer);
     }
 
-    public void updateSynopsis(ForumEventDetails eventDetails, boolean expand) {
+    public void updateSynopsis(ForumEventDetailsBean eventDetails, boolean expand) {
         String synopsisText = synopsis.getData().toString();
         if (eventDetails.getEventBody() != null) {
             synopsisText = eventDetails.getEventBody();

@@ -13,6 +13,7 @@ package com.quick.forum;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.quick.bean.ExamBean;
+import com.quick.bean.ForumEventDetailsBean;
 import com.quick.bean.Userprofile;
 import java.text.DecimalFormat;
 import com.vaadin.data.Property;
@@ -41,13 +42,13 @@ public class ForumView extends VerticalLayout implements View {
 
     private Table forumTable;
     private String New="New";
-    private List <ForumEventDetails> forumEventDetailsList;
+    private List <ForumEventDetailsBean> forumEventDetailsList;
 
-    public List<ForumEventDetails> getForumEventDetailsList() {
+    public List<ForumEventDetailsBean> getForumEventDetailsList() {
         return forumEventDetailsList;
     }
 
-    public void setForumEventDetailsList(List<ForumEventDetails> forumEventDetail) {
+    public void setForumEventDetailsList(List<ForumEventDetailsBean> forumEventDetail) {
         this.forumEventDetailsList = forumEventDetail;
     }
 
@@ -126,7 +127,7 @@ public class ForumView extends VerticalLayout implements View {
         forumTable.setSortEnabled(false);
         setForumEventDetailsList(getForumDetailList());
         
-        for(ForumEventDetails eventDetails:getForumDetailList())
+        for(ForumEventDetailsBean eventDetails:getForumDetailList())
         {
             forumTable.addItem(new Object[]{new ForumDetailWraper(eventDetails) },forumTable.size()+1);
         }
@@ -137,7 +138,7 @@ public class ForumView extends VerticalLayout implements View {
      
     }
 
-    private List<ForumEventDetails> getForumDetailList() {
+    private List<ForumEventDetailsBean> getForumDetailList() {
         try {
             Client client = Client.create();
             WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_All_FORUM_EVENTS));
@@ -156,7 +157,7 @@ public class ForumView extends VerticalLayout implements View {
             String output = response.getEntity(String.class);
             outNObject = new JSONObject(output);
 
-            java.lang.reflect.Type listType = new TypeToken<ArrayList<ForumEventDetails>>() {
+            java.lang.reflect.Type listType = new TypeToken<ArrayList<ForumEventDetailsBean>>() {
             }.getType();
             
             forumEventDetailsList=new Gson().fromJson(outNObject.getString(GlobalConstants.eventDetailsList), listType);

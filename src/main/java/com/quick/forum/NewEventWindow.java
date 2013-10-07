@@ -4,6 +4,7 @@
  */
 package com.quick.forum;
 
+import com.google.gdata.util.common.util.Base64;
 import com.vaadin.demo.dashboard.*;
 import com.quick.bean.QuickLearn;
 import com.quick.bean.Userprofile;
@@ -180,7 +181,7 @@ public class NewEventWindow extends Window implements Button.ClickListener{
                 Userprofile loggedinProfile= (Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile);
                 inputJson.put("event_desc",subject.getValue());
                 inputJson.put("event_body", desc.getValue());
-                inputJson.put("image", FileUtils.getFileIntoByteArray(eventPicture));
+                inputJson.put("image", new String(Base64.encode(FileUtils.getFileIntoByteArray(eventPicture))));
                 inputJson.put("owner", loggedinProfile.getUsername());
                 inputJson.put("image_filename", imageFileName);
               
