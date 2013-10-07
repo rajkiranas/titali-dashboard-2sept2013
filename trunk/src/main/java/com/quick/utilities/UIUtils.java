@@ -215,12 +215,12 @@ public class UIUtils {
         return l;
     }
     
-    public static Component getMyPerformanceChart() {
+    public static Component getTeacherPerformanceChart() {
         Chart chart = new Chart(ChartType.COLUMN);
 
         Configuration conf = chart.getConfiguration();
 
-        conf.setTitle("My performance");
+        conf.setTitle("My class(es) performance");
         //conf.setSubTitle("Source: WorldClimate.com");
 
         XAxis x = new XAxis();
@@ -237,7 +237,7 @@ public class UIUtils {
         legend.setBackgroundColor("#FFFFFF");
         legend.setHorizontalAlign(HorizontalAlign.LEFT);
         legend.setVerticalAlign(VerticalAlign.TOP);
-        legend.setX(270);
+        legend.setX(300);
         legend.setY(10);
         legend.setFloating(true);
         legend.setShadow(true);
@@ -251,7 +251,7 @@ public class UIUtils {
         plot.setPointPadding(0.2);
         plot.setBorderWidth(0);
 
-        conf.addSeries(new ListSeries("My", 49.9));
+        conf.addSeries(new ListSeries("My", 75.9));
         conf.addSeries(new ListSeries("Avg", 83.6));
         conf.addSeries(new ListSeries("Low", 48.9));
         conf.addSeries(new ListSeries("Top", 90.1));
@@ -407,6 +407,107 @@ public class UIUtils {
         
         ls = new ListSeries();
         ls.setName("CS");
+        ls.setData(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.3, 0.0,
+                 7.9, 7.9, 7.5, 6.7, 7.7, 7.7, 7.4, 7.0, 7.1, 5.8, 5.9, 7.4,
+                0.0, 0.6, 1.2, 1.7, 0.7, 2.9, 4.1, 2.6, 3.7, 3.9, 1.7, 2.3,
+                3.0, 3.3, 4.8, 5.0, 4.8, 5.0, 3.2, 2.0, 0.9, 0.4, 0.3, 0.5, 0.4);
+        configuration.addSeries(ls);
+
+        chart.drawChart(configuration);
+
+//        final Button removePlotBand = new Button("Remove PlotBands");
+//        removePlotBand.setId("vaadin-button");
+//        removePlotBand.addClickListener(new Button.ClickListener() {
+//
+//            @Override
+//            public void buttonClick(ClickEvent event) {
+//                if (chart.getConfiguration().getyAxis().getPlotBands()
+//                        .isEmpty()) {
+//                    plotBands = createPlotBands(chart.getConfiguration()
+//                            .getyAxis());
+//                    removePlotBand.setCaption("Remove PlotBands");
+//                } else {
+//                    for (int i = 0; i < plotBands.length; i++) {
+//                        chart.getConfiguration().getyAxis()
+//                                .removePlotBand(plotBands[i]);
+//                    }
+//
+//                    removePlotBand.setCaption("Restore PlotBands");
+//                }
+//                chart.drawChart(configuration);
+//            }
+//        });
+
+        return chart;
+    }
+    
+    public static Component getTeacherSubClassWiseChart() {
+            
+
+        final Chart chart = new Chart();
+        chart.setSizeFull();
+
+        final Configuration configuration = new Configuration();
+        configuration.getChart().setType(ChartType.SPLINE);
+
+        configuration.getTitle().setText("Class wise growth");
+//        configuration
+//                .getSubTitle()
+//                .setText(
+//                        "October 6th and 7th 2009 at two locations in Vik i Sogn, Norway");
+
+        configuration.getxAxis().setType(AxisType.DATETIME);
+
+        Axis yAxis = configuration.getyAxis();
+        yAxis.setTitle("Progress");
+        yAxis.setMin(0);
+        yAxis.setMinorGridLineWidth(0);
+        yAxis.setGridLineWidth(0);
+
+        // disable alternate grid color from Vaadin theme, disturbs
+        // demonstrating plotbands
+        yAxis.setAlternateGridColor(TRANSPARENT);
+
+        plotBands = createPlotBands(yAxis);
+
+        configuration
+                .getTooltip()
+                .setFormatter(
+                        "Highcharts.dateFormat('%e. %b %Y, %H:00', this.x) +': '+ this.y +' m/s'");
+
+        PlotOptionsSpline plotOptions = new PlotOptionsSpline();
+        configuration.setPlotOptions(plotOptions);
+        plotOptions.setMarker(new Marker(false));
+        plotOptions.getMarker().setLineWidth(4);
+        MarkerStates states = new MarkerStates(new State(true));
+        states.getHover().setSymbol(MarkerSymbolEnum.CIRCLE);
+        states.getHover().setRadius(5);
+        states.getHover().setLineWidth(1);
+        plotOptions.getMarker().setStates(states);
+
+        plotOptions.setPointInterval(ONE_HOUR);
+        plotOptions.setPointStart(new Date(2009 - 1900, 9 - 1, 6).getTime());
+
+        ListSeries ls = new ListSeries();
+        ls.setName("MCA-I");
+        ls.setData(4.3, 5.1, 4.3, 5.2, 5.4, 4.7, 3.5, 4.1, 5.6, 7.4, 6.9, 7.1,
+                7.9, 7.9, 7.5, 6.7, 7.7, 7.7, 7.4, 7.0, 7.1, 5.8, 5.9, 7.4,
+                8.2, 8.5, 9.4, 8.1, 10.9, 10.4, 10.9, 12.4, 12.1, 9.5, 7.5,
+                7.1, 7.5, 8.1, 6.8, 3.4, 2.1, 1.9, 2.8, 2.9, 1.3, 4.4, 4.2,
+                3.0, 3.0);
+        configuration.addSeries(ls);
+
+        ls = new ListSeries();
+        ls.setName("MCA-II");
+        ls.setData(4.3, 5.1, 4.3, 5.2, 5.4, 4.7, 3.5, 4.1, 5.6, 7.4, 6.9, 7.1,
+                0.0, 0.4, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.6, 1.2, 1.7, 0.7, 2.9, 4.1, 2.6, 3.7, 3.9, 1.7, 2.3,
+                3.0, 3.3, 4.8, 5.0, 4.8, 5.0, 3.2, 2.0, 0.9, 0.4, 0.3, 0.5, 0.4);
+        configuration.addSeries(ls);
+        
+        
+        ls = new ListSeries();
+        ls.setName("MCA-III");
         ls.setData(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.3, 0.0,
                  7.9, 7.9, 7.5, 6.7, 7.7, 7.7, 7.4, 7.0, 7.1, 5.8, 5.9, 7.4,
                 0.0, 0.6, 1.2, 1.7, 0.7, 2.9, 4.1, 2.6, 3.7, 3.9, 1.7, 2.3,

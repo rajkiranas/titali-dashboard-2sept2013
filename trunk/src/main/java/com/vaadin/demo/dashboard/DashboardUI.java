@@ -564,8 +564,11 @@ public class DashboardUI extends UI{
                 Type listType = new TypeToken<ArrayList<Userprofile>>() {}.getType();
                 List<Userprofile> list =new Gson().fromJson(response1.getString(GlobalConstants.CurrentUserProfile), listType);
                 loggedinProfile=list.get(0);
-                getSession().setAttribute(GlobalConstants.CurrentUserProfile,loggedinProfile);
+                
                 userRole=response1.getString(GlobalConstants.role);
+                loggedinProfile.setRole(userRole);
+                
+                getSession().setAttribute(GlobalConstants.CurrentUserProfile,loggedinProfile);
                 
             } else {
                  Notification.show(GlobalNotifications.INVALID_CREDENTIALS);

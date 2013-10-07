@@ -317,13 +317,22 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
 //        Component c=createPanel(getMyPerformance());
 //        row.addComponent(c);
         
-        getSubWiseComparisonList();
 //        HorizontalLayout hl = new HorizontalLayout();
 //        hl.setCaption("My score");
 //        hl.setSizeFull();
 //        hl.addComponent(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud()));
-        row.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
         
+        
+        if(profile.getRole().equals(GlobalConstants.student))
+        {
+            getSubWiseComparisonList();
+            row.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
+
+        }
+        else
+        {
+            row.addComponent(UIUtils.createPanel(UIUtils.getTeacherPerformanceChart()));
+        }
 //        row.setExpandRatio(whosDoingWhatTable, 3);
 //        row.setExpandRatio(c, 1);
 
@@ -575,7 +584,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
 //        Label l = new Label("<table width='50%' height='100%' border='0' bgcolor='purple'><tr><td align=center><font face='verdana' color='white' align=center><h1><b>4.5</b></h1> out of 5</font></td></tr></table>", ContentMode.HTML);
 //        l.setSizeFull();
         //hl.addComponent(UIUtils.getColumnChart(xAxisCategories, classAvgScore,studAvgScore, "My score comparison", "Score", "Marks", "200px", "100%"));
-        hl.addComponent(UIUtils.getMyPerformanceChart());
+        //hl.addComponent(UIUtils.getMyPerformanceChart());
         return hl;
     }
 
