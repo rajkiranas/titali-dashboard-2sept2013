@@ -73,13 +73,11 @@ public class FileUtils {
             fileInputStream = new FileInputStream(file);
             fileInputStream.read(filebyte);
         } catch (FileNotFoundException ex) {
-           // Logger.getLogger(OfUserService.class.getName()).log(Level.SEVERE, null, ex);
+           ex.printStackTrace();
         } catch (IOException ex) {
-           // Logger.getLogger(OfUserService.class.getName()).log(Level.SEVERE, null, ex);
+           ex.printStackTrace();
         }
-        finally{
-            file.delete();
-        }
+        
         return filebyte;
     }
  

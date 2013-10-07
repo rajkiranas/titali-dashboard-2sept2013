@@ -49,13 +49,13 @@ public class MyImageSource implements StreamResource.StreamSource {
 
         try {
             /* Write the image to a buffer. */
-            imagebuffer = new ByteArrayOutputStream();
-            InputStream in = new ByteArrayInputStream(arr);
-            BufferedImage bImageFromConvert = ImageIO.read(in);
-            ImageIO.write(bImageFromConvert, "png", imagebuffer);
+//            imagebuffer = new ByteArrayOutputStream();
+//            InputStream in = new ByteArrayInputStream(arr);
+//            BufferedImage bImageFromConvert = ImageIO.read(in);
+//            ImageIO.write(bImageFromConvert, "png", imagebuffer);
             
             /* Return a stream from the buffer. */
-            return new ByteArrayInputStream(imagebuffer.toByteArray());
+            return new ByteArrayInputStream(arr);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
