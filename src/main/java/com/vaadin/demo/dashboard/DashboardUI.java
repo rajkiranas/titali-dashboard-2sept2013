@@ -99,7 +99,7 @@ public class DashboardUI extends UI{
             put("/Notices",CreateNotices.class);
             put("/Forum",ForumView.class);
             put("/reports", ReportsView.class);
-            put("/upload",QuickUpload.class);            
+            put("/topics",QuickUpload.class);            
             put("/Exam-Admin",AdminExam.class);
             put("/students",StudentView.class);
             put("/teachers",TeacherView.class);
@@ -380,21 +380,19 @@ public class DashboardUI extends UI{
 
         menu.removeAllComponents();
  
-        /*for (final String view : new String[] { "dashboard", "learn",
-                "transactions", "reports", "schedule","student","teacher","upload","Exams" }) {*/
         String[]  actions;
-               actions= new String[] { "dashboard", "learn","Technology","Exams","Notices","Forum","reports",
-            "upload","Exam-Admin","students","teachers" };
-        
-//        if(userRole.equalsIgnoreCase(GlobalConstants.student))
-//        {
-//                   actions= new String[] { "dashboard", "learn","Technology","Exams","Notices"};
-//            
-//        }else
-//        {
-//                actions= new String[] { "dashboard", "learn","Technology","Exams","Notices",
+//               actions= new String[] { "dashboard", "learn","Technology","Exams","Notices","Forum","reports",
 //            "upload","Exam-Admin","students","teachers" };
-//        }
+        
+        if(userRole.equalsIgnoreCase(GlobalConstants.student))
+        {
+                   actions= new String[] { "dashboard", "learn","Technology","Exams","Forum","Notices","reports"};
+            
+        }else
+        {
+                actions= new String[] { "dashboard","topics","Technology","Exam-Admin","Forum","Notices","reports",
+            "students","teachers" };
+        }
         
         for (final String view : actions) {
             

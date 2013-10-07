@@ -56,7 +56,7 @@ public class ForumView extends VerticalLayout implements View {
     public void enter(ViewChangeEvent event) {
 //        setSizeFull();
         addStyleName("schedule");
-        addStyleName("dashboard");
+        //addStyleName("dashboard");
         //addComponent(buildDraftsView());
         buildHeaderView();
         buildBodyView();
@@ -66,7 +66,7 @@ public class ForumView extends VerticalLayout implements View {
         HorizontalLayout top = new HorizontalLayout();
         top.setWidth("100%");
         top.setSpacing(true);
-        top.setMargin(new MarginInfo(true, true, false, true));
+        //top.setMargin(new MarginInfo(true, true, false, true));
         top.addStyleName("toolbar");
         addComponent(top);
         final Label title = new Label("Forum");
@@ -82,7 +82,7 @@ public class ForumView extends VerticalLayout implements View {
         newEventBtn.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                UI.getCurrent().addWindow(new NewEventWindow());
+                UI.getCurrent().addWindow(new NewEventWindow(event));
             }
         });
         

@@ -21,6 +21,7 @@ import com.quick.utilities.UIUtils;
 import com.quick.utilities.UploadReceiver;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.FileResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -43,18 +44,25 @@ public class NewEventWindow extends Window implements Button.ClickListener{
     
     private VerticalLayout baseLayout;
     
-    public NewEventWindow(){
-        
+    public NewEventWindow(ClickEvent event){
         setModal(true);
         setCaption("New event");
         center();
         setClosable(true);
         setWidth("50%");
-        setHeight("65%"); 
+        setHeight("75%"); 
         buildBaseStudentLayout();
         getEventDetailsInputForm();
         setContent(baseLayout);
         addStyleName("schedule");
+        
+        setClosable(false);
+        setResizable(false);
+        //setDraggable(false);
+//        setPositionX(event.getClientX() - (event.getRelativeX()+300));
+//        setPositionY(event.getClientY() - event.getRelativeY());
+        //setCloseShortcut(ShortcutAction.KeyCode.ESCAPE, null);
+
         w=this;
     }
     
@@ -90,10 +98,12 @@ public class NewEventWindow extends Window implements Button.ClickListener{
         desc = new TextArea("Description");
         desc.setImmediate(true);
         desc.setWidth("90%");
+        desc.setRows(8);
         
         upload = new Upload(null, uploadReceiver);
         upload.setImmediate(true);
         upload.setButtonCaption("Image");
+        upload.addStyleName("notifications");
 
 
         final Button cancelProcessing = new Button("Cancel");
