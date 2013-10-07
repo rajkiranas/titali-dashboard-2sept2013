@@ -17,6 +17,7 @@ public class Userprofile {
      private String name;
      private Long creationdate;
      private Long mobile;
+     private String role;
 
     @Override
     public String toString() {
@@ -150,6 +151,20 @@ public class Userprofile {
 
     public void setQualName(String qualName) {
         this.qualName = qualName;
+    }
+
+    /**
+     * @return the role
+     */
+    public String getRole() {
+        return role;
+    }
+
+    /**
+     * @param role the role to set
+     */
+    public void setRole(String role) {
+        this.role = role;
     }
     
     
