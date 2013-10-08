@@ -168,8 +168,9 @@ public class DashboardUI extends UI{
         helpManager.closeAll();
         HelpOverlay w = helpManager
                 .addOverlay(
-                        "Welcome to the Titali Dashboard Application",
-                        "<p>it only demonstrates an application built with the <a href=\"http://vaadin.com\">Vaadin framework</a>.</p><p>No username or password is required, just click the ‘Sign In’ button to continue. You can try out a random username and password, though.</p>",
+                        "Welcome to the Titali Dashboard",
+                        "<p>The application helps students to learn better and get smarter.</p>"
+                        +"<p>It also helps to learn ongoing and upcoming technology trends while providing an effective platform of sharing, where everyone learns.</p>",
                         "login");
         w.center();
         addWindow(w);

@@ -10,6 +10,7 @@ import com.quick.bean.NoticeBean;
 import com.quick.bean.UpcomingTechnologyBean;
 import com.quick.bean.Userprofile;
 import com.quick.container.NoticesContainer;
+import com.quick.container.UpcomingTechnologyContainer;
 import com.quick.entity.Notices;
 import com.quick.global.GlobalConstants;
 import com.quick.utilities.ConfirmationDialogueBox;
@@ -92,7 +93,7 @@ public class CreateNotices extends VerticalLayout implements View ,Button.ClickL
         setSizeFull();
         addStyleName("schedule");
         profile=(Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile);
-        
+        setVisibilityOfAddDeleteButtonsByRole();
     }
     
     public CreateNotices(){
@@ -609,6 +610,16 @@ public class CreateNotices extends VerticalLayout implements View ,Button.ClickL
         noticetbl.select(noticetbl.firstItemId());
     }
 
-   
+private void setVisibilityOfAddDeleteButtonsByRole() 
+    {
+        if(profile.getRole().equals(GlobalConstants.student))
+        {
+            editSaveNoticeBtn.setVisible(false);
+            newNoticeBtn.setVisible(false);
+            noticetbl.setVisibleColumns(NoticesContainer.NATURAL_COL_ORDER_NOTICES);
+        }
+        
+        
+    }   
     
 }
