@@ -98,8 +98,8 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
     public void enter(ViewChangeEvent event) {
         setSizeFull();
         addStyleName("schedule");
-        profile=(Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile);
-        
+        profile=(Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile);       
+        setVisibilityOfAddDeleteButtonsByRole();
     }
     
     private HorizontalLayout row;
@@ -211,7 +211,8 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         upcomingTechnologyTbl.sort(new Object[]{"technologydate"}, new boolean[]{false});
         upcomingTechnologyTbl.select(upcomingTechnologyTbl.firstItemId());
         
-        upcomingTechnologyTbl.addGeneratedColumn("Remove", new Table.ColumnGenerator() 
+        
+            upcomingTechnologyTbl.addGeneratedColumn("Remove", new Table.ColumnGenerator() 
             {
             @Override
                 public Object generateCell(Table source, Object rowItemBean, Object columnId) 
@@ -224,6 +225,9 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
                     return btnRemove;
                 }
             });
+            
+       
+        
         
         return upcomingTechnologyTbl;
     }
@@ -846,6 +850,15 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         
     }
 
-   
-    
+    private void setVisibilityOfAddDeleteButtonsByRole() 
+    {
+        if(profile.getRole().equals(GlobalConstants.student))
+        {
+            editSaveBtn.setVisible(false);
+            newTechnologyBtn.setVisible(false);
+            upcomingTechnologyTbl.setVisibleColumns(UpcomingTechnologyContainer.NATURAL_COL_ORDER_TECHNOLOGIES);
+        }
+        
+        
+    }
 }

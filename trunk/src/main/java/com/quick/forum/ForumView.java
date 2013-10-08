@@ -97,30 +97,31 @@ public class ForumView extends VerticalLayout implements View {
     
     private void buildBodyView() {
         
-          forumTable  = new Table() {
-              
-             
-            @Override
-            protected String formatPropertyValue(Object rowId, Object colId,
-                    Property<?> property) {
-                if (colId.equals("Revenue")) {
-                    if (property != null && property.getValue() != null) {
-                        Double r = (Double) property.getValue();
-                        String ret = new DecimalFormat("#.##").format(r);
-                        return "$" + ret;
-                    } else {
-                        return "";
-                    }
-                }
-                return super.formatPropertyValue(rowId, colId, property);
-            }
-        };
+          forumTable  = new Table();
+          //{
+//              
+//             
+//            @Override
+//            protected String formatPropertyValue(Object rowId, Object colId,
+//                    Property<?> property) {
+//                if (colId.equals("Revenue")) {
+//                    if (property != null && property.getValue() != null) {
+//                        Double r = (Double) property.getValue();
+//                        String ret = new DecimalFormat("#.##").format(r);
+//                        return "$" + ret;
+//                    } else {
+//                        return "";
+//                    }
+//                }
+//                return super.formatPropertyValue(rowId, colId, property);
+//            }
+//        };
           
-        forumTable.addContainerProperty("", VerticalLayout.class, null);
+        forumTable.addContainerProperty(GlobalConstants.emptyString, VerticalLayout.class, null);
         //forumTable.setCaption("Forum");
 
         forumTable.setWidth("100%");
-        forumTable.setPageLength(2);
+        forumTable.setPageLength(3);
         forumTable.addStyleName("plain");
         forumTable.addStyleName("borderless");
         forumTable.setHeight("500px");

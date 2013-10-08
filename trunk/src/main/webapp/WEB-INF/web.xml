@@ -18,7 +18,7 @@
 		<param-value>${productionMode}</param-value>
 	</context-param>
 	<servlet>
-		<servlet-name>QuickTicketsDashboard</servlet-name>
+		<servlet-name>TitaliDashboard</servlet-name>
 		<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
 		<init-param>
 			<param-name>UI</param-name>
@@ -35,7 +35,7 @@
 	</servlet>
         
         <servlet-mapping>
-		<servlet-name>QuickTicketsDashboard</servlet-name>
+		<servlet-name>TitaliDashboard</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
         
@@ -54,8 +54,5 @@
             <servlet-name>fileServlet</servlet-name>
             <url-pattern>/resources/*</url-pattern>
         </servlet-mapping>
-        
-        
-	
 
 </web-app>

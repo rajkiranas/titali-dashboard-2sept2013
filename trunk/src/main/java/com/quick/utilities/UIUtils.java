@@ -167,7 +167,7 @@ public class UIUtils {
     {
         VerticalLayout l = new VerticalLayout();
         Chart chart = new Chart(ChartType.COLUMN);
-
+        //chart.setCaption("Performance");
         Configuration conf = chart.getConfiguration();
 
         conf.setTitle(graphTitle);
@@ -217,7 +217,7 @@ public class UIUtils {
     
     public static Component getTeacherPerformanceChart() {
         Chart chart = new Chart(ChartType.COLUMN);
-
+        chart.setCaption("Performance");
         Configuration conf = chart.getConfiguration();
 
         conf.setTitle("My class(es) performance");

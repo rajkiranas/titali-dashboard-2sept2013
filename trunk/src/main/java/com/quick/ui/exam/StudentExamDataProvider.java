@@ -84,7 +84,7 @@ public class StudentExamDataProvider {
 
     public static Component getMyExamPieChart(List<ExamBean> subjectWiseAvgPerformanceList, List<ExamBean> subwiseAvgScoreForStud) {
         HorizontalLayout baseLayout = new HorizontalLayout();
-        baseLayout.setCaption("My score");
+        baseLayout.setCaption("Performance");
         baseLayout.setSizeFull();
         
         String[] xAxisCategories =  new String[subjectWiseAvgPerformanceList.size()];

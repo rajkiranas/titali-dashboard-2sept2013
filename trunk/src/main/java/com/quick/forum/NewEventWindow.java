@@ -147,6 +147,7 @@ public class NewEventWindow extends Window implements Button.ClickListener{
                @Override
                public void buttonClick(ClickEvent event) {
                    saveEventDetails();
+                   getUI().getNavigator().navigateTo("/Forum");
                    w.close();
                }
            });
