@@ -19,6 +19,7 @@ import com.quick.ui.QuickLearn.MyNotes;
 import com.quick.ui.QuickLearn.MyOtherNotes;
 import com.quick.ui.QuickLearn.MyVideo;
 import com.quick.ui.QuickLearn.PreviousQuestion;
+import com.quick.ui.QuickLearn.QuickLearnDetailWraper;
 import com.quick.utilities.ConfirmationDialogueBox;
 import com.quick.utilities.UIUtils;
 import com.sun.jersey.api.client.Client;
@@ -26,8 +27,11 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -53,7 +57,7 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @author suyogn
  */
-public class StudQuickLearn extends VerticalLayout implements View,Property.ValueChangeListener {
+public class StudQuickLearn extends VerticalLayout implements View,Property.ValueChangeListener, LayoutEvents.LayoutClickListener{
     
     private TabSheet editors;
     private List<MasteParmBean> stdlist;
@@ -278,7 +282,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
 //        }
          
          if (uploadIdToNavigate == 0) {
-                quickLearnTable.select(quickLearnTable.firstItemId());
+                //quickLearnTable.select(quickLearnTable.firstItemId());
             } else {
                
                 quickLearnTable.select(quickLearnTable.getData());
@@ -324,11 +328,11 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
 
     
        
-    private void updateTopicsTable(){
-      quickLearnTable.setContainerDataSource(StudQuickLearnContainer.getStudQuickLearnContainer(getTopicList()));
-      quickLearnTable.setVisibleColumns(StudQuickLearnContainer.NATURAL_COL_ORDER_QUICKLEARN);
-      quickLearnTable.setColumnHeaders(StudQuickLearnContainer.COL_HEADERS_ENGLISH_QUICKLEARN);
-    }
+//    private void updateTopicsTable(){
+//      quickLearnTable.setContainerDataSource(StudQuickLearnContainer.getStudQuickLearnContainer(getTopicList()));
+//      quickLearnTable.setVisibleColumns(StudQuickLearnContainer.NATURAL_COL_ORDER_QUICKLEARN);
+//      quickLearnTable.setColumnHeaders(StudQuickLearnContainer.COL_HEADERS_ENGLISH_QUICKLEARN);
+//    }
     
     
     
@@ -367,6 +371,10 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
       
       
       
+      /**
+       * below method is not called from anywhere
+       * instead layout clicked is called
+       */
       
        @Override
     public void valueChange(ValueChangeEvent event) {
@@ -380,6 +388,17 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
              setStudQuikLearnDetails(getStudentQuickLearnDetails());
                           updateQuickLearnTabSheet(); */
 
+                
+                //QuickLearnDetailWraper topicWraper = (QuickLearnDetailWraper) quickLearnTable.getItem(property.getValue());
+                
+                Item i = (Item) quickLearnTable.getItem(property.getValue());
+                QuickLearnDetailWraper topicWraper = (QuickLearnDetailWraper)i.getItemProperty(GlobalConstants.emptyString).getValue();
+                MasteParmBean bean = topicWraper.getTopicDetails();
+                setUploadId(bean.getUploadId());
+                setTopicForNotification(bean.getTopic());
+                setStudQuikLearnDetails(getStudentQuickLearnDetails());
+                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub());
+                UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes(),getUploadId()));
              
              //Temp removing Listner to avoid multiple notifiaction on tab change
              
@@ -810,5 +829,14 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
         this.uploadId = uploadId;
     }
 
-   
+    @Override
+    public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+                QuickLearnDetailWraper topicWraper =(QuickLearnDetailWraper) event.getComponent();
+                MasteParmBean bean = (MasteParmBean)topicWraper.getData();
+                setUploadId(bean.getUploadId());
+                setTopicForNotification(bean.getTopic());
+                setStudQuikLearnDetails(getStudentQuickLearnDetails());
+                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub());
+                UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes(),getUploadId()));
+    }
 }
