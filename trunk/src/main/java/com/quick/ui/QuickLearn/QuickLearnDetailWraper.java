@@ -138,10 +138,10 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         
          
         
-        Embedded coverImage =  new Embedded("Image from a theme resource",
-                new ThemeResource("./img/dashboard-pie.png"));
-        coverImage.setHeight("125px");
-        coverImage.setWidth("175px");
+        Embedded coverImage =  new Embedded(GlobalConstants.emptyString,
+                new ThemeResource("./img/learnMore.png"));
+        coverImage.setHeight("100px");
+        coverImage.setWidth("100px");
         details.addComponent(coverImage);
         details.setComponentAlignment(coverImage, Alignment.MIDDLE_RIGHT);
         details.setExpandRatio(coverImage, 1);

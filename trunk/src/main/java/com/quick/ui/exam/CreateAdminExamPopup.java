@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.quick.bean.ExamBean;
 import com.quick.bean.ExamQueAnsBean;
-import com.quick.bean.MasteParmBean;
 import com.quick.bean.QuickLearn;
 import com.quick.bean.Userprofile;
 import com.quick.data.MasterDataProvider;
@@ -26,11 +25,8 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import sun.awt.HorizBagLayout;
 
 /**
  *
