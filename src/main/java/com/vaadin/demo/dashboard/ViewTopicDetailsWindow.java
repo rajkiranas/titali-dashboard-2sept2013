@@ -55,8 +55,11 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         setCaption("View topic details");
         center();        
         setClosable(true);
-        setWidth("50%");
-        setHeight("95%"); 
+        setWidth("90%");
+        setHeight("100%"); 
+        setImmediate(true);
+        
+        
         buildBaseStudentLayout();
         addTopicDetails();
         addUserNotes();
@@ -79,11 +82,12 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
      private void buildBaseStudentLayout(){
               
        baseLayout = new VerticalLayout();
+              baseLayout.setImmediate(true);
+
        baseLayout.setSpacing(true);   
-       baseLayout.setImmediate(true);
        baseLayout.setMargin(true);
-       baseLayout.setWidth("100%");
-       baseLayout.setHeight("100%");
+//       baseLayout.setWidth("100%");
+//       baseLayout.setHeight("100%");
     }
 
     @Override
@@ -93,45 +97,73 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
 
     private void addTopicDetails() 
     {
-        tabsheet = new TabSheet();
+        /* tabsheet = new TabSheet();
         tabsheet.setSizeFull();
         
         tabsheet.addTab(getVideoPathLayout(),"Video");
         tabsheet.addTab(getNotesLayout(),"Notes");
         tabsheet.addTab(getOtherNotesLayout(),"Other references");
         tabsheet.addTab(getPreviousQuestionsLayout(),"Previous questions");
-        tabsheet.addTab(getQuizLayout(),"Quiz");
+        tabsheet.addTab(getQuizLayout(),"Quiz"); */
         
-        CssLayout tabsheetLayout = UIUtils.createPanel(tabsheet);
-        baseLayout.addComponent(tabsheetLayout);
-        baseLayout.setExpandRatio(tabsheetLayout,2);
+        //CssLayout tabsheetLayout = UIUtils.createPanel(tabsheet);
+        baseLayout.addComponent(getVideoPathLayout());
+        baseLayout.addComponent(getNotesLayout());
+        baseLayout.addComponent(getOtherNotesLayout());
+        baseLayout.addComponent(getPreviousQuestionsLayout());
+        baseLayout.addComponent(getQuizLayout());
+        //baseLayout.setExpandRatio(tabsheetLayout,2);
     }
     
     private Component getVideoPathLayout() 
     {
-           VerticalLayout layout = new VerticalLayout();
+        Label topicName=new Label("<b><h1>"+quickLearnPojo.getTopic()+"</h1></b>", ContentMode.HTML);
+        topicName.setImmediate(true);
+        
+        Label instructorName=new Label("<b><h4><b>INSTRUCTORS: </b>"+quickLearnPojo.getOtherNotesInformation()+"</h4></b>", ContentMode.HTML);
+        instructorName.setImmediate(true);
+        
+        Label topicIntro = new Label();
+        topicIntro.setImmediate(true);
+        topicIntro.setValue(quickLearnPojo.getLectureNotesInformation());
+        
+        VerticalLayout topicInfoLayout = new VerticalLayout();
+        topicInfoLayout.setSpacing(true);
+        topicInfoLayout.setMargin(true);
+        
+        topicInfoLayout.addComponent(topicName);
+        topicInfoLayout.addComponent(instructorName);
+        topicInfoLayout.addComponent(topicIntro);
+        
+        
+           VerticalLayout videoInfoLayout = new VerticalLayout();
            //layout.setSpacing(true);
-           layout.setWidth("100%");
-           layout.setHeight("100%");
-           layout.setMargin(new MarginInfo(true, true, false, true));
+           videoInfoLayout.setWidth("100%");
+           videoInfoLayout.setHeight("100%");
+           videoInfoLayout.setMargin(new MarginInfo(true, true, false, true));
+           
+           
+
        
        if(this.quickLearnPojo.getVideoPath()!=null)
        {
+           
            Video vPlayer;
            // video is available, show it on video player
            vPlayer = new Video();
            vPlayer.setImmediate(true);
            vPlayer.setWidth("100%");
            vPlayer.setHeight("100%");
+           vPlayer.setPoster(new FileResource(new File("/home/rajkirans/NetBeansProjects/projectFromSept29/dash/trunk/src/main/webapp/VAADIN/themes/dashboard/img/learnMore.png")));
            
            vPlayer.addSource(new FileResource(new File(this.quickLearnPojo.getVideoPath())));
            vPlayer.setShowControls(true);
            vPlayer.setMuted(false);
            
            //return vPlayer;
-           layout.addComponent(vPlayer);
-           layout.setComponentAlignment(vPlayer, Alignment.MIDDLE_CENTER);
-         return layout;
+           videoInfoLayout.addComponent(vPlayer);
+           videoInfoLayout.setComponentAlignment(vPlayer, Alignment.MIDDLE_CENTER);
+         
            
 //           HorizontalLayout h = new HorizontalLayout();
 //           h.setWidth("100%");
@@ -168,29 +200,48 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
        }
        else
        {
-           
+           Label lableVideo;
            // not video available, accept path from user
-           Label lableNoVideo = new Label("<b><h3>No video available for this topic.</h3></b>", ContentMode.HTML);
-           lableNoVideo.setImmediate(true);
+           lableVideo = new Label("<b><h3>No video available for this topic.</h3></b>", ContentMode.HTML);
+           lableVideo.setImmediate(true);
            //txtVideoPath.setInputPrompt("Enter server video path");
-           lableNoVideo.setCaption("About Video");
-           lableNoVideo.setWidth("90%");
+           lableVideo.setCaption("About Video");
+           lableVideo.setWidth("90%");
            //txtVideoPath.addValueChangeListener(this);
-           layout.addComponent(lableNoVideo);
-           layout.setComponentAlignment(lableNoVideo, Alignment.MIDDLE_CENTER);
-         return layout;
+           videoInfoLayout.addComponent(lableVideo);
+           videoInfoLayout.setComponentAlignment(lableVideo, Alignment.MIDDLE_CENTER);
+         
          
        }
        
+       HorizontalLayout h = new HorizontalLayout();
+       h.setSizeFull();
+       h.addComponent(topicInfoLayout);
+       h.addComponent(videoInfoLayout);       
+       
+       return h;       
     }
     
-    private VerticalLayout getNotesLayout() {
+    private VerticalLayout getNotesLayout() 
+    {
+        
+        Label topicNotes=new Label("<b><h4>"+"TOPIC NOTES"+"</h4></b>", ContentMode.HTML);
+        topicNotes.setImmediate(true);
+        
+        Label strNotes = new Label();
+        strNotes.setImmediate(true);
+        strNotes.setValue(quickLearnPojo.getLectureNotes());
+        
+        
         VerticalLayout layout= new VerticalLayout();
-        layout.setSizeFull();
+        //layout.setSizeFull();
         layout.setSpacing(true);
         layout.setMargin(true);
         
-        TextArea notesTextArea;
+        layout.addComponent(topicNotes);
+        layout.addComponent(strNotes);
+        
+        /* TextArea notesTextArea;
         notesTextArea = new TextArea();
         
         notesTextArea.setSizeFull();
@@ -200,23 +251,38 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         }
         
         notesTextArea.setImmediate(true);
-        //notesTextArea.addValueChangeListener(this);
+        
         notesTextArea.setReadOnly(true);
         
-        layout.addComponent(notesTextArea);
+        layout.addComponent(notesTextArea); */
+        
+        //notesTextArea.addValueChangeListener(this);
         //layout.setExpandRatio(notesTextArea, 2);
         
         return layout;
         
     }
     
-    private VerticalLayout getOtherNotesLayout() {
+    private VerticalLayout getOtherNotesLayout() 
+    {
+        
+        Label otherRef=new Label("<b><h4>"+"OTHER REFERENCES"+"</h4></b>", ContentMode.HTML);
+        otherRef.setImmediate(true);
+        
+        Label strOtherNotes = new Label();
+        strOtherNotes.setImmediate(true);
+        strOtherNotes.setValue(quickLearnPojo.getOtherNotes());
+        
+        
         VerticalLayout layout= new VerticalLayout();
-        layout.setSizeFull();
+        //layout.setSizeFull();
         layout.setSpacing(true);
         layout.setMargin(true);
         
-        TextArea otherNotesTextArea = new TextArea();
+        layout.addComponent(otherRef);
+        layout.addComponent(strOtherNotes);
+        
+        /* TextArea otherNotesTextArea = new TextArea();
         
         otherNotesTextArea.setSizeFull();
         if(this.quickLearnPojo.getOtherNotes()!=null)
@@ -228,20 +294,33 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         otherNotesTextArea.setReadOnly(true);
         
         layout.addComponent(otherNotesTextArea);
-        layout.setExpandRatio(otherNotesTextArea, 2);
+        layout.setExpandRatio(otherNotesTextArea, 2); */
         
         return layout;
         
     }
     
     
-    private VerticalLayout getPreviousQuestionsLayout() {
+    private VerticalLayout getPreviousQuestionsLayout() 
+    {
+        
+        Label previousQuestions=new Label("<b><h4>"+"PREVIOUS QUESTIONS"+"</h4></b>", ContentMode.HTML);
+        previousQuestions.setImmediate(true);
+        
+        Label strQuestions = new Label();
+        strQuestions.setImmediate(true);
+        strQuestions.setValue(quickLearnPojo.getPreviousQuestion());
+        
+        
         VerticalLayout layout= new VerticalLayout();
-        layout.setSizeFull();
+        //layout.setSizeFull();
         layout.setSpacing(true);
         layout.setMargin(true);
         
-        TextArea previousQuestionsTextArea;
+        layout.addComponent(previousQuestions);
+        layout.addComponent(strQuestions);
+        
+        /* TextArea previousQuestionsTextArea;
         previousQuestionsTextArea = new TextArea();
         
         previousQuestionsTextArea.setSizeFull();
@@ -254,19 +333,31 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         previousQuestionsTextArea.setReadOnly(true);
         
         layout.addComponent(previousQuestionsTextArea);
-        layout.setExpandRatio(previousQuestionsTextArea, 2);
+        layout.setExpandRatio(previousQuestionsTextArea, 2); */
         
         return layout;
         
     }
     
-    private VerticalLayout getQuizLayout() {
+    private VerticalLayout getQuizLayout() 
+    {
+        Label topicQuiz=new Label("<b><h4>"+"TOPIC QUIZ"+"</h4></b>", ContentMode.HTML);
+        topicQuiz.setImmediate(true);
+        
+        Label strQuiz = new Label();
+        strQuiz.setImmediate(true);
+        strQuiz.setValue(quickLearnPojo.getQuiz());
+        
+        
         VerticalLayout layout= new VerticalLayout();
-        layout.setSizeFull();
+        //layout.setSizeFull();
         layout.setSpacing(true);
         layout.setMargin(true);
         
-        TextArea quizTextArea;
+        layout.addComponent(topicQuiz);
+        layout.addComponent(strQuiz);
+        
+        /* TextArea quizTextArea;
         quizTextArea = new TextArea();
         
         quizTextArea.setSizeFull();
@@ -279,7 +370,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         quizTextArea.setReadOnly(true);
         
         layout.addComponent(quizTextArea);
-        layout.setExpandRatio(quizTextArea, 2);
+        layout.setExpandRatio(quizTextArea, 2); */
         
         return layout;
         
@@ -310,8 +401,8 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         
         CssLayout panel = UIUtils.createPanel(userNotesTxtArea);
         panel.addStyleName("notes");
-        baseLayout.addComponent(panel);
-        baseLayout.setExpandRatio(panel,1);
+//        baseLayout.addComponent(panel);
+//        baseLayout.setExpandRatio(panel,1);
     }
 
     /**
