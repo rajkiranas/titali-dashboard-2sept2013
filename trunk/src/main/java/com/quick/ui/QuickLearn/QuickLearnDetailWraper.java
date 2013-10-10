@@ -29,7 +29,7 @@ public class QuickLearnDetailWraper extends VerticalLayout {
     private Label description = new Label();
     private MasteParmBean topicDetails;
 
-    public QuickLearnDetailWraper(final MasteParmBean topicDetails, StudQuickLearn quickLearn) {
+    public QuickLearnDetailWraper(final MasteParmBean topicDetails, Object quickLearn) {
 
         setImmediate(true);
         setSpacing(false);

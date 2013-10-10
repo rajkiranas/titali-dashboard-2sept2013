@@ -25,6 +25,8 @@ import com.quick.demo.student.ui.DashBoardVideoPlayer;
 import com.quick.ui.QuickLearn.MyNotes;
 import com.quick.ui.QuickLearn.MyOtherNotes;
 import com.quick.ui.QuickLearn.PreviousQuestion;
+import com.quick.ui.QuickLearn.QuickLearnDetailWraper;
+import com.quick.ui.QuickLearn.ViewTopicDetailsForAdmin;
 import com.quick.ui.QuickUpload.QuickUploadNotes;
 import com.quick.ui.QuickUpload.QuickUploadOtherNotes;
 import com.quick.ui.QuickUpload.QuickUploadPreviousQuestion;
@@ -32,6 +34,7 @@ import com.quick.utilities.ConfirmationDialogueBox;
 import com.quick.utilities.UIUtils;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.LayoutEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.ExternalResource;
@@ -55,7 +58,7 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @author Sonali Sangle
  */
-public class QuickUpload extends VerticalLayout implements View,Button.ClickListener,Property.ValueChangeListener{
+public class QuickUpload extends VerticalLayout implements View,Button.ClickListener,Property.ValueChangeListener,LayoutEvents.LayoutClickListener{
     
     private TabSheet editors;
     private List<Std> standardList;
@@ -889,6 +892,18 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
             ex.printStackTrace();
         }
      }
-
-    
+     
+     @Override
+    public void layoutClick(LayoutEvents.LayoutClickEvent event) {
+                QuickLearnDetailWraper topicWraper =(QuickLearnDetailWraper) event.getComponent();
+                MasteParmBean bean = (MasteParmBean)topicWraper.getData();
+                 uploadId = bean.getUploadId();  
+                isNewQuickUpload=false;
+                setQuikLearnMasterParamDetails(getQuickUploadDetailsFromDB());
+//                setUploadId(bean.getUploadId());
+//                setTopicForNotification(bean.getTopic());
+//                setStudQuikLearnDetails(getStudentQuickLearnDetails());
+//                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub());
+                UI.getCurrent().addWindow(new ViewTopicDetailsForAdmin(getQuikLearnMasterParamDetails(),uploadId));
+    }
 }
