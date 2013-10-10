@@ -391,6 +391,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         userNotesTxtArea = new TextArea("My short notes for the topic");
         userNotesTxtArea.setSizeFull();
         userNotesTxtArea.setInputPrompt("My short notes");
+        userNotesTxtArea.setImmediate(true);
         if(this.strUserNotes!=null)
         {
             userNotesTxtArea.setValue(strUserNotes);            
