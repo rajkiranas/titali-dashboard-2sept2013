@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.vaadin.demo.dashboard;
+package com.quick.ui.QuickLearn;
 
+import com.quick.bean.MasteParmBean;
+import com.vaadin.demo.dashboard.*;
 import com.quick.bean.QuickLearn;
 import com.quick.bean.Userprofile;
 import com.quick.entity.Std;
@@ -35,19 +37,19 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @author sonalis
  */
-public class ViewTopicDetailsWindow extends Window implements Button.ClickListener{
+public class ViewTopicDetailsForAdmin extends Window implements Button.ClickListener{
     
     
     private VerticalLayout baseLayout;
     private TabSheet tabsheet;
-    private QuickLearn quickLearnPojo;
+    private MasteParmBean quickLearnPojo;
     private String strUserNotes;
     private TextArea userNotesTxtArea;
     private int selectedUploadId;
     
     
     
-    public ViewTopicDetailsWindow(QuickLearn learnRow, String strUserNotes, int selectedUploadId){
+    public ViewTopicDetailsForAdmin(MasteParmBean learnRow, int selectedUploadId){
         this.selectedUploadId=selectedUploadId;
         this.quickLearnPojo=learnRow;
         this.strUserNotes=strUserNotes;
@@ -112,7 +114,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         baseLayout.addComponent(getOtherNotesLayout());
         baseLayout.addComponent(getPreviousQuestionsLayout());
         baseLayout.addComponent(getQuizLayout());
-        baseLayout.addComponent(addUserNotes());
+        //baseLayout.addComponent(addUserNotes());
         //baseLayout.setExpandRatio(tabsheetLayout,2);
     }
     
@@ -386,7 +388,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         
     }
 
-    private CssLayout addUserNotes() 
+   /*  private CssLayout addUserNotes() 
     {
         userNotesTxtArea = new TextArea("My short notes for the topic");
         userNotesTxtArea.setSizeFull();
@@ -416,7 +418,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
 //        baseLayout.setExpandRatio(panel,1);
         
         return panel;
-    }
+    } */
 
     /**
      * @return the userNotes

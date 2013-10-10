@@ -363,7 +363,12 @@ public class DashboardUI extends UI{
                                 exit.addClickListener(new ClickListener() {
                                     @Override
                                     public void buttonClick(ClickEvent event) {
-                                        buildLoginView(true);
+                                        
+                                        getUI().getPage().setLocation("/titali-dashboard");
+                                        getSession().close();
+                                        //buildLoginView(true);
+                                        // Close the VaadinSession
+                                        
                                     }
                                 });
                             }

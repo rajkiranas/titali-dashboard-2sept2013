@@ -186,7 +186,7 @@ public class MasterDataProvider {
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);
@@ -197,7 +197,7 @@ public class MasterDataProvider {
             Gson gson=  new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();
             uploadList= gson.fromJson(outNObject.getString(GlobalConstants.QUICKLEARNLIST), listType);
         } catch (JSONException ex) {
-            Logger.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
         return uploadList;
     }
