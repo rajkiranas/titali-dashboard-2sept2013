@@ -32,10 +32,13 @@ public class QuickLearnDetailWraper extends VerticalLayout {
     public QuickLearnDetailWraper(final MasteParmBean topicDetails, StudQuickLearn quickLearn) {
 
         setImmediate(true);
+        setSpacing(false);
+        setMargin(false);
         this.topicDetails=topicDetails;
         //setCaption(topicDetails.getEventDesc());
         addStyleName("no-vertical-drag-hints");
         addStyleName("no-horizontal-drag-hints");
+        addStyleName("fourSideBorder");
         
         HorizontalLayout details = new HorizontalLayout();
         //details.setSpacing(true);
@@ -130,7 +133,7 @@ public class QuickLearnDetailWraper extends VerticalLayout {
 //        });
         
         
-        String timeAndInstructor = "<h4><b>STARTS: </b>"+" " + topicDetails.getUploadDate()+"" + " <b>. INSTRUCTORS: </b>"+" "+ topicDetails.getOtherNotesInformation() +" </h4>";
+        String timeAndInstructor = "<h4><b>STARTS: </b>"+" " + topicDetails.getUploadDate()+"" + " <b>. INSTRUCTORS: </b>"+" "+ topicDetails.getOtherNotesInformation() + " <b>. RECOMMENDED FOR: </b>"+topicDetails.getStd()+" </h4>";
         label = new Label(timeAndInstructor, ContentMode.HTML);
         label.setSizeUndefined();
         fields.addComponent(label);

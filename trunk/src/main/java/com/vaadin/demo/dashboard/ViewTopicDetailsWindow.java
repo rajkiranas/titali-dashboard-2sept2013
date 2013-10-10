@@ -112,6 +112,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         baseLayout.addComponent(getOtherNotesLayout());
         baseLayout.addComponent(getPreviousQuestionsLayout());
         baseLayout.addComponent(getQuizLayout());
+        baseLayout.addComponent(addUserNotes());
         //baseLayout.setExpandRatio(tabsheetLayout,2);
     }
     
@@ -123,6 +124,9 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         Label instructorName=new Label("<b><h4><b>INSTRUCTORS: </b>"+quickLearnPojo.getOtherNotesInformation()+"</h4></b>", ContentMode.HTML);
         instructorName.setImmediate(true);
         
+        Label recommendedFor=new Label("<b><h4><b>RECOMMENDED FOR: </b>"+quickLearnPojo.getStd()+"</h4></b>", ContentMode.HTML);
+        recommendedFor.setImmediate(true);
+        
         Label topicIntro = new Label();
         topicIntro.setImmediate(true);
         topicIntro.setValue(quickLearnPojo.getLectureNotesInformation());
@@ -133,6 +137,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         
         topicInfoLayout.addComponent(topicName);
         topicInfoLayout.addComponent(instructorName);
+        topicInfoLayout.addComponent(recommendedFor);
         topicInfoLayout.addComponent(topicIntro);
         
         
@@ -216,6 +221,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
        
        HorizontalLayout h = new HorizontalLayout();
        h.setSizeFull();
+       h.addStyleName("bottomBorder");
        h.addComponent(topicInfoLayout);
        h.addComponent(videoInfoLayout);       
        
@@ -237,6 +243,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         //layout.setSizeFull();
         layout.setSpacing(true);
         layout.setMargin(true);
+        layout.addStyleName("bottomBorder");
         
         layout.addComponent(topicNotes);
         layout.addComponent(strNotes);
@@ -278,6 +285,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         //layout.setSizeFull();
         layout.setSpacing(true);
         layout.setMargin(true);
+        layout.addStyleName("bottomBorder");
         
         layout.addComponent(otherRef);
         layout.addComponent(strOtherNotes);
@@ -316,6 +324,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         //layout.setSizeFull();
         layout.setSpacing(true);
         layout.setMargin(true);
+        layout.addStyleName("bottomBorder");
         
         layout.addComponent(previousQuestions);
         layout.addComponent(strQuestions);
@@ -353,6 +362,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         //layout.setSizeFull();
         layout.setSpacing(true);
         layout.setMargin(true);
+        layout.addStyleName("bottomBorder");
         
         layout.addComponent(topicQuiz);
         layout.addComponent(strQuiz);
@@ -376,7 +386,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         
     }
 
-    private void addUserNotes() 
+    private CssLayout addUserNotes() 
     {
         userNotesTxtArea = new TextArea("My short notes for the topic");
         userNotesTxtArea.setSizeFull();
@@ -403,6 +413,8 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         panel.addStyleName("notes");
 //        baseLayout.addComponent(panel);
 //        baseLayout.setExpandRatio(panel,1);
+        
+        return panel;
     }
 
     /**
