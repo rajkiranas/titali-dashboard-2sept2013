@@ -39,7 +39,7 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @author sonalis
  */
-public class ViewTopicDetailsForAdmin extends Window implements Button.ClickListener{
+public class NewEditTopicDetailsAdmin extends Window implements Button.ClickListener{
     
     
     private VerticalLayout baseLayout;
@@ -50,8 +50,31 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
     private int selectedUploadId;
     private QuickUpload quickupload;
     
+    public NewEditTopicDetailsAdmin()
+    {
+        setModal(true);
+        setCaption("View topic details");
+        center();        
+        setClosable(true);
+        setWidth("90%");
+        setHeight("100%"); 
+        setImmediate(true);
+        
+        setStandardList(MasterDataProvider.getStandardList());        
+        setUploadedList(MasterDataProvider.getQuickLearnUploadList());
+        
+        buildBaseLayout();
+        addTopicDetails();
+        //addUserNotes();
+        setContent(baseLayout);
+        addStyleName("schedule");
+        
+        
+        
+    }
     
-    public ViewTopicDetailsForAdmin(MasteParmBean learnRow, int selectedUploadId, QuickUpload quickupload){
+    
+    public NewEditTopicDetailsAdmin(MasteParmBean learnRow, int selectedUploadId, QuickUpload quickupload){
         this.quickupload=quickupload;
         this.selectedUploadId=selectedUploadId;
         this.quickLearnPojo=learnRow;
@@ -89,7 +112,7 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
      private void buildBaseLayout(){
               
        baseLayout = new VerticalLayout();
-              baseLayout.setImmediate(true);
+       baseLayout.setImmediate(true);
 
        baseLayout.setSpacing(true);   
        baseLayout.setMargin(true);
@@ -122,108 +145,129 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         baseLayout.addComponent(getDeleteButtonLayout());
     }
     
+    private List<Std> standardList;
+    private List<MasteParmBean> uploadedList;
+    private List<QuickLearn> subjectList;
+    
+    public List<Std> getStandardList() {
+        return standardList;
+    }
+
+    public void setStandardList(List<Std> standardList) {
+        this.standardList = standardList;
+    }
+    
+    public List<QuickLearn> getSubjectList() {
+        return subjectList;
+    }
+
+    public void setSubjectList(List<QuickLearn> subjectList) {
+        this.subjectList = subjectList;
+    }
+    
+    public List<MasteParmBean> getUploadedList() {
+        return uploadedList;
+    }
+
+    public void setUploadedList(List<MasteParmBean> uploadedList) {
+        this.uploadedList = uploadedList;
+    }
+    
     private Component getVideoPathLayout() 
     {
-        Label topicName=new Label("<b><h1>"+quickLearnPojo.getTopic()+"</h1></b>", ContentMode.HTML);
-        topicName.setImmediate(true);
+        final ComboBox subjecttxt = new ComboBox();
+        subjecttxt.setImmediate(true);
+        subjecttxt.setInputPrompt("Subject");
+        subjecttxt.setNullSelectionAllowed(false);
+        subjecttxt.setWidth("185px");
         
-        Label instructorName=new Label("<b><h4><b>INSTRUCTORS: </b>"+quickLearnPojo.getOtherNotesInformation()+"</h4></b>", ContentMode.HTML);
-        instructorName.setImmediate(true);
         
-        Label recommendedFor=new Label("<b><h4><b>RECOMMENDED FOR: </b>"+quickLearnPojo.getStd()+"</h4></b>", ContentMode.HTML);
-        recommendedFor.setImmediate(true);
+        final ComboBox standardtxt = new ComboBox("Standard");
+        standardtxt.setImmediate(true);
+        standardtxt.setInputPrompt("Standard");
+        standardtxt.addItem("Select");
+        standardtxt.setValue("Select"); 
+        standardtxt.setNullSelectionAllowed(false);
+        standardtxt.setWidth("185px");
         
-        Label topicIntro = new Label();
-        topicIntro.setImmediate(true);
-        topicIntro.setValue(quickLearnPojo.getLectureNotesInformation());
+        
+        Iterator it=getStandardList().iterator();
+        while(it.hasNext()){
+            Std s=(Std) it.next();
+            standardtxt.addItem(s.getStd());            
+        }
+        standardtxt.addValueChangeListener(new Property.ValueChangeListener() {
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if(!standardtxt.getValue().equals("Select")){
+                    String std=String.valueOf(standardtxt.getValue());
+                    setSubjectList(MasterDataProvider.getSubjectBystd(std));
+                    if(!getSubjectList().isEmpty()){
+                         Iterator subItr=getSubjectList().iterator();
+                         while(subItr.hasNext()){
+                         QuickLearn s=(QuickLearn) subItr.next();
+                         subjecttxt.addItem(s.getSub());            
+                       }  
+                    }     
+               }
+            }
+        });
+        
+        TextField topictxt=new TextField();
+        topictxt.setInputPrompt("Topic name");   
+        
+        TextField topicTagstxt=new TextField("TAGS");
+        topicTagstxt.setInputPrompt("TOPIC TAGS");
+        topicTagstxt.setWidth("90%");
+        
+        TextArea txtTopicIntro=new TextArea();
+        txtTopicIntro.setInputPrompt("About topic");
+        txtTopicIntro.setRows(4);
+        txtTopicIntro.setWidth("90%");
+//        topicTagstxt.setHeight("50px");      
+        
         
         VerticalLayout topicInfoLayout = new VerticalLayout();
         topicInfoLayout.setSpacing(true);
         topicInfoLayout.setMargin(true);
+        topicInfoLayout.addStyleName("fourSideBorder");
         
-        topicInfoLayout.addComponent(topicName);
-        topicInfoLayout.addComponent(instructorName);
-        topicInfoLayout.addComponent(recommendedFor);
-        topicInfoLayout.addComponent(topicIntro);
+        topicInfoLayout.addComponent(topictxt);
+        topicInfoLayout.addComponent(subjecttxt);
+        topicInfoLayout.addComponent(standardtxt);
+        topicInfoLayout.addComponent(txtTopicIntro);
+        topicInfoLayout.addComponent(topicTagstxt);
         
         
            VerticalLayout videoInfoLayout = new VerticalLayout();
            //layout.setSpacing(true);
-           videoInfoLayout.setWidth("100%");
+           videoInfoLayout.setImmediate(true);
+          // videoInfoLayout.setSizeFull();
            videoInfoLayout.setHeight("100%");
            videoInfoLayout.setMargin(new MarginInfo(true, true, false, true));
+           videoInfoLayout.addStyleName("fourSideBorder");
            
-           
-
-       
-       if(this.quickLearnPojo.getVideoPath()!=null)
-       {
-           
-           Video vPlayer;
-           // video is available, show it on video player
-           vPlayer = new Video();
-           vPlayer.setImmediate(true);
-           vPlayer.setWidth("100%");
-           vPlayer.setHeight("100%");
-           vPlayer.setPoster(new FileResource(new File("/home/rajkirans/NetBeansProjects/projectFromSept29/dash/trunk/src/main/webapp/VAADIN/themes/dashboard/img/learnMore.png")));
-           
-           vPlayer.addSource(new FileResource(new File(this.quickLearnPojo.getVideoPath())));
-           vPlayer.setShowControls(true);
-           vPlayer.setMuted(false);
-           
-           //return vPlayer;
-           videoInfoLayout.addComponent(vPlayer);
-           videoInfoLayout.setComponentAlignment(vPlayer, Alignment.MIDDLE_CENTER);
-         
-           
-//           HorizontalLayout h = new HorizontalLayout();
-//           h.setWidth("100%");
-//           Button play = new Button("Play");
-//           play.setImmediate(true);
-//           play.setWidth("100%");
-//           play.addListener(new Button.ClickListener() {
-//
-//               @Override
-//               public void buttonClick(ClickEvent event) {
-//                   vPlayer.play();
-//               }
-//           });
-//           
-//           Button stop = new Button("Stop");
-//           stop.setImmediate(true);
-//           stop.setWidth("100%");
-//           stop.addListener(new Button.ClickListener() {
-//
-//               @Override
-//               public void buttonClick(ClickEvent event) {
-//                   vPlayer.pause();
-//               }
-//           });
-//           
-//           h.addComponent(play);
-//           h.addComponent(stop);
-           
-           //layout.addComponent(vPlayer);
-           //layout.setExpandRatio(vPlayer, 2.5f);
-//           layout.addComponent(h);
-//           layout.setExpandRatio(h, 0.5f);
-           
-       }
-       else
-       {
+           TextField videoInputPath=new TextField();
+            videoInputPath.setInputPrompt("Please enter video path on the SERVER");
+            videoInputPath.setWidth("90%");
+            
            Label lableVideo;
            // not video available, accept path from user
-           lableVideo = new Label("<b><h3>No video available for this topic.</h3></b>", ContentMode.HTML);
+           lableVideo = new Label("<b><h3>Enter video path</h3></b>", ContentMode.HTML);
            lableVideo.setImmediate(true);
            //txtVideoPath.setInputPrompt("Enter server video path");
            lableVideo.setCaption("About Video");
            lableVideo.setWidth("90%");
            //txtVideoPath.addValueChangeListener(this);
            videoInfoLayout.addComponent(lableVideo);
-           videoInfoLayout.setComponentAlignment(lableVideo, Alignment.MIDDLE_CENTER);
+           //videoInfoLayout.setComponentAlignment(lableVideo, Alignment.MIDDLE_CENTER);
+           
+           videoInfoLayout.addComponent(videoInputPath);
+           //videoInfoLayout.setComponentAlignment(videoInputPath, Alignment.MIDDLE_CENTER);
          
          
-       }
+      
        
        HorizontalLayout h = new HorizontalLayout();
        h.setSizeFull();
@@ -240,9 +284,7 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         Label topicNotes=new Label("<b><h4>"+"TOPIC NOTES"+"</h4></b>", ContentMode.HTML);
         topicNotes.setImmediate(true);
         
-        Label strNotes = new Label();
-        strNotes.setImmediate(true);
-        strNotes.setValue(quickLearnPojo.getLectureNotes());
+        
         
         
         VerticalLayout layout= new VerticalLayout();
@@ -252,22 +294,21 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         layout.addStyleName("bottomBorder");
         
         layout.addComponent(topicNotes);
-        layout.addComponent(strNotes);
         
-        /* TextArea notesTextArea;
+        TextArea notesTextArea;
         notesTextArea = new TextArea();
         
         notesTextArea.setSizeFull();
-        if(this.quickLearnPojo.getLectureNotes()!=null)
-        {
-            notesTextArea.setValue(this.quickLearnPojo.getLectureNotes());
-        }
+//        if(this.quickLearnPojo.getLectureNotes()!=null)
+//        {
+//            notesTextArea.setValue(this.quickLearnPojo.getLectureNotes());
+//        }
         
         notesTextArea.setImmediate(true);
         
-        notesTextArea.setReadOnly(true);
+        //notesTextArea.setReadOnly(true);
         
-        layout.addComponent(notesTextArea); */
+        layout.addComponent(notesTextArea);
         
         //notesTextArea.addValueChangeListener(this);
         //layout.setExpandRatio(notesTextArea, 2);
@@ -282,9 +323,7 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         Label otherRef=new Label("<b><h4>"+"OTHER REFERENCES"+"</h4></b>", ContentMode.HTML);
         otherRef.setImmediate(true);
         
-        Label strOtherNotes = new Label();
-        strOtherNotes.setImmediate(true);
-        strOtherNotes.setValue(quickLearnPojo.getOtherNotes());
+        
         
         
         VerticalLayout layout= new VerticalLayout();
@@ -294,21 +333,19 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         layout.addStyleName("bottomBorder");
         
         layout.addComponent(otherRef);
-        layout.addComponent(strOtherNotes);
         
-        /* TextArea otherNotesTextArea = new TextArea();
+        TextArea otherNotesTextArea = new TextArea();
         
         otherNotesTextArea.setSizeFull();
-        if(this.quickLearnPojo.getOtherNotes()!=null)
-        {
-            otherNotesTextArea.setValue(this.quickLearnPojo.getOtherNotes());
-        }
+//        if(this.quickLearnPojo.getOtherNotes()!=null)
+//        {
+//            otherNotesTextArea.setValue(this.quickLearnPojo.getOtherNotes());
+//        }
         
         otherNotesTextArea.setImmediate(true);
-        otherNotesTextArea.setReadOnly(true);
         
         layout.addComponent(otherNotesTextArea);
-        layout.setExpandRatio(otherNotesTextArea, 2); */
+        layout.setExpandRatio(otherNotesTextArea, 2);
         
         return layout;
         
@@ -321,10 +358,6 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         Label previousQuestions=new Label("<b><h4>"+"PREVIOUS QUESTIONS"+"</h4></b>", ContentMode.HTML);
         previousQuestions.setImmediate(true);
         
-        Label strQuestions = new Label();
-        strQuestions.setImmediate(true);
-        strQuestions.setValue(quickLearnPojo.getPreviousQuestion());
-        
         
         VerticalLayout layout= new VerticalLayout();
         //layout.setSizeFull();
@@ -333,22 +366,21 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         layout.addStyleName("bottomBorder");
         
         layout.addComponent(previousQuestions);
-        layout.addComponent(strQuestions);
         
-        /* TextArea previousQuestionsTextArea;
+        TextArea previousQuestionsTextArea;
         previousQuestionsTextArea = new TextArea();
         
         previousQuestionsTextArea.setSizeFull();
-        if(this.quickLearnPojo.getPreviousQuestion()!=null)
-        {
-            previousQuestionsTextArea.setValue(this.quickLearnPojo.getPreviousQuestion());
-        }
+//        if(this.quickLearnPojo.getPreviousQuestion()!=null)
+//        {
+//            previousQuestionsTextArea.setValue(this.quickLearnPojo.getPreviousQuestion());
+//        }
         
         previousQuestionsTextArea.setImmediate(true);
-        previousQuestionsTextArea.setReadOnly(true);
+        
         
         layout.addComponent(previousQuestionsTextArea);
-        layout.setExpandRatio(previousQuestionsTextArea, 2); */
+        layout.setExpandRatio(previousQuestionsTextArea, 2); 
         
         return layout;
         
@@ -359,9 +391,7 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         Label topicQuiz=new Label("<b><h4>"+"TOPIC QUIZ"+"</h4></b>", ContentMode.HTML);
         topicQuiz.setImmediate(true);
         
-        Label strQuiz = new Label();
-        strQuiz.setImmediate(true);
-        strQuiz.setValue(quickLearnPojo.getQuiz());
+        
         
         
         VerticalLayout layout= new VerticalLayout();
@@ -371,22 +401,21 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         layout.addStyleName("bottomBorder");
         
         layout.addComponent(topicQuiz);
-        layout.addComponent(strQuiz);
         
-        /* TextArea quizTextArea;
+        TextArea quizTextArea;
         quizTextArea = new TextArea();
         
         quizTextArea.setSizeFull();
-        if(this.quickLearnPojo.getQuiz()!=null)
-        {
-            quizTextArea.setValue(this.quickLearnPojo.getQuiz());
-        }
+//        if(this.quickLearnPojo.getQuiz()!=null)
+//        {
+//            quizTextArea.setValue(this.quickLearnPojo.getQuiz());
+//        }
         
         quizTextArea.setImmediate(true);
-        quizTextArea.setReadOnly(true);
+        
         
         layout.addComponent(quizTextArea);
-        layout.setExpandRatio(quizTextArea, 2); */
+        layout.setExpandRatio(quizTextArea, 2); 
         
         return layout;
         
@@ -521,7 +550,7 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
                 if (flag) {
                     quickupload.deleteTopicInformationFromDB(quickLearnPojo);
                     getUI().getCurrent().getNavigator().navigateTo("/topics");
-                    ViewTopicDetailsForAdmin.this.close();
+                    NewEditTopicDetailsAdmin.this.close();
                 }
             }
         }));

@@ -22,8 +22,10 @@ import com.sun.jersey.api.client.WebResource;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.quick.demo.student.ui.DashBoardVideoPlayer;
+import com.quick.forum.NewEventWindow;
 import com.quick.ui.QuickLearn.MyNotes;
 import com.quick.ui.QuickLearn.MyOtherNotes;
+import com.quick.ui.QuickLearn.NewEditTopicDetailsAdmin;
 import com.quick.ui.QuickLearn.PreviousQuestion;
 import com.quick.ui.QuickLearn.QuickLearnDetailWraper;
 import com.quick.ui.QuickLearn.ViewTopicDetailsForAdmin;
@@ -131,6 +133,9 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
     
     private VerticalLayout buildTabSheetLayout(String videoPath, String notes, String otherNotes, String previousQuestions, String strQuiz) {
         VerticalLayout mainVertical=new VerticalLayout();
+        mainVertical.setSpacing(true);
+        mainVertical.setMargin(true);
+        mainVertical.setSizeFull();
         
            editors = new TabSheet();
            editors.setSizeFull();
@@ -141,12 +146,12 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
            editors.addTab(getPreviousQuestionsLayout(previousQuestions), "Previous Questions");
            editors.addTab(getQuizLayout(strQuiz), "Quiz");
            
-           CssLayout cssTabsheetLayout = UIUtils.createPanel(editors);
+           //CssLayout cssTabsheetLayout = UIUtils.createPanel(editors);
            
-           mainVertical.addComponent(cssTabsheetLayout);
-           mainVertical.setExpandRatio(cssTabsheetLayout, 2);
-           mainVertical.setWidth("100%");
-           mainVertical.setHeight("97%");
+           mainVertical.addComponent(editors);
+           mainVertical.setExpandRatio(editors, 2);
+//           mainVertical.setWidth("100%");
+//           mainVertical.setHeight("100%");
            
            //CssLayout aboutLearnLayout =  UIUtils.createPanel(buildTopicDetailsLayout());
            Component aboutLearnLayout =  buildTopicDetailsLayout();
@@ -154,6 +159,18 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
            
            mainVertical.addComponent(aboutLearnLayout);
            mainVertical.setExpandRatio(aboutLearnLayout, 1);
+           
+           
+           HorizontalLayout buttons = new HorizontalLayout();
+            buttons.setMargin(true);
+            buttons.setSpacing(true);
+            buttons.setSizeUndefined();
+            
+            buttons.addComponent(savebtn);
+            buttons.addComponent(cancelbtn);
+           mainVertical.addComponent(buttons);
+           mainVertical.setExpandRatio(buttons, 0.5f);
+           
            return mainVertical;
     }
     
@@ -730,13 +747,13 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
         savebtn.addStyleName(GlobalConstants.default_style);
         savebtn.setImmediate(true);
         savebtn.setVisible(false);
-        buttons.addComponent(savebtn);
+        //buttons.addComponent(savebtn);
 
         cancelbtn = new Button(GlobalConstants.Cancel,(Button.ClickListener)this);
         cancelbtn.setImmediate(true);  
         cancelbtn.addStyleName(GlobalConstants.default_style);
         cancelbtn.setVisible(false);
-        buttons.addComponent(cancelbtn);        
+        //buttons.addComponent(cancelbtn);        
        
         top.addComponent(buttons);
         top.setComponentAlignment(buttons, Alignment.TOP_RIGHT); 
@@ -762,15 +779,20 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
     @Override
     public void buttonClick(ClickEvent event) {
         final Button source = event.getButton();
-        if (source == newbtn) {
-            isNewQuickUpload=true;
-            newbtn.setVisible(false);
-            savebtn.setVisible(true);
-            cancelbtn.setVisible(true);
-            removeTabsheetLayout();
-            //passing null below to create blank new video path layout,notes, other notes and questions so that admin can enter it
-            cssTabSheetLayout=UIUtils.createPanel(buildTabSheetLayout(null,null,null,null,null));
-            row.addComponent(cssTabSheetLayout);
+        if (source == newbtn) 
+        {
+//            isNewQuickUpload=true;
+//            newbtn.setVisible(false);
+//            savebtn.setVisible(true);
+//            cancelbtn.setVisible(true);
+//            removeTabsheetLayout();
+//            //passing null below to create blank new video path layout,notes, other notes and questions so that admin can enter it
+//            cssTabSheetLayout=UIUtils.createPanel(buildTabSheetLayout(null,null,null,null,null));
+//            //row.addComponent(cssTabSheetLayout);
+//            showNewTopicPopup();
+            
+            UI.getCurrent().addWindow(new NewEditTopicDetailsAdmin());
+            
 
         } else if (source == savebtn) {
             try 
@@ -905,5 +927,21 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
 //                setStudQuikLearnDetails(getStudentQuickLearnDetails());
 //                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub());
                 UI.getCurrent().addWindow(new ViewTopicDetailsForAdmin(getQuikLearnMasterParamDetails(),uploadId,this));
+    }
+
+    private void showNewTopicPopup() {
+        Window w = new Window("New Topic");
+        
+        w.setModal(true);
+        setCaption("New event");
+        w.center();
+        w.setClosable(true);
+        w.setWidth("95%");
+        w.setHeight("100%"); 
+        
+        w.setContent(cssTabSheetLayout);
+        addStyleName("schedule");       
+        
+        UI.getCurrent().addWindow(new NewEditTopicDetailsAdmin());
     }
 }
