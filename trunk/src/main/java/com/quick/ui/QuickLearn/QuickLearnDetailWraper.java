@@ -26,7 +26,7 @@ import com.vaadin.ui.VerticalLayout;
 
 public class QuickLearnDetailWraper extends VerticalLayout {
 
-    private Label description = new Label();
+    private Label description;
     private MasteParmBean topicDetails;
 
     public QuickLearnDetailWraper(final MasteParmBean topicDetails, Object quickLearn) {
@@ -36,13 +36,14 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         setMargin(false);
         this.topicDetails=topicDetails;
         //setCaption(topicDetails.getEventDesc());
-        addStyleName("no-vertical-drag-hints");
-        addStyleName("no-horizontal-drag-hints");
+//        addStyleName("no-vertical-drag-hints");
+//        addStyleName("no-horizontal-drag-hints");
         addStyleName("fourSideBorder");
         
         HorizontalLayout details = new HorizontalLayout();
         //details.setSpacing(true);
         //details.setMargin(true);
+        //set size full - used to display data in one screen only without scroll
         details.setSizeFull();
         addComponent(details);
         setData(topicDetails);
@@ -107,7 +108,7 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         Label label;
         //String data="The activity of neurons in the brain and the code used by these neurons is described by mathematical neuron models at different levels of detail";
         
-        String caption = "<h3><b>" + topicDetails.getUploadId()+ ":"+topicDetails.getTopic() + "</b></h3>";
+        String caption = "<table><tr><td bgcolor='deeppink' style='color: #fff;'>NEW</td><td><b>"+topicDetails.getUploadId()+ ": "+topicDetails.getTopic() +"</b></td></tr></table>" +"";
 //                + "<h5> " + topicDetails.getLectureNotesInformation() + "</h5>" 
 //                + "<h4><b>STARTS: </b>"+" " + topicDetails.getUploadDate()+"" + " <b>. INSTRUCTORS: </b>"+" "+ topicDetails.getOtherNotesInformation() +" </h4>";
                 //+ "<h4><tr><b>STARTS: </b></h4>"+" <h5>" + topicDetails.getUploadDate()+"</h5>" + " <h4><b>. INSTRUCTORS: </b></h4>"+" <h5>"+ topicDetails.getOtherNotesInformation() +"</h5></tr>";
@@ -116,9 +117,9 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         label.setSizeUndefined();
         fields.addComponent(label);
 
-        
+        description = new Label();
         description.setData(topicDetails.getLectureNotesInformation());
-        description.setCaption("");
+        description.setCaption(GlobalConstants.emptyString);
         updateSynopsis(topicDetails, false);
         fields.addComponent(description);
         
@@ -133,9 +134,10 @@ public class QuickLearnDetailWraper extends VerticalLayout {
 //        });
         
         
-        String timeAndInstructor = "<h4><b>STARTS: </b>"+" " + topicDetails.getUploadDate()+"" + " <b>. INSTRUCTORS: </b>"+" "+ topicDetails.getOtherNotesInformation() + " <b>. RECOMMENDED FOR: </b>"+topicDetails.getStd()+" </h4>";
+        String timeAndInstructor = "<b>&nbsp;&nbsp;&nbsp;STARTS: </b>"+" " + topicDetails.getUploadDate()+"" + " <b>. INSTRUCTORS: </b>"+" "+ topicDetails.getOtherNotesInformation() + " <b>. RECOMMENDED FOR: </b>"+topicDetails.getStd()+"&nbsp;&nbsp;&nbsp;";
         label = new Label(timeAndInstructor, ContentMode.HTML);
         label.setSizeUndefined();
+        label.addStyleName("backgroundColor");
         fields.addComponent(label);
         
         
