@@ -15,6 +15,8 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.vaadin.data.Property;
 import com.quick.data.MasterDataProvider;
+import com.quick.table.QuickUploadTable;
+import com.quick.utilities.ConfirmationDialogueBox;
 import com.quick.utilities.DateUtil;
 import com.quick.utilities.UIUtils;
 import com.vaadin.event.FieldEvents;
@@ -46,12 +48,15 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
     private String strUserNotes;
     private TextArea userNotesTxtArea;
     private int selectedUploadId;
+    private QuickUpload quickupload;
     
     
-    
-    public ViewTopicDetailsForAdmin(MasteParmBean learnRow, int selectedUploadId){
+    public ViewTopicDetailsForAdmin(MasteParmBean learnRow, int selectedUploadId, QuickUpload quickupload){
+        this.quickupload=quickupload;
         this.selectedUploadId=selectedUploadId;
         this.quickLearnPojo=learnRow;
+        //upload id is set to master param - further used for deletion
+        quickLearnPojo.setUploadId(selectedUploadId);
         this.strUserNotes=strUserNotes;
         setModal(true);
         setCaption("View topic details");
@@ -114,8 +119,7 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         baseLayout.addComponent(getOtherNotesLayout());
         baseLayout.addComponent(getPreviousQuestionsLayout());
         baseLayout.addComponent(getQuizLayout());
-        //baseLayout.addComponent(addUserNotes());
-        //baseLayout.setExpandRatio(tabsheetLayout,2);
+        baseLayout.addComponent(getDeleteButtonLayout());
     }
     
     private Component getVideoPathLayout() 
@@ -387,6 +391,49 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         return layout;
         
     }
+    
+    private HorizontalLayout getDeleteButtonLayout() 
+    {
+               
+        Button deleteTopic = new Button();
+        deleteTopic.setImmediate(true);
+        deleteTopic.setCaption("Delete topic");
+        deleteTopic.addStyleName("default");
+        deleteTopic.addClickListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                deleteThisTopic();
+                
+            }
+        });
+
+        
+        HorizontalLayout layout= new HorizontalLayout();
+        //layout.setSizeFull();
+        layout.setSpacing(true);
+        layout.setMargin(true);
+        
+        layout.addComponent(deleteTopic);
+        
+        /* TextArea quizTextArea;
+        quizTextArea = new TextArea();
+        
+        quizTextArea.setSizeFull();
+        if(this.quickLearnPojo.getQuiz()!=null)
+        {
+            quizTextArea.setValue(this.quickLearnPojo.getQuiz());
+        }
+        
+        quizTextArea.setImmediate(true);
+        quizTextArea.setReadOnly(true);
+        
+        layout.addComponent(quizTextArea);
+        layout.setExpandRatio(quizTextArea, 2); */
+        
+        return layout;
+        
+    }
 
    /*  private CssLayout addUserNotes() 
     {
@@ -463,6 +510,20 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
             ex.printStackTrace();
         }
         
-    }  
+    }
     
+    private void deleteThisTopic()
+    {
+        UI.getCurrent().addWindow(new ConfirmationDialogueBox("Confirmation", "Are you sure you want to remove this topic ?", new ConfirmationDialogueBox.Callback() {
+
+            @Override
+            public void onDialogResult(boolean flag) {
+                if (flag) {
+                    quickupload.deleteTopicInformationFromDB(quickLearnPojo);
+                    getUI().getCurrent().getNavigator().navigateTo("/topics");
+                    ViewTopicDetailsForAdmin.this.close();
+                }
+            }
+        }));
+    }
 }

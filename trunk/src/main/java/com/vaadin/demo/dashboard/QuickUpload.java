@@ -858,7 +858,7 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
      
      //get upload id from bean and pass it to service 
      // service will delete it from db
-     private void deleteTopicInformationFromDB(MasteParmBean masteParmBean) 
+     public void deleteTopicInformationFromDB(MasteParmBean masteParmBean) 
      {
           try 
           {
@@ -897,13 +897,13 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
     public void layoutClick(LayoutEvents.LayoutClickEvent event) {
                 QuickLearnDetailWraper topicWraper =(QuickLearnDetailWraper) event.getComponent();
                 MasteParmBean bean = (MasteParmBean)topicWraper.getData();
-                 uploadId = bean.getUploadId();  
+                uploadId = bean.getUploadId();  
                 isNewQuickUpload=false;
                 setQuikLearnMasterParamDetails(getQuickUploadDetailsFromDB());
 //                setUploadId(bean.getUploadId());
 //                setTopicForNotification(bean.getTopic());
 //                setStudQuikLearnDetails(getStudentQuickLearnDetails());
 //                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub());
-                UI.getCurrent().addWindow(new ViewTopicDetailsForAdmin(getQuikLearnMasterParamDetails(),uploadId));
+                UI.getCurrent().addWindow(new ViewTopicDetailsForAdmin(getQuikLearnMasterParamDetails(),uploadId,this));
     }
 }
