@@ -29,6 +29,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
 import java.io.File;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -49,9 +51,12 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
     private TextArea userNotesTxtArea;
     private int selectedUploadId;
     private QuickUpload quickupload;
+    private Userprofile loggedInProfile;
+    private static final String Select = "Select";
     
-    public NewEditTopicDetailsAdmin()
+    public NewEditTopicDetailsAdmin(Userprofile loggedInProfile)
     {
+        this.loggedInProfile=loggedInProfile;
         setModal(true);
         setCaption("View topic details");
         center();        
@@ -142,7 +147,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         baseLayout.addComponent(getOtherNotesLayout());
         baseLayout.addComponent(getPreviousQuestionsLayout());
         baseLayout.addComponent(getQuizLayout());
-        baseLayout.addComponent(getDeleteButtonLayout());
+        baseLayout.addComponent(getAddButtonLayout());
     }
     
     private List<Std> standardList;
@@ -173,16 +178,23 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         this.uploadedList = uploadedList;
     }
     
+    private ComboBox subjecttxt;
+    private ComboBox standardtxt;
+    private TextField topictxt;
+    private TextField topicTagstxt;
+    private TextArea txtTopicIntro;
+    private TextField videoInputPath;
+    
     private Component getVideoPathLayout() 
     {
-        final ComboBox subjecttxt = new ComboBox();
+        subjecttxt = new ComboBox("Subject");
         subjecttxt.setImmediate(true);
         subjecttxt.setInputPrompt("Subject");
         subjecttxt.setNullSelectionAllowed(false);
         subjecttxt.setWidth("185px");
         
         
-        final ComboBox standardtxt = new ComboBox("Standard");
+        standardtxt = new ComboBox("Standard");
         standardtxt.setImmediate(true);
         standardtxt.setInputPrompt("Standard");
         standardtxt.addItem("Select");
@@ -214,14 +226,14 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
             }
         });
         
-        TextField topictxt=new TextField();
-        topictxt.setInputPrompt("Topic name");   
+        topictxt=new TextField("Topic name");
+        topictxt.setInputPrompt("Name");   
         
-        TextField topicTagstxt=new TextField("TAGS");
+        topicTagstxt=new TextField("TAGS");
         topicTagstxt.setInputPrompt("TOPIC TAGS");
         topicTagstxt.setWidth("90%");
         
-        TextArea txtTopicIntro=new TextArea();
+        txtTopicIntro=new TextArea("Topic intro");
         txtTopicIntro.setInputPrompt("About topic");
         txtTopicIntro.setRows(4);
         txtTopicIntro.setWidth("90%");
@@ -232,52 +244,51 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         topicInfoLayout.setSpacing(true);
         topicInfoLayout.setMargin(true);
         topicInfoLayout.addStyleName("fourSideBorder");
+        //topicInfoLayout.addStyleName("bottomBorder");
+        
+        Label lableVideo;
+        lableVideo = new Label("<b>Enter video path</b>", ContentMode.HTML);
+        lableVideo.setImmediate(true);
+        //lableVideo.setCaption("About Video");
+        lableVideo.setWidth("90%");
+        
+        
+        videoInputPath = new TextField();
+        videoInputPath.setInputPrompt("Please enter video path on the SERVER");
+        videoInputPath.setWidth("90%");
         
         topicInfoLayout.addComponent(topictxt);
-        topicInfoLayout.addComponent(subjecttxt);
         topicInfoLayout.addComponent(standardtxt);
+        topicInfoLayout.addComponent(subjecttxt);
+        topicInfoLayout.addComponent(lableVideo);
+        topicInfoLayout.addComponent(videoInputPath);
         topicInfoLayout.addComponent(txtTopicIntro);
         topicInfoLayout.addComponent(topicTagstxt);
         
         
-           VerticalLayout videoInfoLayout = new VerticalLayout();
-           //layout.setSpacing(true);
-           videoInfoLayout.setImmediate(true);
-          // videoInfoLayout.setSizeFull();
-           videoInfoLayout.setHeight("100%");
-           videoInfoLayout.setMargin(new MarginInfo(true, true, false, true));
-           videoInfoLayout.addStyleName("fourSideBorder");
-           
-           TextField videoInputPath=new TextField();
-            videoInputPath.setInputPrompt("Please enter video path on the SERVER");
-            videoInputPath.setWidth("90%");
-            
-           Label lableVideo;
-           // not video available, accept path from user
-           lableVideo = new Label("<b><h3>Enter video path</h3></b>", ContentMode.HTML);
-           lableVideo.setImmediate(true);
-           //txtVideoPath.setInputPrompt("Enter server video path");
-           lableVideo.setCaption("About Video");
-           lableVideo.setWidth("90%");
-           //txtVideoPath.addValueChangeListener(this);
-           videoInfoLayout.addComponent(lableVideo);
-           //videoInfoLayout.setComponentAlignment(lableVideo, Alignment.MIDDLE_CENTER);
-           
-           videoInfoLayout.addComponent(videoInputPath);
-           //videoInfoLayout.setComponentAlignment(videoInputPath, Alignment.MIDDLE_CENTER);
-         
-         
-      
+//           VerticalLayout videoInfoLayout = new VerticalLayout();
+//           videoInfoLayout.setImmediate(true);
+//           videoInfoLayout.setSizeFull();
+//           videoInfoLayout.setMargin(new MarginInfo(true, true, false, true));
+//           videoInfoLayout.addStyleName("fourSideBorder");
+//           //videoInfoLayout.addStyleName("heightFix");
+//           videoInfoLayout.addComponent(lableVideo);
+//           
+//           videoInfoLayout.addComponent(videoInputPath);
+//         
+//       HorizontalLayout h = new HorizontalLayout();
+//       h.setSizeFull();
+//       //h.addStyleName("bottomBorder");
+//       h.addComponent(topicInfoLayout);
+//       h.setExpandRatio(topicInfoLayout, 1);
+//       
+//       h.addComponent(videoInfoLayout);       
+//       h.setExpandRatio(videoInfoLayout, 1);
        
-       HorizontalLayout h = new HorizontalLayout();
-       h.setSizeFull();
-       h.addStyleName("bottomBorder");
-       h.addComponent(topicInfoLayout);
-       h.addComponent(videoInfoLayout);       
-       
-       return h;       
+       return topicInfoLayout;       
     }
     
+    private TextArea notesTextArea;
     private VerticalLayout getNotesLayout() 
     {
         
@@ -295,7 +306,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         
         layout.addComponent(topicNotes);
         
-        TextArea notesTextArea;
+        
         notesTextArea = new TextArea();
         
         notesTextArea.setSizeFull();
@@ -317,6 +328,8 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         
     }
     
+    private TextArea otherNotesTextArea;
+    
     private VerticalLayout getOtherNotesLayout() 
     {
         
@@ -334,7 +347,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         
         layout.addComponent(otherRef);
         
-        TextArea otherNotesTextArea = new TextArea();
+        otherNotesTextArea = new TextArea();
         
         otherNotesTextArea.setSizeFull();
 //        if(this.quickLearnPojo.getOtherNotes()!=null)
@@ -351,7 +364,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         
     }
     
-    
+    private TextArea previousQuestionsTextArea;
     private VerticalLayout getPreviousQuestionsLayout() 
     {
         
@@ -367,7 +380,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         
         layout.addComponent(previousQuestions);
         
-        TextArea previousQuestionsTextArea;
+        
         previousQuestionsTextArea = new TextArea();
         
         previousQuestionsTextArea.setSizeFull();
@@ -386,6 +399,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         
     }
     
+    private TextArea quizTextArea;
     private VerticalLayout getQuizLayout() 
     {
         Label topicQuiz=new Label("<b><h4>"+"TOPIC QUIZ"+"</h4></b>", ContentMode.HTML);
@@ -402,7 +416,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         
         layout.addComponent(topicQuiz);
         
-        TextArea quizTextArea;
+        
         quizTextArea = new TextArea();
         
         quizTextArea.setSizeFull();
@@ -421,18 +435,22 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         
     }
     
-    private HorizontalLayout getDeleteButtonLayout() 
+    private HorizontalLayout getAddButtonLayout() 
     {
                
-        Button deleteTopic = new Button();
-        deleteTopic.setImmediate(true);
-        deleteTopic.setCaption("Delete topic");
-        deleteTopic.addStyleName("default");
-        deleteTopic.addClickListener(new Button.ClickListener() {
+        Button addTopic = new Button();
+        addTopic.setImmediate(true);
+        addTopic.setCaption("Add topic");
+        addTopic.addStyleName("default");
+        addTopic.addClickListener(new Button.ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                deleteThisTopic();
+                try {
+                    validateAndSaveQuickUploadDetails();
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
                 
             }
         });
@@ -443,7 +461,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         layout.setSpacing(true);
         layout.setMargin(true);
         
-        layout.addComponent(deleteTopic);
+        layout.addComponent(addTopic);
         
         /* TextArea quizTextArea;
         quizTextArea = new TextArea();
@@ -555,4 +573,132 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
             }
         }));
     }
+    
+    private void validateAndSaveQuickUploadDetails() throws JSONException {
+        
+        //validations
+        if(loggedInProfile.getName()==null || loggedInProfile.getName().trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("User not properly logged in.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(standardtxt.getValue()==null || ((String)standardtxt.getValue()).trim().equals(GlobalConstants.emptyString) || ((String)standardtxt.getValue()).trim().equalsIgnoreCase(Select))
+        {
+            Notification.show("Please enter standard.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(subjecttxt.getValue()==null || ((String)subjecttxt.getValue()).trim().equals(GlobalConstants.emptyString)|| ((String)subjecttxt.getValue()).trim().equalsIgnoreCase(Select))
+        {
+            Notification.show("Please enter subject.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(topictxt.getValue()==null || ((String)topictxt.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter topic.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(topicTagstxt.getValue()==null || ((String)topicTagstxt.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter tags for topic.", Notification.Type.WARNING_MESSAGE);
+        }
+        else
+        {
+            //executions - inserting in db
+            JSONObject inputJson = new JSONObject();
+            try 
+            {
+                String uploadedBy = loggedInProfile.getName();
+                inputJson.put("uploadedBy", uploadedBy);
+                inputJson.put("std", standardtxt.getValue());
+                inputJson.put("sub", subjecttxt.getValue());
+                inputJson.put("topic", topictxt.getValue());
+                inputJson.put("tags", topicTagstxt.getValue());
+                
+                if (videoInputPath != null)
+                {
+                    //video player doesnt exists, need to update video path
+                    inputJson.put("video_path", videoInputPath.getValue());
+                }
+                else
+                {
+                    //video player exists, no need to update video path
+                    //String dummyEmptyString=GlobalConstants.emptyString;
+                    //inputJson.put("video_path", getQuikLearnMasterParamDetails().getVideoPath());
+                }
+                
+
+                if (!notesTextArea.getValue().equals(GlobalConstants.emptyString))
+                {
+                    inputJson.put("notes", notesTextArea.getValue());
+                } else {
+                    inputJson.put("notes", "no data");
+                }
+
+                if (!otherNotesTextArea.getValue().equals(GlobalConstants.emptyString)) {
+                    inputJson.put("othernotes", otherNotesTextArea.getValue());
+                } else {
+                    inputJson.put("othernotes", "no data");
+                }
+
+                if (!previousQuestionsTextArea.getValue().equals(GlobalConstants.emptyString)) {
+                    inputJson.put("pq", previousQuestionsTextArea.getValue());
+                } else {
+                    inputJson.put("pq", "no data");
+                }
+                
+                if (!quizTextArea.getValue().equals(GlobalConstants.emptyString)) {
+                    inputJson.put("quiz", quizTextArea.getValue());
+                } else {
+                    inputJson.put("quiz", "no data");
+                }
+                
+                if (!txtTopicIntro.getValue().equals(GlobalConstants.emptyString)) {
+                    inputJson.put("topicIntro", txtTopicIntro.getValue());
+                } else {
+                    inputJson.put("topicIntro", "no data");
+                }
+                
+                
+
+                //System.out.println("***** isNewQuickUpload="+isNewQuickUpload);
+                //System.out.println("***** uploadId="+uploadId);
+                
+                inputJson.put("isNewQuickUpload", true);
+                inputJson.put("uploadId", "null");
+                
+//                if (isNewQuickUpload) {
+//                    inputJson.put("uploadId", "null");
+//                } else {
+//                    inputJson.put("uploadId", uploadId);
+//                }
+
+            } catch (JSONException ex) 
+            {
+                ex.printStackTrace();
+                throw ex;
+            }
+
+
+            Client client = Client.create();
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_UPLOAD_DETAILS_URL));
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
+
+            /*
+             * if (response.getStatus() != 201) { throw new RuntimeException("Failed
+             * : HTTP error code : " + response.getStatus()); }
+             */
+
+            String output = response.getEntity(String.class);
+            System.out.println("output=" + output);
+            
+            JSONObject outputJson = new JSONObject(output);
+            if(Integer.parseInt(outputJson.getString(GlobalConstants.STATUS)) == GlobalConstants.YES)
+            {
+                Notification.show("Saved successfully", Notification.Type.WARNING_MESSAGE);
+                getUI().getCurrent().getNavigator().navigateTo("/topics");
+                this.close();
+            }
+            else
+            {
+                Notification.show("Saving failed", Notification.Type.WARNING_MESSAGE);
+            }
+      
+    }
+}
 }

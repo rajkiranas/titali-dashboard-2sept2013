@@ -33,6 +33,8 @@ public class ConfirmationDialogueBox extends Window implements Button.ClickListe
         // Put some components in it
         subContent.addComponent(new Label(question));
         HorizontalLayout h=new HorizontalLayout();
+        h.setSpacing(true);
+        h.setMargin(true);
         h.addComponent(btnYes);
         h.addComponent(btnNo);
         h.setHeight("100%");
@@ -63,6 +65,8 @@ public class ConfirmationDialogueBox extends Window implements Button.ClickListe
         // Put some components in it
         subContent.addComponent(new Label("Are you sure, you want to remove this ?"));
         HorizontalLayout h=new HorizontalLayout();
+        h.setSpacing(true);
+        h.setMargin(true);
         h.addComponent(btnYes);
         h.addComponent(btnNo);
         h.setHeight("100%");
