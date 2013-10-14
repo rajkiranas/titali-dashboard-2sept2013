@@ -22,6 +22,14 @@ public class DateUtil {
     private static final String format="EEE MMM dd";
     private static SimpleDateFormat sdf = new SimpleDateFormat(format);
     
+    private static final String ddMMyyyy="dd/MM/yyyy";
+    private static SimpleDateFormat ddMMyyyyFormat = new SimpleDateFormat(ddMMyyyy);
+    
+    public static String formatDateInddMMyyyyFormat(Date date)
+    {
+        return ddMMyyyyFormat.format(date);        
+    }
+    
   public static Calendar getCalenderInstance(){
          Calendar c= Calendar.getInstance();
          return c;

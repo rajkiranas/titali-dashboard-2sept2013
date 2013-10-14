@@ -791,7 +791,7 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
 //            //row.addComponent(cssTabSheetLayout);
 //            showNewTopicPopup();
             
-            UI.getCurrent().addWindow(new NewEditTopicDetailsAdmin());
+            UI.getCurrent().addWindow(new NewEditTopicDetailsAdmin(loggedInProfile));
             
 
         } else if (source == savebtn) {
@@ -942,6 +942,6 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
         w.setContent(cssTabSheetLayout);
         addStyleName("schedule");       
         
-        UI.getCurrent().addWindow(new NewEditTopicDetailsAdmin());
+       // UI.getCurrent().addWindow(new NewEditTopicDetailsAdmin());
     }
 }

@@ -3,6 +3,7 @@ package com.quick.ui.QuickLearn;
 import com.quick.bean.MasteParmBean;
 import com.quick.bean.QuickLearn;
 import com.quick.global.GlobalConstants;
+import com.quick.utilities.DateUtil;
 import com.vaadin.demo.dashboard.StudQuickLearn;
 import com.vaadin.demo.dashboard.ViewTopicDetailsWindow;
 import com.vaadin.event.LayoutEvents;
@@ -134,7 +135,11 @@ public class QuickLearnDetailWraper extends VerticalLayout {
 //        });
         
         
-        String timeAndInstructor = "<b>&nbsp;&nbsp;&nbsp;STARTS: </b>"+" " + topicDetails.getUploadDate()+"" + " <b>. INSTRUCTORS: </b>"+" "+ topicDetails.getOtherNotesInformation() + " <b>. RECOMMENDED FOR: </b>"+topicDetails.getStd()+"&nbsp;&nbsp;&nbsp;";
+        String timeAndInstructor = "<b>&nbsp;&nbsp;&nbsp;STARTS: </b>"+" " + DateUtil.formatDateInddMMyyyyFormat(topicDetails.getUploadDate())
+                +"" + " <b>. INSTRUCTORS: </b>"+" "+ topicDetails.getOtherNotesInformation() 
+                +"" + " <b>. SUBJECT: </b>"+" "+ topicDetails.getSub() 
+                + " <b>. RECOMMENDED FOR: </b>"+topicDetails.getStd()+"&nbsp;&nbsp;&nbsp;";
+        
         label = new Label(timeAndInstructor, ContentMode.HTML);
         label.setSizeUndefined();
         label.addStyleName("backgroundColor");
