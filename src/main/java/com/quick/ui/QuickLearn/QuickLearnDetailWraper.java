@@ -39,7 +39,7 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         //setCaption(topicDetails.getEventDesc());
 //        addStyleName("no-vertical-drag-hints");
 //        addStyleName("no-horizontal-drag-hints");
-        addStyleName("fourSideBorder");
+        //addStyleName("fourSideBorder");
         
         HorizontalLayout details = new HorizontalLayout();
         //details.setSpacing(true);
@@ -101,6 +101,7 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         //final Button more = new Button("More…");
         FormLayout fields = new FormLayout();
         fields.setWidth("100%");
+        fields.addStyleName("fourSideBorder");
         //fields.setSpacing(true);
         //fields.setMargin(true);
         details.addComponent(fields);
@@ -137,13 +138,15 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         
         String timeAndInstructor = "<b>&nbsp;&nbsp;&nbsp;STARTS: </b>"+" " + DateUtil.formatDateInddMMyyyyFormat(topicDetails.getUploadDate())
                 +"" + " <b>. INSTRUCTORS: </b>"+" "+ topicDetails.getOtherNotesInformation() 
-                +"" + " <b>. SUBJECT: </b>"+" "+ topicDetails.getSub() 
+                +"" + " <b>. SUB: </b>"+" "+ topicDetails.getSub() 
                 + " <b>. RECOMMENDED FOR: </b>"+topicDetails.getStd()+"&nbsp;&nbsp;&nbsp;";
         
         label = new Label(timeAndInstructor, ContentMode.HTML);
-        label.setSizeUndefined();
+        //label.setSizeUndefined();
+        label.setWidth("98%");        
         label.addStyleName("backgroundColor");
         fields.addComponent(label);
+        fields.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
         
         
          
@@ -152,9 +155,16 @@ public class QuickLearnDetailWraper extends VerticalLayout {
                 new ThemeResource("./img/learnMore.png"));
         coverImage.setHeight("100px");
         coverImage.setWidth("100px");
-        details.addComponent(coverImage);
-        details.setComponentAlignment(coverImage, Alignment.MIDDLE_RIGHT);
-        details.setExpandRatio(coverImage, 1);
+        
+        VerticalLayout imageLayout = new VerticalLayout();
+        imageLayout.setSizeFull();
+        imageLayout.addComponent(coverImage);
+        imageLayout.addStyleName("threeSideBorder");
+
+        
+        details.addComponent(imageLayout);
+        details.setComponentAlignment(imageLayout, Alignment.MIDDLE_RIGHT);
+        details.setExpandRatio(imageLayout, 0.5f);
 
     }
 
