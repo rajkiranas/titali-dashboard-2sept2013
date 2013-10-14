@@ -107,6 +107,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         tabsheet.addTab(getQuizLayout(),"Quiz"); */
         
         //CssLayout tabsheetLayout = UIUtils.createPanel(tabsheet);
+        baseLayout.addComponent(getBannerLayout());
         baseLayout.addComponent(getVideoPathLayout());
         baseLayout.addComponent(getNotesLayout());
         baseLayout.addComponent(getOtherNotesLayout());
@@ -114,6 +115,22 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         baseLayout.addComponent(getQuizLayout());
         baseLayout.addComponent(addUserNotes());
         //baseLayout.setExpandRatio(tabsheetLayout,2);
+    }
+    
+    private Component getBannerLayout() 
+    {
+        Label collegeBanner=new Label("<b>"+"MIT SCHOOL OF MANAGEMENT"+"</b>", ContentMode.HTML);
+        collegeBanner.setImmediate(true);
+        
+        VerticalLayout bannerLayout = new VerticalLayout();
+           //layout.setSpacing(true);
+           bannerLayout.setWidth("100%");
+           bannerLayout.setHeight("100%");
+           bannerLayout.setMargin(new MarginInfo(true, true, false, true));
+           bannerLayout.addStyleName("brownBackgroundColor");
+           
+       bannerLayout.addComponent(collegeBanner);
+       return bannerLayout;       
     }
     
     private Component getVideoPathLayout() 
