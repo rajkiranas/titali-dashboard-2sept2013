@@ -152,7 +152,7 @@ public class QuickLearnDetailWraper extends VerticalLayout {
          
         
         Embedded coverImage =  new Embedded(GlobalConstants.emptyString,
-                new ThemeResource("./img/learnMore.png"));
+                new ThemeResource("./img/learnMore.jpg"));
         coverImage.setHeight("100px");
         coverImage.setWidth("100px");
         
@@ -160,6 +160,7 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         imageLayout.setSizeFull();
         imageLayout.addComponent(coverImage);
         imageLayout.addStyleName("threeSideBorder");
+        imageLayout.setComponentAlignment(coverImage, Alignment.MIDDLE_CENTER);
 
         
         details.addComponent(imageLayout);
