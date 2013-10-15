@@ -124,10 +124,13 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         Label topicName=new Label("<b><h1>"+quickLearnPojo.getTopic()+"</h1></b>", ContentMode.HTML);
         topicName.setImmediate(true);
         
-        Label instructorName=new Label("<b><h4><b>INSTRUCTORS: </b>"+quickLearnPojo.getOtherNotesInformation()+"</h4></b>", ContentMode.HTML);
+        Label instructorName=new Label("<b><b>INSTRUCTORS: </b>"+quickLearnPojo.getOtherNotesInformation()+"</b>", ContentMode.HTML);
         instructorName.setImmediate(true);
         
-        Label recommendedFor=new Label("<b><h4><b>RECOMMENDED FOR: </b>"+quickLearnPojo.getStd()+"</h4></b>", ContentMode.HTML);
+        Label subject=new Label("<b><b>SUBJECT: </b>"+quickLearnPojo.getSub()+"</b>", ContentMode.HTML);
+        subject.setImmediate(true);
+        
+        Label recommendedFor=new Label("<b><b>RECOMMENDED FOR: </b>"+quickLearnPojo.getStd()+"</b>", ContentMode.HTML);
         recommendedFor.setImmediate(true);
         
         Label topicIntro = new Label();
@@ -140,6 +143,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         
         topicInfoLayout.addComponent(topicName);
         topicInfoLayout.addComponent(instructorName);
+        topicInfoLayout.addComponent(subject);
         topicInfoLayout.addComponent(recommendedFor);
         topicInfoLayout.addComponent(topicIntro);
         
