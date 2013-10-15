@@ -73,6 +73,7 @@ public class GlobalConstants
     public static final String eventDetailsList="eventDetailsList";
     public static final String FILE_UPLOAD_PATH="FILE_UPLOAD_PATH";
     public static final String FILE_DOWNLOAD_PATH="FILE_DOWNLOAD_PATH";
+    public static final String SCHOOL_NAME="SCHOOL_NAME";
 
     
     

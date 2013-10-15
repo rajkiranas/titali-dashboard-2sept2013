@@ -37,8 +37,8 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         setMargin(false);
         this.topicDetails=topicDetails;
         //setCaption(topicDetails.getEventDesc());
-//        addStyleName("no-vertical-drag-hints");
-//        addStyleName("no-horizontal-drag-hints");
+        addStyleName("no-vertical-drag-hints");
+        addStyleName("no-horizontal-drag-hints");
         //addStyleName("fourSideBorder");
         
         HorizontalLayout details = new HorizontalLayout();
@@ -46,6 +46,7 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         //details.setMargin(true);
         //set size full - used to display data in one screen only without scroll
         details.setSizeFull();
+        details.addStyleName("fourSideBorder");
         addComponent(details);
         setData(topicDetails);
         addLayoutClickListener((LayoutEvents.LayoutClickListener)quickLearn);
@@ -101,7 +102,7 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         //final Button more = new Button("More…");
         FormLayout fields = new FormLayout();
         fields.setWidth("100%");
-        fields.addStyleName("fourSideBorder");
+        fields.addStyleName("rightBorder");
         //fields.setSpacing(true);
         //fields.setMargin(true);
         details.addComponent(fields);
@@ -159,7 +160,7 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         VerticalLayout imageLayout = new VerticalLayout();
         imageLayout.setSizeFull();
         imageLayout.addComponent(coverImage);
-        imageLayout.addStyleName("threeSideBorder");
+        //imageLayout.addStyleName("threeSideBorder");
         imageLayout.setComponentAlignment(coverImage, Alignment.MIDDLE_CENTER);
 
         
