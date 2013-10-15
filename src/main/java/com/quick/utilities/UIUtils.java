@@ -4,6 +4,7 @@
  */
 package com.quick.utilities;
 
+import com.quick.global.GlobalConstants;
 import com.vaadin.addon.charts.Chart;
 import com.vaadin.addon.charts.model.Axis;
 import com.vaadin.addon.charts.model.AxisType;
@@ -33,11 +34,14 @@ import com.vaadin.addon.charts.model.YAxis;
 import com.vaadin.addon.charts.model.style.SolidColor;
 import com.vaadin.addon.charts.model.style.Style;
 import com.vaadin.annotations.Title;
+import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 import java.util.Date;
@@ -55,6 +59,22 @@ public class UIUtils {
         panel.setHeight("97%");
         panel.addComponent(content);
         return panel;
+    }
+    
+    public static Component getSchoolBannerLayout() 
+    {
+        Label collegeBanner=new Label("<b>"+GlobalConstants.getProperty(GlobalConstants.SCHOOL_NAME)+"</b>", ContentMode.HTML);
+        collegeBanner.setImmediate(true);
+        
+        VerticalLayout bannerLayout = new VerticalLayout();
+           //layout.setSpacing(true);
+           bannerLayout.setWidth("100%");
+           bannerLayout.setHeight("100%");
+           bannerLayout.setMargin(new MarginInfo(true, true, false, true));
+           bannerLayout.addStyleName("brownBackgroundColor");
+           
+       bannerLayout.addComponent(collegeBanner);
+       return bannerLayout;       
     }
     
     
