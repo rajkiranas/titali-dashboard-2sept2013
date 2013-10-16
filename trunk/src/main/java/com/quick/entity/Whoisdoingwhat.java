@@ -19,6 +19,7 @@ public class Whoisdoingwhat  implements java.io.Serializable {
      private String doingwhat;
      private String fordiv;
      private String topic;
+     private String topicintro;
 
     public Date getActivitydate() {
         return activitydate;
@@ -82,6 +83,20 @@ public class Whoisdoingwhat  implements java.io.Serializable {
 
     public void setTopic(String topic) {
         this.topic = topic;
+    }
+
+    /**
+     * @return the topicintro
+     */
+    public String getTopicintro() {
+        return topicintro;
+    }
+
+    /**
+     * @param topicintro the topicintro to set
+     */
+    public void setTopicintro(String topicintro) {
+        this.topicintro = topicintro;
     }
 
    

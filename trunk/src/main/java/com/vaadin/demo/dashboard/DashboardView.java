@@ -16,6 +16,7 @@ import com.google.gson.reflect.TypeToken;
 import com.quick.bean.ExamBean;
 import com.quick.bean.MasteParmBean;
 import com.quick.bean.MyDashBoardBean;
+import com.quick.bean.QuickLearn;
 import com.quick.bean.Userprofile;
 import com.quick.entity.Notices;
 import com.quick.entity.Whatsnew;
@@ -30,15 +31,20 @@ import java.text.DecimalFormat;
 import com.vaadin.data.Property;
 import com.quick.data.DataProvider;
 import com.quick.data.Generator;
+import com.quick.data.MyDashBoardContainer;
+import com.quick.ui.QuickLearn.QuickLearnDetailWraper;
 import com.quick.ui.exam.StudentExamDataProvider;
 import com.quick.utilities.DateUtil;
 import com.quick.utilities.UIUtils;
+import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.FileResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
@@ -47,6 +53,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Flash;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -56,9 +63,11 @@ import com.vaadin.ui.Table.Align;
 import com.vaadin.ui.Table.RowHeaderMode;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +77,7 @@ import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class DashboardView extends VerticalLayout implements View, Property.ValueChangeListener {
+public class DashboardView extends HorizontalLayout implements View, Property.ValueChangeListener,LayoutEvents.LayoutClickListener {
 
     private Table t;
     private MyDashBoardDataProvider boardDataProvider = new MyDashBoardDataProvider();
@@ -249,22 +258,64 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         });
         top.setComponentAlignment(edit, Alignment.MIDDLE_LEFT); */
 
-        HorizontalLayout row = new HorizontalLayout();
+        VerticalLayout row = new VerticalLayout();
         row.setSizeFull();
         row.setMargin(new MarginInfo(true, true, false, true));
         row.setSpacing(true);
         addComponent(row);
-        setExpandRatio(row, 1.5f);
+        setExpandRatio(row, 2);
         
         
-        whatsNewTable = boardDataProvider.getWhatsNewForme(whatsnewsList,this);
-        //row.addComponent(createPanel(getWhatsNewLayout()));
+        MyDashBoardContainer newList = MyDashBoardContainer.getWhatsNewForMeContainer(whatsnewsList);
+        MyDashBoardContainer doingWhatList = MyDashBoardContainer.getWhoIsDoingWhatContainer(whosDoingWhatFromDB);
+        
+        
+        //whatsNewTable = boardDataProvider.getWhatsNewForme(whatsnewsList,this);
+        whatsNewTable=new Table();
+        whatsNewTable.addStyleName("borderless");
+        whatsNewTable.addStyleName("plain");
+        whatsNewTable.setCaption("ACTIVITIES");
+        whatsNewTable.setSortEnabled(false);
+        whatsNewTable.setWidth("100%");
+        whatsNewTable.setHeight("500px");
+        whatsNewTable.setPageLength(10);
+        whatsNewTable.setSelectable(true);
+        whatsNewTable.setImmediate(true);// react at once when something is selected
+        whatsNewTable.setSortEnabled(false);
+        whatsNewTable.addContainerProperty(GlobalConstants.emptyString, VerticalLayout.class, null);
+        
+        
+        List<MyDashBoardBean> newBeanList= newList.getItemIds();
+        
+            
+            
+        
+        for(MyDashBoardBean activityDtls:newBeanList)
+        {
+            whatsNewTable.addItem(new Object[]{new DashboardActivityWraper(activityDtls,this) },whatsNewTable.size()+1);
+        }
+        
+        List<MyDashBoardBean> doingWhatBeanList= doingWhatList.getItemIds();
+        for(MyDashBoardBean activityDtls:doingWhatBeanList)
+        {
+            whatsNewTable.addItem(new Object[]{new DashboardActivityWraper(activityDtls,this) },whatsNewTable.size()+1);
+        }
+        
+        
         row.addComponent(UIUtils.createPanel(whatsNewTable));
         //row.addComponent(whatsNewTable);
         
         /* TextArea notes = new TextArea("Notes");
         notes.setValue("Remember to:\n· Zoom in and out in the Sales view\n· Filter the transactions and drag a set of them to the Reports tab\n· Create a new report\n· Change the schedule of the movie theater");
         notes.setSizeFull(); */
+        
+        
+        row = new VerticalLayout();
+        row.setMargin(true);
+        row.setSizeFull();
+        row.setSpacing(true);
+        addComponent(row);
+        setExpandRatio(row, 1.5f);
         
         CssLayout panel = createPanel(boardDataProvider.getMyNoticeBoard(noticeses));
         panel.addStyleName("notes");
@@ -275,12 +326,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         
         
 
-        row = new HorizontalLayout();
-        row.setMargin(true);
-        row.setSizeFull();
-        row.setSpacing(true);
-        addComponent(row);
-        setExpandRatio(row, 2);
+        
 
       /*  t = new Table() {
             @Override
@@ -308,9 +354,9 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         t.setColumnAlignment("Revenue", Align.RIGHT);
         t.setRowHeaderMode(RowHeaderMode.INDEX); */
 
-        whosDoingWhatTable=boardDataProvider.getWhoIsDoingWhat(whosDoingWhatFromDB,this);
+        //////////////////////whosDoingWhatTable=boardDataProvider.getWhoIsDoingWhat(whosDoingWhatFromDB,this);
         //row.addComponent(createPanel(whosDoingWhatTable));
-        row.addComponent(UIUtils.createPanel(whosDoingWhatTable));
+        /////////////////////row.addComponent(UIUtils.createPanel(whosDoingWhatTable));
         
         
         //row.addComponent(createPanel(new TopSixTheatersChart()));
@@ -332,6 +378,11 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         else
         {
             row.addComponent(UIUtils.createPanel(UIUtils.getTeacherPerformanceChart()));
+//            Flash f = new Flash(strViewMore,new FileResource(new File("/home/rajkirans/Desktop/bikestorm/bikestorm.swf")));
+//            f.setImmediate(true);
+//            f.setSizeFull();
+//            
+//            row.addComponent(UIUtils.createPanel(f));
         }
 //        row.setExpandRatio(whosDoingWhatTable, 3);
 //        row.setExpandRatio(c, 1);
@@ -586,6 +637,66 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         //hl.addComponent(UIUtils.getColumnChart(xAxisCategories, classAvgScore,studAvgScore, "My score comparison", "Score", "Marks", "200px", "100%"));
         //hl.addComponent(UIUtils.getMyPerformanceChart());
         return hl;
+    }
+
+    @Override
+    public void layoutClick(LayoutClickEvent event) {
+        DashboardActivityWraper activityWraper =(DashboardActivityWraper) event.getComponent();
+                MyDashBoardBean activityDetails = (MyDashBoardBean)activityWraper.getData();
+                QuickLearn learn =getStudentQuickLearnDetails(activityDetails.getItemid());
+                UI.getCurrent().addWindow(new ViewTopicDetailsWindow(learn,getUserNotes(),Integer.parseInt(activityDetails.getItemid())));
+    }
+    
+    private String userNotes;
+    private QuickLearn getStudentQuickLearnDetails(String uploadId) {
+       
+          List<QuickLearn>list =null;
+          try {
+            Client client = Client.create();
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_STUD_QUICK_LEARN_DTLS));
+            //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
+            JSONObject inputJson = new JSONObject();
+            try {
+                inputJson.put("uploadId", Integer.parseInt(uploadId));
+              
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
+
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
+          
+            JSONObject outNObject = null;
+            String output = response.getEntity(String.class);
+            outNObject = new JSONObject(output);
+            setUserNotes(outNObject.getString(GlobalConstants.MYQUICKNOTEs));
+            Type listType = new TypeToken<ArrayList<QuickLearn>>() {
+            }.getType();
+            
+            list= new Gson().fromJson(outNObject.getString(GlobalConstants.QUICKLEARNLIST), listType);
+            
+        } catch (JSONException ex) 
+        {
+            ex.printStackTrace();
+        }
+          if(!list.isEmpty()){
+              return list.get(0);
+          }else{
+              return null;
+          }
+    }
+
+    /**
+     * @return the userNotes
+     */
+    public String getUserNotes() {
+        return userNotes;
+    }
+
+    /**
+     * @param userNotes the userNotes to set
+     */
+    public void setUserNotes(String userNotes) {
+        this.userNotes = userNotes;
     }
 
 }

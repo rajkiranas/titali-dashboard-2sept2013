@@ -57,7 +57,7 @@ import org.codehaus.jettison.json.JSONObject;
  *
  * @author suyogn
  */
-public class StudQuickLearn extends VerticalLayout implements View,Property.ValueChangeListener, LayoutEvents.LayoutClickListener{
+public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents.LayoutClickListener{
     
     private TabSheet editors;
     private List<MasteParmBean> stdlist;
@@ -376,49 +376,49 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
        * instead layout clicked is called
        */
       
-       @Override
-    public void valueChange(ValueChangeEvent event) {
-       Property property=event.getProperty();
-        if(property==quickLearnTable){
-            
-            /* MasteParmBean selectedTopicRow=(MasteParmBean) property.getValue();
-            
-             uploadId = selectedTopicRow.getUploadId();  
-             setTopicForNotification(selectedTopicRow.getTopic());
-             setStudQuikLearnDetails(getStudentQuickLearnDetails());
-                          updateQuickLearnTabSheet(); */
-
-                
-                //QuickLearnDetailWraper topicWraper = (QuickLearnDetailWraper) quickLearnTable.getItem(property.getValue());
-                
-                Item i = (Item) quickLearnTable.getItem(property.getValue());
-                QuickLearnDetailWraper topicWraper = (QuickLearnDetailWraper)i.getItemProperty(GlobalConstants.emptyString).getValue();
-                MasteParmBean bean = topicWraper.getTopicDetails();
-                setUploadId(bean.getUploadId());
-                setTopicForNotification(bean.getTopic());
-                setStudQuikLearnDetails(getStudentQuickLearnDetails());
-                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub());
-                UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes(),getUploadId()));
-             
-             //Temp removing Listner to avoid multiple notifiaction on tab change
-             
-             /////editors.removeSelectedTabChangeListener(tabChangeListener);
-             
-             // Restoring after Tabsheet Load
-             /////editors.addSelectedTabChangeListener(tabChangeListener);
-             //notes.setValue(getUserNotes());
-             
-              //loggedInUserProfile will be null when this quick learn screen loads
-                // and the control comes first to this tab change method before user profile gets its value in enter method
-//             if(loggedInUserProfile!=null){
+//       @Override
+//    public void valueChange(ValueChangeEvent event) {
+//       Property property=event.getProperty();
+//        if(property==quickLearnTable){
+//            
+//            /* MasteParmBean selectedTopicRow=(MasteParmBean) property.getValue();
+//            
+//             uploadId = selectedTopicRow.getUploadId();  
+//             setTopicForNotification(selectedTopicRow.getTopic());
+//             setStudQuikLearnDetails(getStudentQuickLearnDetails());
+//                          updateQuickLearnTabSheet(); */
+//
 //                
-//                    //sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through);
-//                }
-             
-             //stopVideoBuffering();
-             
-        }
-    }
+//                //QuickLearnDetailWraper topicWraper = (QuickLearnDetailWraper) quickLearnTable.getItem(property.getValue());
+//                
+//                Item i = (Item) quickLearnTable.getItem(property.getValue());
+//                QuickLearnDetailWraper topicWraper = (QuickLearnDetailWraper)i.getItemProperty(GlobalConstants.emptyString).getValue();
+//                MasteParmBean bean = topicWraper.getTopicDetails();
+//                setUploadId(bean.getUploadId());
+//                setTopicForNotification(bean.getTopic());
+//                setStudQuikLearnDetails(getStudentQuickLearnDetails());
+//                //sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub());
+//                UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes(),getUploadId()));
+//             
+//             //Temp removing Listner to avoid multiple notifiaction on tab change
+//             
+//             /////editors.removeSelectedTabChangeListener(tabChangeListener);
+//             
+//             // Restoring after Tabsheet Load
+//             /////editors.addSelectedTabChangeListener(tabChangeListener);
+//             //notes.setValue(getUserNotes());
+//             
+//              //loggedInUserProfile will be null when this quick learn screen loads
+//                // and the control comes first to this tab change method before user profile gets its value in enter method
+////             if(loggedInUserProfile!=null){
+////                
+////                    //sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through);
+////                }
+//             
+//             //stopVideoBuffering();
+//             
+//        }
+//    }
        
     private void stopVideoBuffering() {
         if(vPlayer!=null)
@@ -553,7 +553,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
         }
         
         notesTextArea.setImmediate(true);
-        notesTextArea.addValueChangeListener(this);
+        //notesTextArea.addValueChangeListener(this);
         notesTextArea.setReadOnly(true);
         
         layout.addComponent(notesTextArea);
@@ -580,7 +580,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
         }
         
         otherNotesTextArea.setImmediate(true);
-        otherNotesTextArea.addValueChangeListener(this);
+        //otherNotesTextArea.addValueChangeListener(this);
         otherNotesTextArea.setReadOnly(true);
         
         layout.addComponent(otherNotesTextArea);
@@ -606,7 +606,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
         }
         
         previousQuestionsTextArea.setImmediate(true);
-        previousQuestionsTextArea.addValueChangeListener(this);
+        //previousQuestionsTextArea.addValueChangeListener(this);
         previousQuestionsTextArea.setReadOnly(true);
         
         layout.addComponent(previousQuestionsTextArea);
@@ -692,7 +692,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
           List<QuickLearn>list =null;
           try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/QuickLearn/quickLearn");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_STUD_QUICK_LEARN_DTLS));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             try {
@@ -702,7 +702,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
                 ex.printStackTrace();
             }
 
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
 
           
             JSONObject outNObject = null;
@@ -745,7 +745,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
 
           
             JSONObject outNObject = null;
@@ -761,7 +761,7 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
     }  
     
     
-    private void sendWhosDoingWhatNotificationToStudents(String activity, String subject){
+    private void sendWhosDoingWhatNotificationToStudents(String activity, String subject, String topicIntro){
         try {
             JSONObject inputRequest = new JSONObject();
             
@@ -773,10 +773,11 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
                 inputRequest.put("std",loggedInUserProfile.getStd());
                 inputRequest.put("sub",subject);
                 inputRequest.put("topic",getTopicForNotification());
+                inputRequest.put("topicIntro",topicIntro);
                                    
             Client client = Client.create();
                 WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SEND_WHOS_DOING_WHAT_NOTIFICATIONS));
-                ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputRequest);
+                ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputRequest);
 
                 /*
                  * if (response.getStatus() != 201) { throw new RuntimeException("Failed
@@ -792,28 +793,28 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
     /**
       * adding listener to the btnViewDetails button for view topic from quick learn
       * */
-     public void addListenertoBtn(Button btnViewDetails) 
-    {
-        
-        btnViewDetails.addListener(new Button.ClickListener() 
-        {
-            public void buttonClick(final Button.ClickEvent event) 
-            {
-                Object data[] = (Object[]) event.getButton().getData();
-
-                StudQuickLearnTable t = (StudQuickLearnTable) data[0];
-                MasteParmBean bean = (MasteParmBean) data[1];
-                setUploadId(bean.getUploadId());
-                setTopicForNotification(bean.getTopic());
-                setStudQuikLearnDetails(getStudentQuickLearnDetails());
-                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub());
-                UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes(),getUploadId()));
-                    
-            }
-        });
-        
-        
-    }
+//     public void addListenertoBtn(Button btnViewDetails) 
+//    {
+//        
+//        btnViewDetails.addListener(new Button.ClickListener() 
+//        {
+//            public void buttonClick(final Button.ClickEvent event) 
+//            {
+//                Object data[] = (Object[]) event.getButton().getData();
+//
+//                StudQuickLearnTable t = (StudQuickLearnTable) data[0];
+//                MasteParmBean bean = (MasteParmBean) data[1];
+//                setUploadId(bean.getUploadId());
+//                setTopicForNotification(bean.getTopic());
+//                setStudQuikLearnDetails(getStudentQuickLearnDetails());
+//                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub());
+//                UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes(),getUploadId()));
+//                    
+//            }
+//        });
+//        
+//        
+//    }
 
     /**
      * @return the uploadId
@@ -836,7 +837,11 @@ public class StudQuickLearn extends VerticalLayout implements View,Property.Valu
                 setUploadId(bean.getUploadId());
                 setTopicForNotification(bean.getTopic());
                 setStudQuikLearnDetails(getStudentQuickLearnDetails());
-                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub());
+                String topicIntro=getStudQuikLearnDetails().getLectureNotesInformation();
+                if (topicIntro.length() > 145) {
+                    topicIntro = topicIntro.substring(0, 145) + "...";
+                }
+                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub(),topicIntro);
                 UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes(),getUploadId()));
     }
 }
