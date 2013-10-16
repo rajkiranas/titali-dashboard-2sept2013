@@ -19,6 +19,7 @@ public class MyDashBoardBean {
     private String typeofActivity;
     private String  notification;
     private String  uploadId;
+    private String topicintro;
 
     public String getBywhome() {
         return bywhome;
@@ -104,6 +105,20 @@ public class MyDashBoardBean {
      */
     public void setUploadId(String uploadId) {
         this.uploadId = uploadId;
+    }
+
+    /**
+     * @return the topicintro
+     */
+    public String getTopicintro() {
+        return topicintro;
+    }
+
+    /**
+     * @param topicintro the topicintro to set
+     */
+    public void setTopicintro(String topicintro) {
+        this.topicintro = topicintro;
     }
     
     

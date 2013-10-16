@@ -79,6 +79,7 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
                  bean=new MyDashBoardBean();
                  bean.setNotification(w.getDisplaynotification());
                  bean.setItemid(String.valueOf(w.getItemid()));
+                 bean.setTopicintro(w.getTopicintro());
                  //int minutesAgo=Minutes.minutesBetween(new DateTime(w.getReleasedate()), new DateTime(new Date())).getMinutes();
                  
                  
@@ -143,7 +144,7 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
                 bean.setTopic(whoisdoingwhat.getTopic()); */
                 bean.setNotification(whoisdoingwhat.getDisplaynotification());
                 bean.setUploadId(String.valueOf(whoisdoingwhat.getUploadId()));   
-                
+                bean.setTopicintro(whoisdoingwhat.getTopicintro());                
                 String timeInterval = DateUtil.getTimeIntervalOfTheActivity(whoisdoingwhat.getUploadDate());
                 bean.setDateTime(timeInterval);
                 
