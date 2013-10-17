@@ -257,7 +257,7 @@ public class UIUtils {
         legend.setBackgroundColor("#FFFFFF");
         legend.setHorizontalAlign(HorizontalAlign.LEFT);
         legend.setVerticalAlign(VerticalAlign.TOP);
-        legend.setX(300);
+        legend.setX(260);
         legend.setY(10);
         legend.setFloating(true);
         legend.setShadow(true);

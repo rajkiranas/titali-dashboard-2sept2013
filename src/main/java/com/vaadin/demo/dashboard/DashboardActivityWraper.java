@@ -26,6 +26,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import java.io.File;
 
 public class DashboardActivityWraper extends VerticalLayout {
 
@@ -35,19 +36,20 @@ public class DashboardActivityWraper extends VerticalLayout {
     public DashboardActivityWraper(MyDashBoardBean activityDetails, DashboardView dash) {
 
         setImmediate(true);
-        setSpacing(true);
-        setMargin(true);
+        setSpacing(false);
+        setMargin(false);
         setSizeFull();
         this.activityDetails=activityDetails;
         //setCaption(topicDetails.getEventDesc());
         addStyleName("no-vertical-drag-hints");
         addStyleName("no-horizontal-drag-hints");
-        //addStyleName("lightBackgroundForDashboardActivity");
+        addStyleName("lightGrayFourSideBorder");
         //addStyleName("bottomBorder");
         
         HorizontalLayout activityDetailsLayout = new HorizontalLayout();
         //activityDetailsLayout.addStyleName("lightBackgroundForDashboardActivity");
         //details.setSpacing(true);
+        activityDetailsLayout.setImmediate(true);
         activityDetailsLayout.setMargin(false);
         activityDetailsLayout.setSpacing(true);
         //set size full - used to display data in one screen only without scroll
@@ -110,16 +112,33 @@ public class DashboardActivityWraper extends VerticalLayout {
         
         HorizontalLayout activityImageLayout = new HorizontalLayout();
         activityImageLayout.setSizeFull();
-        activityImageLayout.setMargin(true);
-        activityImageLayout.setSpacing(true);
+        activityImageLayout.setMargin(false);
+        activityImageLayout.setSpacing(false);
         //activityImageLayout.addStyleName("fourSideBorder");
         addComponent(activityImageLayout);
         setExpandRatio(activityImageLayout,3);
+        Embedded activityImage;
         
-        Embedded activityImage =  new Embedded(null,
+        if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getItemid()+".jpg").exists())
+        {
+            activityImage =  new Embedded(null,
+                new ThemeResource("./img/topic_images/"+activityDetails.getItemid()+".jpg"));
+        }
+        else if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getItemid()+".png").exists())
+        {
+            activityImage =  new Embedded(null,
+                new ThemeResource("./img/topic_images/"+activityDetails.getItemid()+".png"));            
+        }
+        else
+        {
+            activityImage =  new Embedded(null,
                 new ThemeResource("./img/learnMore.jpg"));
-        activityImage.setHeight("100px");
-        activityImage.setWidth("100px");
+            
+        }
+        
+        
+        activityImage.setHeight("90px");
+        activityImage.setWidth("90px");
         
 //        VerticalLayout il = new VerticalLayout();
 //        il.setSizeFull();
@@ -134,7 +153,7 @@ public class DashboardActivityWraper extends VerticalLayout {
         label.setWidth("100%");
         //label.addStyleName("deepPinkColor");
         il.addComponent(label);
-        activityImageLayout.addStyleName("lightBackgroundForDashboardActivity");
+        label.addStyleName("lightBackgroundForDashboardActivity");
 
         
         activityImageLayout.addComponent(il);

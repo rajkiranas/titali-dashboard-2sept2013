@@ -24,6 +24,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import java.io.File;
 
 public class QuickLearnDetailWraper extends VerticalLayout {
 
@@ -150,11 +151,29 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         fields.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
         
         
+        Embedded coverImage ;
+//                =  new Embedded(GlobalConstants.emptyString,
+//                new ThemeResource("./img/learnMore.jpg"));
+        
+        if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+topicDetails.getUploadId()+".jpg").exists())
+        {
+            coverImage =  new Embedded(null,
+                new ThemeResource("./img/topic_images/"+topicDetails.getUploadId()+".jpg"));
+        }
+        else if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+topicDetails.getUploadId()+".png").exists())
+        {
+            coverImage =  new Embedded(null,
+                new ThemeResource("./img/topic_images/"+topicDetails.getUploadId()+".png"));            
+        }
+        else
+        {
+            coverImage =  new Embedded(null,
+                new ThemeResource("./img/learnMore.jpg"));
+        }
          
         
-        Embedded coverImage =  new Embedded(GlobalConstants.emptyString,
-                new ThemeResource("./img/learnMore.jpg"));
-        coverImage.setHeight("100px");
+        
+        coverImage.setHeight("90px");
         coverImage.setWidth("100px");
         
         VerticalLayout imageLayout = new VerticalLayout();
