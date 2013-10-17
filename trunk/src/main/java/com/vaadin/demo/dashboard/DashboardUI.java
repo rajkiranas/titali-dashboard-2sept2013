@@ -94,7 +94,7 @@ public class DashboardUI extends UI{
         {
             put("/dashboard", DashboardView.class);
             put("/learn", StudQuickLearn.class);
-            put("/Technology",CreateUpcomingTechnology.class);
+            put("/Tech-news",CreateUpcomingTechnology.class);
             put("/Exams",StudentExam.class);            
             put("/Notices",CreateNotices.class);
             put("/Forum",ForumView.class);
@@ -392,11 +392,11 @@ public class DashboardUI extends UI{
         
         if(userRole.equalsIgnoreCase(GlobalConstants.student))
         {
-                   actions= new String[] { "dashboard", "learn","Technology","Exams","Forum","Notices","reports"};
+                   actions= new String[] { "dashboard", "learn","Tech-news","Exams","Forum","Notices","reports"};
             
         }else
         {
-                actions= new String[] { "dashboard","topics","Technology","Exam-Admin","Forum","Notices","reports",
+                actions= new String[] { "dashboard","topics","Tech-news","Exam-Admin","Forum","Notices","reports",
             "students","teachers" };
         }
         

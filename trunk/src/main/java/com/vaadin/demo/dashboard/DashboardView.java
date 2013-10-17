@@ -77,7 +77,7 @@ import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class DashboardView extends HorizontalLayout implements View, Property.ValueChangeListener,LayoutEvents.LayoutClickListener {
+public class DashboardView extends VerticalLayout implements View, Property.ValueChangeListener,LayoutEvents.LayoutClickListener {
 
     private Table t;
     private MyDashBoardDataProvider boardDataProvider = new MyDashBoardDataProvider();
@@ -142,6 +142,7 @@ public class DashboardView extends HorizontalLayout implements View, Property.Va
         top.setSpacing(true);
         top.addStyleName("toolbar");
         addComponent(top);
+        setExpandRatio(top, 0.4f);
         final Label title = new Label("Titali Dashboard");
         title.setSizeUndefined();
         title.addStyleName("h1");
@@ -258,12 +259,13 @@ public class DashboardView extends HorizontalLayout implements View, Property.Va
         });
         top.setComponentAlignment(edit, Alignment.MIDDLE_LEFT); */
 
-        VerticalLayout row = new VerticalLayout();
+        HorizontalLayout row = new HorizontalLayout();
         row.setSizeFull();
-        row.setMargin(new MarginInfo(true, true, false, true));
+        //row.setMargin(new MarginInfo(true, true, false, true));
+        row.setMargin(false);
         row.setSpacing(true);
         addComponent(row);
-        setExpandRatio(row, 2);
+        setExpandRatio(row, 3);
         
         
         MyDashBoardContainer newList = MyDashBoardContainer.getWhatsNewForMeContainer(whatsnewsList);
@@ -277,15 +279,19 @@ public class DashboardView extends HorizontalLayout implements View, Property.Va
         whatsNewTable.setCaption("ACTIVITIES");
         whatsNewTable.setSortEnabled(false);
         whatsNewTable.setWidth("100%");
-        whatsNewTable.setHeight("500px");
-        whatsNewTable.setPageLength(10);
+        whatsNewTable.setHeight("100%");
+        whatsNewTable.setPageLength(3);
         whatsNewTable.setSelectable(true);
         whatsNewTable.setImmediate(true);// react at once when something is selected
         whatsNewTable.setSortEnabled(false);
         whatsNewTable.addContainerProperty(GlobalConstants.emptyString, VerticalLayout.class, null);
+        whatsNewTable.setColumnHeaderMode(Table.ColumnHeaderMode.HIDDEN);
         
         
         List<MyDashBoardBean> newBeanList= newList.getItemIds();
+        List<MyDashBoardBean> doingWhatBeanList= doingWhatList.getItemIds();
+        
+        //newBeanList.addAll(doingWhatBeanList);
         
             
             
@@ -295,14 +301,16 @@ public class DashboardView extends HorizontalLayout implements View, Property.Va
             whatsNewTable.addItem(new Object[]{new DashboardActivityWraper(activityDtls,this) },whatsNewTable.size()+1);
         }
         
-        List<MyDashBoardBean> doingWhatBeanList= doingWhatList.getItemIds();
+        
+
         for(MyDashBoardBean activityDtls:doingWhatBeanList)
         {
             whatsNewTable.addItem(new Object[]{new DashboardActivityWraper(activityDtls,this) },whatsNewTable.size()+1);
         }
         
         
-        row.addComponent(UIUtils.createPanel(whatsNewTable));
+        //row.addComponent(UIUtils.createPanel(whatsNewTable));
+        
         //row.addComponent(whatsNewTable);
         
         /* TextArea notes = new TextArea("Notes");
@@ -310,17 +318,21 @@ public class DashboardView extends HorizontalLayout implements View, Property.Va
         notes.setSizeFull(); */
         
         
-        row = new VerticalLayout();
-        row.setMargin(true);
-        row.setSizeFull();
-        row.setSpacing(true);
-        addComponent(row);
-        setExpandRatio(row, 1.5f);
+//        row = new HorizontalLayout();
+//        row.setMargin(true);
+//        row.setSizeFull();
+//        row.setSpacing(true);
+//        addComponent(row);
+//        setExpandRatio(row, 1.5f);
         
+        VerticalLayout noticeAndGraphLayout= new VerticalLayout();
+        noticeAndGraphLayout.setSizeFull();
+        noticeAndGraphLayout.setSpacing(true);
+        
+
         CssLayout panel = createPanel(boardDataProvider.getMyNoticeBoard(noticeses));
         panel.addStyleName("notes");
-        row.addComponent(panel);
-        
+        noticeAndGraphLayout.addComponent(panel);
 //        row.setExpandRatio(whatsNewTable, 3);
 //        row.setExpandRatio(panel, 1);
         
@@ -372,12 +384,12 @@ public class DashboardView extends HorizontalLayout implements View, Property.Va
         if(profile.getRole().equals(GlobalConstants.student))
         {
             getSubWiseComparisonList();
-            row.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
+            noticeAndGraphLayout.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
 
         }
         else
         {
-            row.addComponent(UIUtils.createPanel(UIUtils.getTeacherPerformanceChart()));
+            noticeAndGraphLayout.addComponent(UIUtils.createPanel(UIUtils.getTeacherPerformanceChart()));
 //            Flash f = new Flash(strViewMore,new FileResource(new File("/home/rajkirans/Desktop/bikestorm/bikestorm.swf")));
 //            f.setImmediate(true);
 //            f.setSizeFull();
@@ -387,6 +399,12 @@ public class DashboardView extends HorizontalLayout implements View, Property.Va
 //        row.setExpandRatio(whosDoingWhatTable, 3);
 //        row.setExpandRatio(c, 1);
 
+        row.addComponent(noticeAndGraphLayout);
+        CssLayout activityLayout = createPanel(whatsNewTable);
+        row.addComponent(activityLayout);
+        
+        row.setExpandRatio(noticeAndGraphLayout, 1.5f);
+        row.setExpandRatio(activityLayout, 2);
         
     }
     

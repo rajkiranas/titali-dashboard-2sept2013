@@ -114,7 +114,7 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
         top.addStyleName("toolbar");
         addComponent(top);
         
-        final Label title = new Label("Technologies");
+        final Label title = new Label("Tech-News");
         title.setSizeUndefined();
         title.addStyleName("h1");
         top.addComponent(title);

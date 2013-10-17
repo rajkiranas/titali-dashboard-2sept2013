@@ -18,7 +18,9 @@ import com.quick.data.MasterDataProvider;
 import com.quick.table.QuickUploadTable;
 import com.quick.utilities.ConfirmationDialogueBox;
 import com.quick.utilities.DateUtil;
+import com.quick.utilities.ImageResizer;
 import com.quick.utilities.UIUtils;
+import com.quick.utilities.UploadReceiver;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.server.FileResource;
@@ -28,6 +30,9 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,6 +58,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
     private QuickUpload quickupload;
     private Userprofile loggedInProfile;
     private static final String Select = "Select";
+    private int newlyCreatedUploadId;
     
     public NewEditTopicDetailsAdmin(Userprofile loggedInProfile)
     {
@@ -187,6 +193,8 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
     private TextField topicTagstxt;
     private TextArea txtTopicIntro;
     private TextField videoInputPath;
+    private byte[] topicImageArray;
+    private String topicFileName;
     
     private Component getVideoPathLayout() 
     {
@@ -260,11 +268,42 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         videoInputPath.setInputPrompt("Please enter video path on the SERVER");
         videoInputPath.setWidth("90%");
         
+        
+        final UploadReceiver uploadReceiver = new UploadReceiver();
+        final Upload upload;
+        
+        
+        upload = new Upload(null, uploadReceiver);
+        upload.setImmediate(true);
+        upload.setButtonCaption("Image");
+        upload.addStyleName("notifications");
+        upload.addListener(new Upload.SucceededListener() {
+
+            @Override
+            public void uploadSucceeded(Upload.SucceededEvent event) {
+                
+                
+                topicFileName=uploadReceiver.getFileName();
+                File topicPicture=uploadReceiver.getFile();
+                topicImageArray= ImageResizer.resize(topicPicture,topicFileName);
+            }
+        });
+        final Button cancelProcessing = new Button("Cancel");
+        cancelProcessing.addListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                upload.interruptUpload();
+            }
+        });
+        cancelProcessing.setStyleName("small");
+        
         topicInfoLayout.addComponent(topictxt);
         topicInfoLayout.addComponent(standardtxt);
         topicInfoLayout.addComponent(subjecttxt);
         topicInfoLayout.addComponent(lableVideo);
         topicInfoLayout.addComponent(videoInputPath);
+        topicInfoLayout.addComponent(upload);
         topicInfoLayout.addComponent(txtTopicIntro);
         topicInfoLayout.addComponent(topicTagstxt);
         
@@ -451,10 +490,39 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
             public void buttonClick(ClickEvent event) {
                 try {
                     validateAndSaveQuickUploadDetails();
+                    saveResizedTopicImageToFileSystem();
                 } catch (JSONException ex) {
                     ex.printStackTrace();
                 }
                 
+            }
+
+            private void saveResizedTopicImageToFileSystem() 
+            {
+                FileOutputStream fileOuputStream = null;
+                try 
+                {
+                    String ext=topicFileName.substring(topicFileName.indexOf("."));
+                    
+                    /* fileOuputStream = new FileOutputStream(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)
+                            +standardtxt.getValue()+GlobalConstants.HYPHEN
+                            +subjecttxt.getValue() +GlobalConstants.HYPHEN
+                            +topictxt.getValue()+GlobalConstants.HYPHEN
+                            +ext); */
+                    fileOuputStream = new FileOutputStream(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)
+                    +newlyCreatedUploadId + ext);
+                    
+                    fileOuputStream.write(topicImageArray);
+                    fileOuputStream.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } finally {
+                    try {
+                        fileOuputStream.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -694,6 +762,10 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
             if(Integer.parseInt(outputJson.getString(GlobalConstants.STATUS)) == GlobalConstants.YES)
             {
                 Notification.show("Saved successfully", Notification.Type.WARNING_MESSAGE);
+                if(outputJson.has("newlyCreatedUploadId"))
+                {
+                    newlyCreatedUploadId=outputJson.getInt("newlyCreatedUploadId");
+                }
                 getUI().getCurrent().getNavigator().navigateTo("/topics");
                 this.close();
             }
