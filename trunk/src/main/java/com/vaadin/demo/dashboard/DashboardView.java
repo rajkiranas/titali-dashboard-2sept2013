@@ -399,9 +399,10 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
 //        row.setExpandRatio(whosDoingWhatTable, 3);
 //        row.setExpandRatio(c, 1);
 
-        row.addComponent(noticeAndGraphLayout);
+        
         CssLayout activityLayout = createPanel(whatsNewTable);
         row.addComponent(activityLayout);
+        row.addComponent(noticeAndGraphLayout);
         
         row.setExpandRatio(noticeAndGraphLayout, 1.5f);
         row.setExpandRatio(activityLayout, 2);

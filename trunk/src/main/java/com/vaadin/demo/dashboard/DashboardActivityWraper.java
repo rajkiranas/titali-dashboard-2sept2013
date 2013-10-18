@@ -124,6 +124,11 @@ public class DashboardActivityWraper extends VerticalLayout {
             activityImage =  new Embedded(null,
                 new ThemeResource("./img/topic_images/"+activityDetails.getItemid()+".jpg"));
         }
+        else if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getItemid()+".jpeg").exists())
+        {
+            activityImage =  new Embedded(null,
+                new ThemeResource("./img/topic_images/"+activityDetails.getItemid()+".jpeg"));
+        }
         else if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getItemid()+".png").exists())
         {
             activityImage =  new Embedded(null,

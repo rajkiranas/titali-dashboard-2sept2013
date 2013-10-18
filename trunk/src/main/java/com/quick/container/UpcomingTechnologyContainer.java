@@ -18,14 +18,15 @@ public class UpcomingTechnologyContainer extends BeanItemContainer<UpcomingTechn
 
 
       public static final Object[] NATURAL_COL_ORDER_TECHNOLOGIES = new Object[]{
-       "technologydate", "technologyline","category", "bywhom"};
+       "technologydate", "technologyline","category"};
+      //, "bywhom"
       //"std","fordiv",
         /**
         * "Human readable" captions for properties in same order as in
         * NATURAL_COL_ORDER_DAILY_CALLS.
         */
     public static final String[] COL_HEADERS_ENGLISH_TECHNOLOGIES = new String[]{
-       "Date", "Name", "Category", "Created by"};
+       "Date", "Name", "Category"};
     //"Std","Div",
     
     public UpcomingTechnologyContainer(){
