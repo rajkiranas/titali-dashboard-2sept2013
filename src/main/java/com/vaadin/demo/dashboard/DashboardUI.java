@@ -28,6 +28,7 @@ import com.quick.data.DataProvider;
 import com.quick.data.Generator;
 import com.quick.data.MyConverterFactory;
 import com.quick.forum.ForumView;
+import com.quick.games.GamesView;
 import com.quick.notices.CreateNotices;
 import com.quick.ui.exam.AdminExam;
 import com.quick.ui.exam.StudentExam;
@@ -98,6 +99,7 @@ public class DashboardUI extends UI{
             put("/Exams",StudentExam.class);            
             put("/Notices",CreateNotices.class);
             put("/Forum",ForumView.class);
+            put("/Games",GamesView.class);
             put("/reports", ReportsView.class);
             put("/topics",QuickUpload.class);            
             put("/Exam-Admin",AdminExam.class);
@@ -392,11 +394,11 @@ public class DashboardUI extends UI{
         
         if(userRole.equalsIgnoreCase(GlobalConstants.student))
         {
-                   actions= new String[] { "dashboard", "learn","Tech-news","Exams","Forum","Notices","reports"};
+                   actions= new String[] { "dashboard", "learn","Tech-news","Exams","Forum","Games","Notices","reports"};
             
         }else
         {
-                actions= new String[] { "dashboard","topics","Tech-news","Exam-Admin","Forum","Notices","reports",
+                actions= new String[] { "dashboard","topics","Tech-news","Exam-Admin","Forum","Games","Notices","reports",
             "students","teachers" };
         }
         

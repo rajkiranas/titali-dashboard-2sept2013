@@ -160,6 +160,11 @@ public class QuickLearnDetailWraper extends VerticalLayout {
             coverImage =  new Embedded(null,
                 new ThemeResource("./img/topic_images/"+topicDetails.getUploadId()+".jpg"));
         }
+        else if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+topicDetails.getUploadId()+".jpeg").exists())
+        {
+            coverImage =  new Embedded(null,
+                new ThemeResource("./img/topic_images/"+topicDetails.getUploadId()+".jpeg"));
+        }
         else if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+topicDetails.getUploadId()+".png").exists())
         {
             coverImage =  new Embedded(null,
