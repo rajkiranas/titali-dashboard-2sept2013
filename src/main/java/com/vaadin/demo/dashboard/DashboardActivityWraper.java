@@ -119,20 +119,21 @@ public class DashboardActivityWraper extends VerticalLayout {
         setExpandRatio(activityImageLayout,3);
         Embedded activityImage;
         
-        if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getItemid()+".jpg").exists())
+        if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getUploadId()+".jpg").exists())
         {
             activityImage =  new Embedded(null,
-                new ThemeResource("./img/topic_images/"+activityDetails.getItemid()+".jpg"));
+                new ThemeResource("./img/topic_images/"+activityDetails.getUploadId()+".jpg"));
         }
-        else if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getItemid()+".jpeg").exists())
+        else if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getUploadId()+".jpeg").exists())
         {
             activityImage =  new Embedded(null,
-                new ThemeResource("./img/topic_images/"+activityDetails.getItemid()+".jpeg"));
+                new ThemeResource("./img/topic_images/"+activityDetails.getUploadId()+".jpeg"));
         }
-        else if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getItemid()+".png").exists())
+        else if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getUploadId()+".png").exists())
         {
             activityImage =  new Embedded(null,
-                new ThemeResource("./img/topic_images/"+activityDetails.getItemid()+".png"));            
+                new ThemeResource("./img/topic_images/"+activityDetails.getUploadId()+".png"));            
+            
         }
         else
         {

@@ -268,7 +268,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         setExpandRatio(row, 3);
         
         
-        MyDashBoardContainer newList = MyDashBoardContainer.getWhatsNewForMeContainer(whatsnewsList);
+        
         MyDashBoardContainer doingWhatList = MyDashBoardContainer.getWhoIsDoingWhatContainer(whosDoingWhatFromDB);
         
         
@@ -288,20 +288,20 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         whatsNewTable.setColumnHeaderMode(Table.ColumnHeaderMode.HIDDEN);
         
         
-        List<MyDashBoardBean> newBeanList= newList.getItemIds();
-        List<MyDashBoardBean> doingWhatBeanList= doingWhatList.getItemIds();
-        
-        //newBeanList.addAll(doingWhatBeanList);
-        
-            
-            
-        
+        //whatsnewtable is removed from flow
+        // instead only whats new table is used
+        /* 
+         *MyDashBoardContainer newList = MyDashBoardContainer.getWhatsNewForMeContainer(whatsnewsList);
+         * List<MyDashBoardBean> newBeanList= newList.getItemIds();
         for(MyDashBoardBean activityDtls:newBeanList)
         {
             whatsNewTable.addItem(new Object[]{new DashboardActivityWraper(activityDtls,this) },whatsNewTable.size()+1);
-        }
+        } */
         
         
+        
+        
+        List<MyDashBoardBean> doingWhatBeanList= doingWhatList.getItemIds();
 
         for(MyDashBoardBean activityDtls:doingWhatBeanList)
         {
@@ -544,17 +544,17 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
                 ex.printStackTrace();
             }
 
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
 
           
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);
             outNObject = new JSONObject(output);
 
-            Type listType = new TypeToken<ArrayList<Whatsnew>>() {
+            /* Type listType = new TypeToken<ArrayList<Whatsnew>>() {
             }.getType();
             Gson whatsNewGson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
-            whatsnewsList = whatsNewGson.fromJson(outNObject.getString(GlobalConstants.WHATSNEW), listType);
+            whatsnewsList = whatsNewGson.fromJson(outNObject.getString(GlobalConstants.WHATSNEW), listType); */
             
             
             
@@ -662,8 +662,8 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
     public void layoutClick(LayoutClickEvent event) {
         DashboardActivityWraper activityWraper =(DashboardActivityWraper) event.getComponent();
                 MyDashBoardBean activityDetails = (MyDashBoardBean)activityWraper.getData();
-                QuickLearn learn =getStudentQuickLearnDetails(activityDetails.getItemid());
-                UI.getCurrent().addWindow(new ViewTopicDetailsWindow(learn,getUserNotes(),Integer.parseInt(activityDetails.getItemid())));
+                QuickLearn learn =getStudentQuickLearnDetails(activityDetails.getUploadId());
+                UI.getCurrent().addWindow(new ViewTopicDetailsWindow(learn,getUserNotes(),Integer.parseInt(activityDetails.getUploadId())));
     }
     
     private String userNotes;

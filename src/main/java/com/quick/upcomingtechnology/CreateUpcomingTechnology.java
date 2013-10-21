@@ -311,6 +311,7 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
                     
                 }
                 
+                html.setSizeFull();
                 if(topicDetailsHtmlCssLayout!=null)
                 {
                     row.removeComponent(topicDetailsHtmlCssLayout);                    
@@ -319,9 +320,12 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
                 htmlLayoutForDetails= new VerticalLayout();
                 htmlLayoutForDetails.setCaption(technology_details);
                 htmlLayoutForDetails.setSizeFull();
+//                htmlLayoutForDetails.setHeight("80%");
+//                htmlLayoutForDetails.setWidth("90%");
                 htmlLayoutForDetails.addComponent(html);
                 topicDetailsHtmlCssLayout = UIUtils.createPanel(htmlLayoutForDetails);
                 //topicDetailsHtmlCssLayout.setHeight("100%");
+                //topicDetailsHtmlCssLayout.setSizeFull();
                 row.addComponent(topicDetailsHtmlCssLayout);
             }
 
