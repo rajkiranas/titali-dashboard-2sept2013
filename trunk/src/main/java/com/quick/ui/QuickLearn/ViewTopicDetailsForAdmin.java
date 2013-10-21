@@ -172,7 +172,7 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
            vPlayer.setImmediate(true);
            vPlayer.setWidth("100%");
            vPlayer.setHeight("100%");
-           vPlayer.setPoster(new FileResource(new File("/home/rajkirans/NetBeansProjects/projectFromSept29/dash/trunk/src/main/webapp/VAADIN/themes/dashboard/img/learnMore.png")));
+           vPlayer.setPoster(new FileResource(new File("/home/rajkirans/NetBeansProjects/projectFromSept29/dash/trunk/src/main/webapp/VAADIN/themes/dashboard/img/learnMore.jpg")));
            
            vPlayer.addSource(new FileResource(new File(this.quickLearnPojo.getVideoPath())));
            vPlayer.setShowControls(true);

@@ -17,6 +17,7 @@ import com.vaadin.data.Property;
 import com.quick.data.MasterDataProvider;
 import com.quick.utilities.DateUtil;
 import com.quick.utilities.FileUtils;
+import com.quick.utilities.ImageResizer;
 import com.quick.utilities.UIUtils;
 import com.quick.utilities.UploadReceiver;
 import com.vaadin.event.FieldEvents;
@@ -88,6 +89,7 @@ public class NewEventWindow extends Window implements Button.ClickListener{
     private File eventPicture;
     private Window w;
     private String imageFileName;
+    private byte[] eventImageArray;
 
     private void getEventDetailsInputForm() 
     {
@@ -124,6 +126,7 @@ public class NewEventWindow extends Window implements Button.ClickListener{
                 
                 imageFileName=uploadReceiver.getFileName();
                 eventPicture=uploadReceiver.getFile();
+                eventImageArray= ImageResizer.resize(eventPicture,imageFileName);
             }
         });
 
@@ -192,7 +195,7 @@ public class NewEventWindow extends Window implements Button.ClickListener{
                 Userprofile loggedinProfile= (Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile);
                 inputJson.put("event_desc",subject.getValue());
                 inputJson.put("event_body", desc.getValue());
-                inputJson.put("image", new String(Base64.encode(FileUtils.getFileIntoByteArray(eventPicture))));
+                inputJson.put("image", new String(Base64.encode(eventImageArray)));
                 inputJson.put("owner", loggedinProfile.getUsername());
                 inputJson.put("image_filename", imageFileName);
               
