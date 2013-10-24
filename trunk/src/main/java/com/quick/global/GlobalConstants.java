@@ -117,6 +117,7 @@ public class GlobalConstants
    public static  final String GET_All_FORUM_EVENTS="GET_All_FORUM_EVENTS";
    public static  final String SAVE_EVENT_DETAILS="SAVE_EVENT_DETAILS";
    public static  final String GET_STUD_QUICK_LEARN_DTLS="GET_STUD_QUICK_LEARN_DTLS";
+   public static  final String SAVE_EVENT_LIKE="SAVE_EVENT_LIKE";
    
    //public static final String UserMasterResource = "/UserMaster";
     
