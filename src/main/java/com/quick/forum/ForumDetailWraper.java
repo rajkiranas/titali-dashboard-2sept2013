@@ -1,12 +1,17 @@
 package com.quick.forum;
 
 import com.quick.bean.ForumEventDetailsBean;
+import com.quick.bean.Userprofile;
 import com.vaadin.demo.dashboard.*;
 import java.text.SimpleDateFormat;
 
 import com.quick.data.DataProvider.Movie;
 import com.quick.entity.ForumEventDetails;
+import com.quick.global.GlobalConstants;
 import com.quick.utilities.MyImageSource;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.Base64;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.dd.DragAndDropEvent;
@@ -31,15 +36,22 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 public class ForumDetailWraper extends VerticalLayout {
 
-    Label synopsis = new Label();
+    private Label synopsis;
+    private ForumEventDetailsBean eventDetails;
 
     public ForumDetailWraper(final ForumEventDetailsBean eventDetails) {
-       
+
+        this.eventDetails = eventDetails;
         setCaption(eventDetails.getEventDesc());
         addStyleName("no-vertical-drag-hints");
         addStyleName("no-horizontal-drag-hints");
@@ -47,6 +59,7 @@ public class ForumDetailWraper extends VerticalLayout {
         HorizontalLayout details = new HorizontalLayout();
         details.setSpacing(true);
         details.setMargin(true);
+        details.setWidth("100%");
         addComponent(details);
 
 //        final Image coverImage = new Image("", new ExternalResource(
@@ -69,26 +82,26 @@ public class ForumDetailWraper extends VerticalLayout {
 //      
 //          Embedded coverImage =  new Embedded("Image from a theme resource",
 //                 (Resource)imageResource);
-        
+
         // Create an instance of our stream source.
-        byte[] by=eventDetails.getStringImage().getBytes();
-StreamResource.StreamSource imagesource = new MyImageSource (Base64.decode(by));
-	
+        byte[] by = eventDetails.getStringImage().getBytes();
+        StreamResource.StreamSource imagesource = new MyImageSource(Base64.decode(by));
+
 // Create a resource that uses the stream source and give it a name.
 // The constructor will automatically register the resource in
 // the application.
-StreamResource resource = new StreamResource(imagesource, "myimage.png");
- 
+        StreamResource resource = new StreamResource(imagesource, "myimage.png");
+
 // Create an image component that gets its contents
 // from the resource.
 //layout.addComponent(new Image("Image title", resource));
-Image coverImage =new Image("Image", resource);
+        Image coverImage = new Image("Image", resource);
 
 
         coverImage.setHeight("150px");
         coverImage.setWidth("150px");
-        
-        
+
+
 
         final Button more = new Button("More…");
 
@@ -98,12 +111,13 @@ Image coverImage =new Image("Image", resource);
         cover.setHeight("270px");
         cover.addStyleName("cover");
         cover.setDropHandler(new DropHandler() {
+
             @Override
             public void drop(DragAndDropEvent event) {
-                DragAndDropWrapper d = (DragAndDropWrapper) event
-                        .getTransferable().getSourceComponent();
-                if (d == event.getTargetDetails().getTarget())
+                DragAndDropWrapper d = (DragAndDropWrapper) event.getTransferable().getSourceComponent();
+                if (d == event.getTargetDetails().getTarget()) {
                     return;
+                }
                 Movie m = (Movie) d.getData();
 //                coverImage.setSource(new ExternalResource(m.posterUrl));
 //                coverImage.setAlternateText(m.title);
@@ -118,13 +132,14 @@ Image coverImage =new Image("Image", resource);
             }
         });
         details.addComponent(cover);
+        details.setExpandRatio(cover, 0.5f);
 
         FormLayout fields = new FormLayout();
-        fields.setWidth("35em");
+        fields.setWidth("100%");
         fields.setSpacing(true);
         fields.setMargin(true);
         details.addComponent(fields);
-
+        details.setExpandRatio(fields, 2);
         Label label;
 //        if (event != null) {
 //            SimpleDateFormat df = new SimpleDateFormat();
@@ -147,14 +162,14 @@ Image coverImage =new Image("Image", resource);
 //            fields.addComponent(label);
 //        }
 
-        
-        String cap = "<h3><b>"+eventDetails.getEventDesc()+"</b></h3>"+"<h4> by <b>"
-                +eventDetails.getEventOwner()+"</b></h4>"+"<h4> on <b>"+eventDetails.getEventDate()+"</b></h4>";
-        label = new Label(cap,ContentMode.HTML);
-        label.setSizeUndefined();
+
+        String cap = "<h3><b>" + eventDetails.getEventDesc() + "</b></h3>" + "<h4> by <b>"
+                + eventDetails.getEventOwner() + "</b></h4>" + "<h4> on <b>" + eventDetails.getEventDate() + "</b></h4>";
+        label = new Label(cap, ContentMode.HTML);
+        label.setWidth("100%");
         //label.setCaption("");
         fields.addComponent(label);
-        
+
 //        label = new Label("<h4><b>"+eventDetails.getEventOwner()+"</b></h4>",ContentMode.HTML);
 //        label.setSizeUndefined();
 //        label.setCaption("By");
@@ -165,25 +180,45 @@ Image coverImage =new Image("Image", resource);
 //        label.setCaption("on");
 //        fields.addComponent(label);
 
+        synopsis = new Label();
+        synopsis.setWidth("100%");
         synopsis.setData(eventDetails.getEventOwner());
-        synopsis.setCaption("");
+        synopsis.setCaption(GlobalConstants.emptyString);
         updateSynopsis(eventDetails, false);
         fields.addComponent(synopsis);
 
         more.addStyleName("link");
         fields.addComponent(more);
         more.addClickListener(new ClickListener() {
+
             @Override
             public void buttonClick(ClickEvent event) {
                 updateSynopsis(eventDetails, true);
                 event.getButton().setVisible(false);
             }
         });
-        
-        HorizontalLayout footer = new HorizontalLayout();
-        footer.addStyleName("footer");
-        footer.setWidth("100%");
-        footer.setMargin(true);
+
+        HorizontalLayout likeCommentLayout = new HorizontalLayout();
+        likeCommentLayout.setSpacing(true);
+        //likeCommentLayout.setMargin(true);
+
+        Button likeBtn = new Button("Like");
+        Button commentBtn = new Button("Comment");
+
+        likeBtn.addStyleName(BaseTheme.BUTTON_LINK);
+        likeBtn.addClickListener(new ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                sendLike();
+            }
+        });
+        commentBtn.addStyleName(BaseTheme.BUTTON_LINK);
+//        likeBtn.addStyleName("link");
+//        commentBtn.addStyleName("link");
+        likeCommentLayout.addComponent(likeBtn);
+        likeCommentLayout.addComponent(commentBtn);
+        fields.addComponent(likeCommentLayout);
 
 //        Button ok = new Button("Close");
 //        ok.addStyleName("wide");
@@ -206,10 +241,34 @@ Image coverImage =new Image("Image", resource);
             synopsis.setData(eventDetails.getEventBody());
         }
         if (!expand) {
-            synopsisText = synopsisText.length() > 300 ? synopsisText
-                    .substring(0, 300) + "…" : synopsisText;
+            synopsisText = synopsisText.length() > 300 ? synopsisText.substring(0, 300) + "…" : synopsisText;
 
         }
         synopsis.setValue(synopsisText);
+    }
+
+    private void sendLike() {
+        try {
+            Userprofile profile = ((Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile));
+            JSONObject input = new JSONObject();
+            input.put("event_id", eventDetails.getEventDetailId());
+            input.put("username", profile.getUsername());
+            input.put("name", profile.getName());
+
+            Client client = Client.create();
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_EVENT_LIKE));
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, input);
+
+            /*
+             * if (response.getStatus() != 201) { throw new
+             * RuntimeException("Failed : HTTP error code : " +
+             * response.getStatus()); }
+             */
+
+            String output = response.getEntity(String.class);
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+
     }
 }

@@ -43,6 +43,7 @@ public class ForumView extends VerticalLayout implements View {
     private Table forumTable;
     private String New="New";
     private List <ForumEventDetailsBean> forumEventDetailsList;
+    private Userprofile loggedInUserProfile;
 
     public List<ForumEventDetailsBean> getForumEventDetailsList() {
         return forumEventDetailsList;
@@ -58,6 +59,8 @@ public class ForumView extends VerticalLayout implements View {
         addStyleName("schedule");
         //addStyleName("dashboard");
         //addComponent(buildDraftsView());
+        loggedInUserProfile =((Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile));
+
         buildHeaderView();
         buildBodyView();
     }
