@@ -71,6 +71,8 @@ public class GlobalConstants
     public static final String Technologies="Technologies";
     public static final String category_distribution = "category_distribution";
     public static final String eventDetailsList="eventDetailsList";
+    public static final String eventLikes="eventLikes";
+    public static final String eventComments="eventComments";
     public static final String FILE_UPLOAD_PATH="FILE_UPLOAD_PATH";
     public static final String FILE_DOWNLOAD_PATH="FILE_DOWNLOAD_PATH";
     public static final String SCHOOL_NAME="SCHOOL_NAME";
@@ -118,6 +120,7 @@ public class GlobalConstants
    public static  final String SAVE_EVENT_DETAILS="SAVE_EVENT_DETAILS";
    public static  final String GET_STUD_QUICK_LEARN_DTLS="GET_STUD_QUICK_LEARN_DTLS";
    public static  final String SAVE_EVENT_LIKE="SAVE_EVENT_LIKE";
+   public static  final String FETCH_EVENT_LIKES_BY_ID="FETCH_EVENT_LIKES_BY_ID";
    
    //public static final String UserMasterResource = "/UserMaster";
     

@@ -20,6 +20,7 @@ public class ForumEventDetails  implements java.io.Serializable {
      private byte[] eventImage;
      private Integer parentForumId;
      private String imageFileName;
+     private String stringImage;
 
     public ForumEventDetails() {
     }
@@ -107,6 +108,21 @@ public class ForumEventDetails  implements java.io.Serializable {
      */
     public void setImageFileName(String imageFileName) {
         this.imageFileName = imageFileName;
+    }
+    
+    
+    /**
+     * @return the stringImage
+     */
+    public String getStringImage() {
+        return stringImage;
+    }
+
+    /**
+     * @param stringImage the stringImage to set
+     */
+    public void setStringImage(String stringImage) {
+        this.stringImage = stringImage;
     }
 }
 

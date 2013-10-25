@@ -5,6 +5,7 @@
 package com.quick.bean;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -21,6 +22,14 @@ public class ForumEventDetailsBean
      private String stringImage;
      private Integer parentForumId;
      private String imageFileName;
+     private List<EventLikeBean> eventLikesList;
+
+    @Override
+    public String toString() {
+        return "ForumEventDetailsBean{" + "eventDetailId=" + eventDetailId + ", eventDate=" + eventDate + ", eventDesc=" + eventDesc + ", eventBody=" + eventBody + ", eventOwner=" + eventOwner + ", eventImage=" + eventImage + ", stringImage=" + stringImage + ", parentForumId=" + parentForumId + ", imageFileName=" + imageFileName + ", eventLikesList=" + eventLikesList + '}';
+    }
+     
+     
 
     public int getEventDetailId() {
         return eventDetailId;
@@ -98,6 +107,20 @@ public class ForumEventDetailsBean
      */
     public void setStringImage(String stringImage) {
         this.stringImage = stringImage;
+    }
+     
+    /**
+     * @return the eventLikesList
+     */
+    public List<EventLikeBean> getEventLikesList() {
+        return eventLikesList;
+    }
+
+    /**
+     * @param eventLikesList the eventLikesList to set
+     */
+    public void setEventLikesList(List<EventLikeBean> eventLikesList) {
+        this.eventLikesList = eventLikesList;
     }
      
      

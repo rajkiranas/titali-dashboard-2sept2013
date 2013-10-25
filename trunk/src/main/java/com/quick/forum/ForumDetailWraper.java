@@ -1,7 +1,9 @@
 package com.quick.forum;
 
-import com.quick.bean.ForumEventDetailsBean;
-import com.quick.bean.Userprofile;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.quick.bean.*;
 import com.vaadin.demo.dashboard.*;
 import java.text.SimpleDateFormat;
 
@@ -39,6 +41,9 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
@@ -48,6 +53,9 @@ public class ForumDetailWraper extends VerticalLayout {
 
     private Label synopsis;
     private ForumEventDetailsBean eventDetails;
+    private List<EventLikeBean> eventLikesList;
+    private List<EventCommentsBean> eventCommentsList;
+    private FormLayout fields;
 
     public ForumDetailWraper(final ForumEventDetailsBean eventDetails) {
 
@@ -134,7 +142,7 @@ public class ForumDetailWraper extends VerticalLayout {
         details.addComponent(cover);
         details.setExpandRatio(cover, 0.5f);
 
-        FormLayout fields = new FormLayout();
+        fields = new FormLayout();
         fields.setWidth("100%");
         fields.setSpacing(true);
         fields.setMargin(true);
@@ -211,6 +219,13 @@ public class ForumDetailWraper extends VerticalLayout {
             @Override
             public void buttonClick(ClickEvent event) {
                 sendLike();
+                fetchEventLikesAndComments();
+                showLikeAndCommentsForm();
+            }
+
+            private void showLikeAndCommentsForm() 
+            {
+                
             }
         });
         commentBtn.addStyleName(BaseTheme.BUTTON_LINK);
@@ -266,6 +281,45 @@ public class ForumDetailWraper extends VerticalLayout {
              */
 
             String output = response.getEntity(String.class);
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+    
+        private void fetchEventLikesAndComments() {
+        try {
+            JSONObject input = new JSONObject();
+            input.put("event_id", eventDetails.getEventDetailId());
+
+            Client client = Client.create();
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.FETCH_EVENT_LIKES_BY_ID));
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, input);
+
+            /*
+             * if (response.getStatus() != 201) { throw new
+             * RuntimeException("Failed : HTTP error code : " +
+             * response.getStatus()); }
+             */
+
+            JSONObject outNObject = null;
+            String output = response.getEntity(String.class);
+            outNObject = new JSONObject(output);
+
+             Type listType1 = new TypeToken<ArrayList<EventLikeBean>>() {
+            }.getType();
+            
+             Gson eventLikesGson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
+            eventLikesList = eventLikesGson.fromJson(outNObject.getString(GlobalConstants.eventLikes), listType1);
+            
+            Type listType2 = new TypeToken<ArrayList<EventCommentsBean>>() {
+            }.getType();
+            
+             Gson eventCommentsGson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
+            eventCommentsList = eventCommentsGson.fromJson(outNObject.getString(GlobalConstants.eventComments), listType2);
+            
+            System.out.println("eve"+eventLikesList);
+            
         } catch (JSONException ex) {
             ex.printStackTrace();
         }
