@@ -15,7 +15,9 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.Base64;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
@@ -25,19 +27,10 @@ import com.vaadin.server.Resource;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -55,19 +48,22 @@ public class ForumDetailWraper extends VerticalLayout {
     private ForumEventDetailsBean eventDetails;
     private List<EventLikeBean> eventLikesList;
     private List<EventCommentsBean> eventCommentsList;
-    private FormLayout fields;
+    private VerticalLayout fields;
+    private  Embedded likeImage ;
+    private  Embedded commentImage;
+    private TextField txtNewComment;
 
     public ForumDetailWraper(final ForumEventDetailsBean eventDetails) {
 
         this.eventDetails = eventDetails;
         setCaption(eventDetails.getEventDesc());
-        addStyleName("no-vertical-drag-hints");
-        addStyleName("no-horizontal-drag-hints");
+//        addStyleName("no-vertical-drag-hints");
+//        addStyleName("no-horizontal-drag-hints");
 
         HorizontalLayout details = new HorizontalLayout();
         details.setSpacing(true);
         details.setMargin(true);
-        details.setWidth("100%");
+        details.setSizeFull();
         addComponent(details);
 
 //        final Image coverImage = new Image("", new ExternalResource(
@@ -115,8 +111,8 @@ public class ForumDetailWraper extends VerticalLayout {
 
         DragAndDropWrapper cover = new DragAndDropWrapper(coverImage);
         cover.setDragStartMode(DragStartMode.NONE);
-        cover.setWidth("200px");
-        cover.setHeight("270px");
+        cover.setWidth("150px");
+        cover.setHeight("150px");
         cover.addStyleName("cover");
         cover.setDropHandler(new DropHandler() {
 
@@ -126,10 +122,10 @@ public class ForumDetailWraper extends VerticalLayout {
                 if (d == event.getTargetDetails().getTarget()) {
                     return;
                 }
-                Movie m = (Movie) d.getData();
+                //Movie m = (Movie) d.getData();
 //                coverImage.setSource(new ExternalResource(m.posterUrl));
 //                coverImage.setAlternateText(m.title);
-                setCaption(m.title);
+                //setCaption(m.title);
                 updateSynopsis(eventDetails, false);
                 more.setVisible(true);
             }
@@ -142,7 +138,7 @@ public class ForumDetailWraper extends VerticalLayout {
         details.addComponent(cover);
         details.setExpandRatio(cover, 0.5f);
 
-        fields = new FormLayout();
+        fields = new VerticalLayout();
         fields.setWidth("100%");
         fields.setSpacing(true);
         fields.setMargin(true);
@@ -171,10 +167,11 @@ public class ForumDetailWraper extends VerticalLayout {
 //        }
 
 
-        String cap = "<h3><b>" + eventDetails.getEventDesc() + "</b></h3>" + "<h4> by <b>"
-                + eventDetails.getEventOwner() + "</b></h4>" + "<h4> on <b>" + eventDetails.getEventDate() + "</b></h4>";
+        String cap = "<b>" + eventDetails.getEventDesc() + "</b>" + " by <b>"
+                + eventDetails.getEventOwner() + "</b>";
         label = new Label(cap, ContentMode.HTML);
         label.setWidth("100%");
+        label.setStyleName("deepPinkColor");
         //label.setCaption("");
         fields.addComponent(label);
 
@@ -191,7 +188,7 @@ public class ForumDetailWraper extends VerticalLayout {
         synopsis = new Label();
         synopsis.setWidth("100%");
         synopsis.setData(eventDetails.getEventOwner());
-        synopsis.setCaption(GlobalConstants.emptyString);
+        //synopsis.setCaption(GlobalConstants.emptyString);
         updateSynopsis(eventDetails, false);
         fields.addComponent(synopsis);
 
@@ -203,37 +200,13 @@ public class ForumDetailWraper extends VerticalLayout {
             public void buttonClick(ClickEvent event) {
                 updateSynopsis(eventDetails, true);
                 event.getButton().setVisible(false);
-            }
-        });
-
-        HorizontalLayout likeCommentLayout = new HorizontalLayout();
-        likeCommentLayout.setSpacing(true);
-        //likeCommentLayout.setMargin(true);
-
-        Button likeBtn = new Button("Like");
-        Button commentBtn = new Button("Comment");
-
-        likeBtn.addStyleName(BaseTheme.BUTTON_LINK);
-        likeBtn.addClickListener(new ClickListener() {
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                sendLike();
+                
                 fetchEventLikesAndComments();
                 showLikeAndCommentsForm();
             }
-
-            private void showLikeAndCommentsForm() 
-            {
-                
-            }
         });
-        commentBtn.addStyleName(BaseTheme.BUTTON_LINK);
-//        likeBtn.addStyleName("link");
-//        commentBtn.addStyleName("link");
-        likeCommentLayout.addComponent(likeBtn);
-        likeCommentLayout.addComponent(commentBtn);
-        fields.addComponent(likeCommentLayout);
+
+        
 
 //        Button ok = new Button("Close");
 //        ok.addStyleName("wide");
@@ -248,6 +221,140 @@ public class ForumDetailWraper extends VerticalLayout {
 //        footer.setComponentAlignment(ok, Alignment.TOP_RIGHT);
 //        l.addComponent(footer);
     }
+    
+    private void showLikeAndCommentsForm() {
+        HorizontalLayout likeCommentBtnLayout = new HorizontalLayout();
+        likeCommentBtnLayout.setSpacing(true);
+        //likeCommentLayout.setMargin(true);
+        //likeCommentBtnLayout.addStyleName("backgroundColor");
+
+        //likeCommentBtnLayout.setWidth("60%");
+        Button likeBtn = new Button("Like");
+        Button commentBtn = new Button("Comment");
+
+        likeBtn.addStyleName(BaseTheme.BUTTON_LINK);
+        likeBtn.addClickListener(new ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                sendLike();
+            }
+        });
+        commentBtn.addStyleName(BaseTheme.BUTTON_LINK);
+        commentBtn.addClickListener(new ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {  
+                showFullCommentsStack();
+            }
+
+            
+        });
+//        likeBtn.addStyleName("link");
+//        commentBtn.addStyleName("link");
+        likeCommentBtnLayout.addComponent(likeBtn);
+        likeCommentBtnLayout.addComponent(commentBtn);
+        likeImage =  new Embedded(null,new ThemeResource("./img/like-icon.jpg"));
+        likeImage.setHeight("22px");
+        likeImage.setWidth("22px");
+        likeCommentBtnLayout.addComponent(likeImage);
+        likeCommentBtnLayout.addComponent(new Label(GlobalConstants.emptyString + eventLikesList.size() ));
+        commentImage =  new Embedded(null,new ThemeResource("./img/comments-icon.jpg"));
+        commentImage.setHeight("22px");
+        commentImage.setWidth("22px");
+        likeCommentBtnLayout.addComponent(commentImage);
+        likeCommentBtnLayout.addComponent(new Label(GlobalConstants.emptyString + eventCommentsList.size() ));
+        likeCommentBtnLayout.addComponent(new Label( "on " + eventDetails.getEventDate()));
+        fields.addComponent(likeCommentBtnLayout);
+    }
+    private void showFullCommentsStack() {
+        VerticalLayout vl = new VerticalLayout();
+        vl.setMargin(false);
+        vl.setSpacing(true);
+        vl.setWidth("65%");
+        vl.addStyleName("backgroundColor");
+        HorizontalLayout fullCommentsLayout;
+        for (EventCommentsBean comment : eventCommentsList) {
+            fullCommentsLayout = new HorizontalLayout();
+            fullCommentsLayout.addStyleName("whiteBottomBorder");
+            fullCommentsLayout.setMargin(false);
+            fullCommentsLayout.setSpacing(false);
+            fullCommentsLayout.setWidth("100%");
+            fullCommentsLayout.setHeight("100%");
+            Image userImage = new Image(null, new ThemeResource("img/profile-pic.png"));
+
+            userImage.setWidth("30px");
+            userImage.setWidth("30px");
+            fullCommentsLayout.addComponent(userImage);
+            fullCommentsLayout.setExpandRatio(userImage, 0.5f);
+            fullCommentsLayout.setComponentAlignment(userImage, Alignment.TOP_LEFT);
+            Label l = new Label("<b>" + comment.getName() + ": </b>" + comment.getCommentBody(), ContentMode.HTML);
+            fullCommentsLayout.addComponent(l);
+            fullCommentsLayout.setExpandRatio(l, 4);
+            fullCommentsLayout.setComponentAlignment(l, Alignment.MIDDLE_LEFT);
+
+            vl.addComponent(fullCommentsLayout);
+
+        }
+        fullCommentsLayout = new HorizontalLayout();
+        fullCommentsLayout.addStyleName("whiteBottomBorder");
+        fullCommentsLayout.setMargin(false);
+        fullCommentsLayout.setSpacing(false);
+        fullCommentsLayout.setWidth("100%");
+        fullCommentsLayout.setHeight("100%");
+
+        Image userImage = new Image(null, new ThemeResource("img/profile-pic.png"));
+        userImage.setWidth("30px");
+        userImage.setWidth("30px");
+        txtNewComment = new TextField();
+        txtNewComment.setWidth("100%");
+        txtNewComment.setImmediate(true);
+        txtNewComment.setInputPrompt("Write a comment...");
+        txtNewComment.addShortcutListener(new ShortcutListener("Shortcut Name", ShortcutAction.KeyCode.ENTER, null) {
+
+            @Override
+            public void handleAction(Object sender, Object target) {
+                if (txtNewComment.getValue() != null && txtNewComment.getValue() != GlobalConstants.emptyString) {
+                    saveComment(txtNewComment.getValue());
+                }
+            }
+        });
+
+        fullCommentsLayout.addComponent(userImage);
+        fullCommentsLayout.setExpandRatio(userImage, 0.5f);
+        fullCommentsLayout.setComponentAlignment(userImage, Alignment.TOP_LEFT);
+        fullCommentsLayout.addComponent(txtNewComment);
+        fullCommentsLayout.setExpandRatio(txtNewComment, 4);
+        fullCommentsLayout.setComponentAlignment(txtNewComment, Alignment.MIDDLE_LEFT);
+        vl.addComponent(fullCommentsLayout);
+        fields.addComponent(vl);
+    }
+    private void saveComment(String value) 
+    {
+          try {
+            Userprofile profile = ((Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile));
+            JSONObject input = new JSONObject();
+            input.put("event_id", eventDetails.getEventDetailId());
+            input.put("username", profile.getUsername());
+            input.put("name", profile.getName());
+            input.put("comment", value);
+
+            Client client = Client.create();
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_EVENT_COMMENT));
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, input);
+
+            /*
+             * if (response.getStatus() != 201) { throw new
+             * RuntimeException("Failed : HTTP error code : " +
+             * response.getStatus()); }
+             */
+
+            String output = response.getEntity(String.class);
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+          
+   }
 
     public void updateSynopsis(ForumEventDetailsBean eventDetails, boolean expand) {
         String synopsisText = synopsis.getData().toString();

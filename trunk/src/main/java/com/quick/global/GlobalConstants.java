@@ -120,6 +120,7 @@ public class GlobalConstants
    public static  final String SAVE_EVENT_DETAILS="SAVE_EVENT_DETAILS";
    public static  final String GET_STUD_QUICK_LEARN_DTLS="GET_STUD_QUICK_LEARN_DTLS";
    public static  final String SAVE_EVENT_LIKE="SAVE_EVENT_LIKE";
+   public static  final String SAVE_EVENT_COMMENT="SAVE_EVENT_COMMENT";
    public static  final String FETCH_EVENT_LIKES_BY_ID="FETCH_EVENT_LIKES_BY_ID";
    
    //public static final String UserMasterResource = "/UserMaster";
