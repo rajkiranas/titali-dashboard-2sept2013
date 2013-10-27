@@ -497,12 +497,12 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
 
         Label label;
         int i=0;
-        for(Whatsnew n : whatsnewsList)
+        for(MasteParmBean n : whosDoingWhatFromDB)
         {
             label= new Label(
                 "<hr><b>"
                         +n.getDisplaynotification()
-                +"</b><br><span>"+DateUtil.getTimeIntervalOfTheActivity(n.getReleasedate())+"</span><br>"
+                +"</b><br><span>"+DateUtil.getTimeIntervalOfTheActivity(n.getUploadDate())+"</span><br>"
                         , ContentMode.HTML);
             l.addComponent(label);
             i++;

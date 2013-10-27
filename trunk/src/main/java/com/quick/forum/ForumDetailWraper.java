@@ -246,8 +246,12 @@ public class ForumDetailWraper extends VerticalLayout {
             public void buttonClick(ClickEvent event) {
                 sendLike();
                 fetchEventLikesAndComments();
+                               
+                if(verticalForCommentStack!=null)
+                    fields.removeComponent(verticalForCommentStack);
                 fields.removeComponent(likeCommentBtnLayout);
                 showLikeAndCommentsForm();
+                showFullCommentsStack();
             }
         });
         commentBtn.addStyleName(BaseTheme.BUTTON_LINK);
@@ -328,7 +332,11 @@ public class ForumDetailWraper extends VerticalLayout {
         w.setContent(verticalForCommentStack);
         getUI().getCurrent().addWindow(w);
     }
-    private void showFullCommentsStack() {
+    private void showFullCommentsStack() 
+    {
+        if(verticalForCommentStack!=null)
+                    fields.removeComponent(verticalForCommentStack);
+        
         verticalForCommentStack = new VerticalLayout();
         verticalForCommentStack.setMargin(false);
         verticalForCommentStack.setSpacing(true);
