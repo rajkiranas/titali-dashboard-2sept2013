@@ -286,6 +286,16 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
     
     private void showSelectedTechnologyDetailsOnHtmlFrom(UpcomingTechnologyBean bean) {
                 
+        if(topicDetailsHtmlCssLayout != null) {
+            row.removeComponent(topicDetailsHtmlCssLayout);
+        }
+        VerticalLayout htmlLayoutForDetails;
+        htmlLayoutForDetails = new VerticalLayout();
+        htmlLayoutForDetails.setCaption(technology_details);
+        //htmlLayoutForDetails.setSizeFull();
+        htmlLayoutForDetails.setSpacing(true);
+        //htmlLayoutForDetails.setHeight("100%");
+
                 Label html;
                 if(bean!=null)
                 {
@@ -296,9 +306,21 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
                             +"<tr><td align='right' width='15%'></td><td width='85%'>"+GlobalConstants.emptyString+"</td></tr>"
                         +"<tr><td align='right' width='15%'><b>Details:</b></td><td width='85%'>"+bean.getTechnologybody()+"</td></tr>"
                         + "</table>", ContentMode.HTML);
+                    
+                    Label techName=new Label("<b>Name:</b>"+bean.getTechnologyline(),ContentMode.HTML);
+                    Label category=new Label("<b>Category:</b>"+bean.getCategory(),ContentMode.HTML);
+                    Label details=new Label("<b>Details:</b>"+bean.getTechnologybody(),ContentMode.HTML);
+                    
                     setSelectedUTId(bean.getTechnologyid());
                     updateUtFormField(bean);
                     
+                    techName.setHeight("100%");
+                    category.setHeight("100%");
+                    details.setHeight("100%");
+                    
+                    htmlLayoutForDetails.addComponent(techName);
+                    htmlLayoutForDetails.addComponent(category);
+                    htmlLayoutForDetails.addComponent(details);
                     
                 }
                 else
@@ -308,21 +330,14 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
                         +"<tr><td align='right'><b>Category :</b></td><td>"+"</td></tr>"
                         +"<tr><td align='right'><b>Details :</b></td><td>"+"</td></tr>"
                         + "</table>", ContentMode.HTML);
-                    
+                    htmlLayoutForDetails.addComponent(html);
                 }
                 
-                html.setSizeFull();
-                if(topicDetailsHtmlCssLayout!=null)
-                {
-                    row.removeComponent(topicDetailsHtmlCssLayout);                    
-                }   
-                VerticalLayout htmlLayoutForDetails;
-                htmlLayoutForDetails= new VerticalLayout();
-                htmlLayoutForDetails.setCaption(technology_details);
-                htmlLayoutForDetails.setSizeFull();
+                
+                
 //                htmlLayoutForDetails.setHeight("80%");
 //                htmlLayoutForDetails.setWidth("90%");
-                htmlLayoutForDetails.addComponent(html);
+                
                 topicDetailsHtmlCssLayout = UIUtils.createPanel(htmlLayoutForDetails);
                 //topicDetailsHtmlCssLayout.setHeight("100%");
                 //topicDetailsHtmlCssLayout.setSizeFull();
