@@ -10,11 +10,14 @@ import java.text.SimpleDateFormat;
 import com.quick.data.DataProvider.Movie;
 import com.quick.entity.ForumEventDetails;
 import com.quick.global.GlobalConstants;
+import com.quick.utilities.DateUtil;
 import com.quick.utilities.MyImageSource;
+import com.quick.utilities.UIUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.Base64;
+import com.vaadin.event.MouseEvents;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
@@ -52,6 +55,9 @@ public class ForumDetailWraper extends VerticalLayout {
     private  Embedded likeImage ;
     private  Embedded commentImage;
     private TextField txtNewComment;
+    private VerticalLayout verticalForCommentStack;
+    private HorizontalLayout likeCommentBtnLayout;
+    private String People_who_like_this="People who like this";
 
     public ForumDetailWraper(final ForumEventDetailsBean eventDetails) {
 
@@ -59,6 +65,7 @@ public class ForumDetailWraper extends VerticalLayout {
         setCaption(eventDetails.getEventDesc());
 //        addStyleName("no-vertical-drag-hints");
 //        addStyleName("no-horizontal-drag-hints");
+        addStyleName("fourSideBorder");
 
         HorizontalLayout details = new HorizontalLayout();
         details.setSpacing(true);
@@ -223,7 +230,7 @@ public class ForumDetailWraper extends VerticalLayout {
     }
     
     private void showLikeAndCommentsForm() {
-        HorizontalLayout likeCommentBtnLayout = new HorizontalLayout();
+        likeCommentBtnLayout = new HorizontalLayout();
         likeCommentBtnLayout.setSpacing(true);
         //likeCommentLayout.setMargin(true);
         //likeCommentBtnLayout.addStyleName("backgroundColor");
@@ -238,6 +245,9 @@ public class ForumDetailWraper extends VerticalLayout {
             @Override
             public void buttonClick(ClickEvent event) {
                 sendLike();
+                fetchEventLikesAndComments();
+                fields.removeComponent(likeCommentBtnLayout);
+                showLikeAndCommentsForm();
             }
         });
         commentBtn.addStyleName(BaseTheme.BUTTON_LINK);
@@ -247,8 +257,6 @@ public class ForumDetailWraper extends VerticalLayout {
             public void buttonClick(ClickEvent event) {  
                 showFullCommentsStack();
             }
-
-            
         });
 //        likeBtn.addStyleName("link");
 //        commentBtn.addStyleName("link");
@@ -257,6 +265,13 @@ public class ForumDetailWraper extends VerticalLayout {
         likeImage =  new Embedded(null,new ThemeResource("./img/like-icon.jpg"));
         likeImage.setHeight("22px");
         likeImage.setWidth("22px");
+        likeImage.addClickListener(new com.vaadin.event.MouseEvents.ClickListener() {
+
+            @Override
+            public void click(MouseEvents.ClickEvent event) {
+                showLikesWindow();
+            }
+     });
         likeCommentBtnLayout.addComponent(likeImage);
         likeCommentBtnLayout.addComponent(new Label(GlobalConstants.emptyString + eventLikesList.size() ));
         commentImage =  new Embedded(null,new ThemeResource("./img/comments-icon.jpg"));
@@ -264,15 +279,61 @@ public class ForumDetailWraper extends VerticalLayout {
         commentImage.setWidth("22px");
         likeCommentBtnLayout.addComponent(commentImage);
         likeCommentBtnLayout.addComponent(new Label(GlobalConstants.emptyString + eventCommentsList.size() ));
-        likeCommentBtnLayout.addComponent(new Label( "on " + eventDetails.getEventDate()));
+        Label eventTime=new Label( DateUtil.getTimeIntervalOfTheActivity(eventDetails.getEventDate()));
+        eventTime.addStyleName("lightGrayColorAndSmallFont");
+        likeCommentBtnLayout.addComponent(eventTime);
         fields.addComponent(likeCommentBtnLayout);
     }
+    private void showLikesWindow() {
+
+        VerticalLayout verticalForCommentStack = new VerticalLayout();
+        verticalForCommentStack.setMargin(false);
+        verticalForCommentStack.setSpacing(true);
+        verticalForCommentStack.setWidth("100%");
+        verticalForCommentStack.addStyleName("backgroundColor");
+        HorizontalLayout likeNamesLayout;
+        for (EventLikeBean like : eventLikesList) {
+            likeNamesLayout = new HorizontalLayout();
+            likeNamesLayout.addStyleName("whiteBottomBorder");
+            likeNamesLayout.setMargin(false);
+            likeNamesLayout.setSpacing(false);
+            likeNamesLayout.setWidth("100%");
+            likeNamesLayout.setHeight("100%");
+            Image userImage = new Image(null, new ThemeResource("img/profile-pic.png"));
+
+            userImage.setWidth("30px");
+            userImage.setWidth("30px");
+            likeNamesLayout.addComponent(userImage);
+            likeNamesLayout.setExpandRatio(userImage, 0.5f);
+            likeNamesLayout.setComponentAlignment(userImage, Alignment.TOP_LEFT);
+            Label lblComment = new Label("<b>" + like.getName() + "</b>", ContentMode.HTML);
+            likeNamesLayout.addComponent(lblComment);
+            likeNamesLayout.setExpandRatio(lblComment, 1);
+            likeNamesLayout.setComponentAlignment(lblComment, Alignment.MIDDLE_LEFT);
+
+            Label lblCommentTime = new Label(DateUtil.getTimeIntervalOfTheActivity(like.getLikeTime()));
+            lblCommentTime.addStyleName("lightGrayColorAndSmallFont");
+            likeNamesLayout.addComponent(lblCommentTime);
+            likeNamesLayout.setExpandRatio(lblCommentTime, 1);
+            likeNamesLayout.setComponentAlignment(lblCommentTime, Alignment.MIDDLE_RIGHT);
+
+            verticalForCommentStack.addComponent(likeNamesLayout);
+
+        }
+
+        Window w = new Window(People_who_like_this);
+        w.center();
+        w.setWidth("35%");
+        w.setHeight("40%");
+        w.setContent(verticalForCommentStack);
+        getUI().getCurrent().addWindow(w);
+    }
     private void showFullCommentsStack() {
-        VerticalLayout vl = new VerticalLayout();
-        vl.setMargin(false);
-        vl.setSpacing(true);
-        vl.setWidth("65%");
-        vl.addStyleName("backgroundColor");
+        verticalForCommentStack = new VerticalLayout();
+        verticalForCommentStack.setMargin(false);
+        verticalForCommentStack.setSpacing(true);
+        verticalForCommentStack.setWidth("65%");
+        verticalForCommentStack.addStyleName("backgroundColor");
         HorizontalLayout fullCommentsLayout;
         for (EventCommentsBean comment : eventCommentsList) {
             fullCommentsLayout = new HorizontalLayout();
@@ -288,12 +349,18 @@ public class ForumDetailWraper extends VerticalLayout {
             fullCommentsLayout.addComponent(userImage);
             fullCommentsLayout.setExpandRatio(userImage, 0.5f);
             fullCommentsLayout.setComponentAlignment(userImage, Alignment.TOP_LEFT);
-            Label l = new Label("<b>" + comment.getName() + ": </b>" + comment.getCommentBody(), ContentMode.HTML);
-            fullCommentsLayout.addComponent(l);
-            fullCommentsLayout.setExpandRatio(l, 4);
-            fullCommentsLayout.setComponentAlignment(l, Alignment.MIDDLE_LEFT);
+            Label lblComment = new Label("<b>" + comment.getName() + ": </b>" + comment.getCommentBody(), ContentMode.HTML);
+            fullCommentsLayout.addComponent(lblComment);
+            fullCommentsLayout.setExpandRatio(lblComment, 4);
+            fullCommentsLayout.setComponentAlignment(lblComment, Alignment.MIDDLE_LEFT);
+            
+            Label lblCommentTime=new Label(DateUtil.getTimeIntervalOfTheActivity(comment.getCommentTime()));
+            lblCommentTime.addStyleName("lightGrayColorAndSmallFont");
+            fullCommentsLayout.addComponent(lblCommentTime);
+            fullCommentsLayout.setExpandRatio(lblCommentTime, 1);
+            fullCommentsLayout.setComponentAlignment(lblCommentTime, Alignment.MIDDLE_RIGHT);
 
-            vl.addComponent(fullCommentsLayout);
+            verticalForCommentStack.addComponent(fullCommentsLayout);
 
         }
         fullCommentsLayout = new HorizontalLayout();
@@ -314,8 +381,13 @@ public class ForumDetailWraper extends VerticalLayout {
 
             @Override
             public void handleAction(Object sender, Object target) {
-                if (txtNewComment.getValue() != null && txtNewComment.getValue() != GlobalConstants.emptyString) {
+                if (txtNewComment.getValue() != null && !txtNewComment.getValue().equals(GlobalConstants.emptyString)) {
                     saveComment(txtNewComment.getValue());
+                    fetchEventLikesAndComments();
+                    fields.removeComponent(verticalForCommentStack);
+                    fields.removeComponent(likeCommentBtnLayout);
+                    showLikeAndCommentsForm();
+                    showFullCommentsStack();
                 }
             }
         });
@@ -326,8 +398,8 @@ public class ForumDetailWraper extends VerticalLayout {
         fullCommentsLayout.addComponent(txtNewComment);
         fullCommentsLayout.setExpandRatio(txtNewComment, 4);
         fullCommentsLayout.setComponentAlignment(txtNewComment, Alignment.MIDDLE_LEFT);
-        vl.addComponent(fullCommentsLayout);
-        fields.addComponent(vl);
+        verticalForCommentStack.addComponent(fullCommentsLayout);
+        fields.addComponent(verticalForCommentStack);
     }
     private void saveComment(String value) 
     {
