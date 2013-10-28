@@ -23,6 +23,7 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.quick.demo.student.ui.DashBoardVideoPlayer;
 import com.quick.forum.NewEventWindow;
+import com.quick.table.StudQuickLearnTable;
 import com.quick.ui.QuickLearn.MyNotes;
 import com.quick.ui.QuickLearn.MyOtherNotes;
 import com.quick.ui.QuickLearn.NewEditTopicDetailsAdmin;
@@ -101,7 +102,7 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
         buildTopHorizontalRowLayout();
         
         setStandardList(MasterDataProvider.getStandardList());
-        setUploadedList(MasterDataProvider.getQuickLearnUploadList());
+        setUploadedList(MasterDataProvider.getQuickLearnUploadList(null));
        
         row = new HorizontalLayout();
         row.setSizeFull();
@@ -110,7 +111,8 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
         addComponent(row);
         setExpandRatio(row, 1.5f);      
        
-        row.addComponent(UIUtils.createPanel(buildUploadedTopicsTableLayout()));
+    //    row.addComponent(UIUtils.createPanel(buildUploadedTopicsTableLayout()));
+            row.addComponent(buildUploadedTopicsTableLayout());
         
         //row.addComponent(UIUtils.createPanel(buildTabSheetLayout()));
     }
@@ -118,16 +120,16 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
     /** Used to show the list of uploaded items
      * called when admin user goes to upload topics menu
      */
-    private VerticalLayout buildUploadedTopicsTableLayout() {
+    private Component buildUploadedTopicsTableLayout() {
         VerticalLayout mainVertical = new VerticalLayout();
         //HorizontalLayout tableView = new HorizontalLayout();
         mainVertical.setSpacing(true);
         mainVertical.setWidth("100%");
         mainVertical.setHeight("97%");
-        quickUploadTable = new QuickUploadTable(this);
+        quickUploadTable = new QuickUploadTable(this,getUploadedList());
         mainVertical.addComponent(quickUploadTable);
         //mainVertical.addComponent(tableView);
-        return mainVertical;
+        return quickUploadTable;
     }
     
     
@@ -609,8 +611,8 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
       /* quickUploadTable.setContainerDataSource(QuickUploadMasterContainer.getQuickLearnUploadList(getUploadedList()));
       quickUploadTable.setVisibleColumns(QuickUploadMasterContainer.NATURAL_COL_ORDER_QUICKUPLOAD_INFO);
       quickUploadTable.setColumnHeaders(QuickUploadMasterContainer.COL_HEADERS_ENGLISH_QUICKUPLOAD_INFO); */
-        setUploadedList(MasterDataProvider.getQuickLearnUploadList());
-        quickUploadTable=new QuickUploadTable(this);
+        setUploadedList(MasterDataProvider.getQuickLearnUploadList(null));
+        quickUploadTable=new QuickUploadTable(this,getUploadedList());
        row.addComponent(UIUtils.createPanel(quickUploadTable));
       // show the first value selected in the table
      // quickUploadTable.setValue(quickUploadTable.firstItemId());
@@ -733,6 +735,9 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
         top.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
         top.setExpandRatio(title, 1);
         
+        
+        addSubAndStdComboBoxOnTop(top);
+                
         HorizontalLayout buttons = new HorizontalLayout();
         buttons.setMargin(true);
         buttons.setSpacing(true);
@@ -943,5 +948,82 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
         addStyleName("schedule");       
         
        // UI.getCurrent().addWindow(new NewEditTopicDetailsAdmin());
+    }
+    
+    private void addSubAndStdComboBoxOnTop(HorizontalLayout top) 
+    {
+        setStandardList(MasterDataProvider.getStandardList());
+        
+        
+        
+        subjecttxt = new ComboBox();
+        subjecttxt.setImmediate(true);
+        subjecttxt.setInputPrompt("Subject");
+        subjecttxt.setNullSelectionAllowed(false);
+        //subjecttxt.setWidth("185px");
+        subjecttxt.addValueChangeListener(new Property.ValueChangeListener() {
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if(!subjecttxt.getValue().equals("Select")){
+                    String sub=String.valueOf(subjecttxt.getValue());
+                     row.removeComponent(quickUploadTable);
+                     quickUploadTable = new QuickUploadTable(QuickUpload.this,MasterDataProvider.getQuickLearnUploadList(sub));
+                     //quickLearnTable = new StudQuickLearnTable(StudQuickLearn.this,getTopicListForMe(sub));
+                     row.addComponent(quickUploadTable);
+               }
+            }
+        });
+        
+        
+        standardtxt = new ComboBox();
+        standardtxt.setImmediate(true);
+        standardtxt.setInputPrompt("Standard");
+        standardtxt.addItem("Select");
+        standardtxt.setValue("Select"); 
+        standardtxt.setNullSelectionAllowed(false);
+        //standardtxt.setWidth("185px");
+        
+         Iterator it=getStandardList().iterator();
+        while(it.hasNext()){
+            Std s=(Std) it.next();
+            standardtxt.addItem(s.getStd());            
+        }
+        standardtxt.addValueChangeListener(new Property.ValueChangeListener() {
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if(!standardtxt.getValue().equals("Select")){
+                    String std=String.valueOf(standardtxt.getValue());
+                    setSubjectList(MasterDataProvider.getSubjectBystd(std));
+                    if(!getSubjectList().isEmpty()){
+                         Iterator subItr=getSubjectList().iterator();
+                         while(subItr.hasNext()){
+                         QuickLearn s=(QuickLearn) subItr.next();
+                         subjecttxt.addItem(s.getSub());            
+                       }  
+                    }     
+               }
+            }
+        });
+        
+        Label lblStd=new Label("Standard");
+        lblStd.setImmediate(true);
+        lblStd.setWidth("100%");
+        top.addComponent(lblStd);
+        top.setComponentAlignment(lblStd, Alignment.MIDDLE_LEFT);
+        
+        top.addComponent(standardtxt);
+        top.setComponentAlignment(standardtxt, Alignment.MIDDLE_RIGHT);
+        
+        Label lblSub=new Label("Subject");
+        lblSub.setImmediate(true);
+        lblSub.setWidth("100%");
+        top.addComponent(lblSub);
+        top.setComponentAlignment(lblSub, Alignment.TOP_LEFT);
+        
+        top.addComponent(subjecttxt);
+        top.setComponentAlignment(subjecttxt, Alignment.MIDDLE_RIGHT);
+        
     }
 }

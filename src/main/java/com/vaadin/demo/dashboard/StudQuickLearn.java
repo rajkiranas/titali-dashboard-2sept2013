@@ -880,7 +880,7 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
         
         
         
-        subjecttxt = new ComboBox("Subject");
+        subjecttxt = new ComboBox();
         subjecttxt.setImmediate(true);
         subjecttxt.setInputPrompt("Subject");
         subjecttxt.setNullSelectionAllowed(false);
@@ -899,7 +899,7 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
         });
         
         
-        standardtxt = new ComboBox("Standard");
+        standardtxt = new ComboBox();
         standardtxt.setImmediate(true);
         standardtxt.setInputPrompt("Standard");
         standardtxt.addItem("Select");
@@ -929,9 +929,16 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
                }
             }
         });
+        
+        Label lblStd=new Label("Standard");
+        top.addComponent(lblStd);
         top.addComponent(standardtxt);
+        Label lblSub=new Label("Subject");
+        top.addComponent(lblSub);
         top.addComponent(subjecttxt);
         
+        top.setComponentAlignment(lblStd, Alignment.MIDDLE_RIGHT);
+        top.setComponentAlignment(lblSub, Alignment.MIDDLE_RIGHT);
         top.setComponentAlignment(standardtxt, Alignment.MIDDLE_RIGHT);
         top.setComponentAlignment(subjecttxt, Alignment.MIDDLE_RIGHT);
         
