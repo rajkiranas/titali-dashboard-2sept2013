@@ -490,10 +490,11 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         notifications.addStyleName("notifications");
         notifications.setClosable(false);
         notifications.setResizable(false);
-        notifications.setDraggable(false);
-        notifications.setPositionX(event.getClientX() - event.getRelativeX());
+        notifications.setDraggable(true);
+        notifications.setPositionX(event.getClientX() - (event.getRelativeX()+100));
         notifications.setPositionY(event.getClientY() - event.getRelativeY());
         notifications.setCloseShortcut(KeyCode.ESCAPE, null);
+        
 
         Label label;
         int i=0;

@@ -12,7 +12,9 @@ import com.quick.bean.Userprofile;
 import com.quick.container.StudQuickLearnContainer;
 import com.vaadin.data.Property;
 import com.quick.data.Generator;
+import com.quick.data.MasterDataProvider;
 import com.quick.demo.student.ui.DashBoardVideoPlayer;
+import com.quick.entity.Std;
 import com.quick.global.GlobalConstants;
 import com.quick.table.StudQuickLearnTable;
 import com.quick.ui.QuickLearn.MyNotes;
@@ -73,6 +75,7 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
     private String topicForNotification;
     private  Userprofile loggedInUserProfile = null;
     private  SelectedTabChangeListener tabChangeListener;
+    private HorizontalLayout row ;
 
     public String getUserNotes() {
         return userNotes;
@@ -158,7 +161,7 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
     
     public StudQuickLearn()
     {
-        getStandardList();
+        getSubjectListByStd();
         HorizontalLayout top = new HorizontalLayout();
         top.setWidth("100%");
         top.setSpacing(true);
@@ -171,6 +174,9 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
         top.addComponent(title);
         top.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
         top.setExpandRatio(title, 1);
+
+        addSubAndStdComboBoxOnTop(top);
+        
 
         //top.addComponent();
 //        HorizontalLayout h = new HorizontalLayout();
@@ -186,7 +192,7 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
 //        top.addComponent(h);
 //        top.setComponentAlignment(h, Alignment.MIDDLE_RIGHT);
       
-        HorizontalLayout row = new HorizontalLayout();
+        row = new HorizontalLayout();
         //row.setSizeFull();
         row.setHeight("100%");
         row.setWidth("100%");
@@ -196,7 +202,7 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
         setExpandRatio(row, 1.5f);
         setComponentAlignment(row, Alignment.MIDDLE_CENTER);
         //Component c=buildTabSheetLayout();
-        CssLayout tablePanel=CreateFirstPaneview();
+        Table tablePanel=CreateFirstPaneview();
         row.addComponent(tablePanel);
         row.setComponentAlignment(tablePanel, Alignment.MIDDLE_CENTER);
         //row.addComponent(createPanel(boardDataProvider.getWhatsNewForme(whatsnewsList)));
@@ -246,9 +252,9 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
         l.addComponent(label);
     }
 
-    private CssLayout CreateFirstPaneview() {
-        getTopicList();
-        quickLearnTable = new StudQuickLearnTable(this);
+    private Table CreateFirstPaneview() {
+        //getTopicList();
+        quickLearnTable = new StudQuickLearnTable(this,getTopicList());
         //notes = new TextArea("My short notes for the topic");
         
         //column.setSpacing(true);
@@ -322,7 +328,9 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
 //        
 //        column.addComponent(panel);
 //        column.setExpandRatio(panel, 0.5f);
-        return UIUtils.createPanel(quickLearnTable);
+        //return UIUtils.createPanel(quickLearnTable);
+         
+         return quickLearnTable;
        
     }
 
@@ -620,12 +628,12 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
            
     
     
-    public void getStandardList(){
+    private void getSubjectListByStd(){
           try {
            
 
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/MasterParam/stdsub");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.FETCH_SUBS_BY_STD));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             try {
@@ -635,7 +643,7 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
                 ex.printStackTrace();
             }
 
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
 
           
             JSONObject outNObject = null;
@@ -659,7 +667,7 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
          List<MasteParmBean>list =null;
           try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/QuickLearn/whatsNewforme");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_TOPIC_LIST_FOR_ME));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             try {
@@ -669,7 +677,7 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
                 ex.printStackTrace();
             }
 
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
 
           
             JSONObject outNObject = null;
@@ -843,5 +851,89 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
                 }
                 sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub(),topicIntro);
                 UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes(),getUploadId()));
+    }
+    
+    
+    private List<Std> standardList;
+    private ComboBox subjecttxt;
+    private ComboBox standardtxt;
+    private List<QuickLearn> subjectList;
+    
+    public List<Std> getStandardList() {
+        return standardList;
+    }
+
+    public void setStandardList(List<Std> standardList) {
+        this.standardList = standardList;
+    }
+    public List<QuickLearn> getSubjectList() {
+        return subjectList;
+    }
+
+    public void setSubjectList(List<QuickLearn> subjectList) {
+        this.subjectList = subjectList;
+    }
+
+    private void addSubAndStdComboBoxOnTop(HorizontalLayout top) 
+    {
+        setStandardList(MasterDataProvider.getStandardList());
+        
+        
+        
+        subjecttxt = new ComboBox("Subject");
+        subjecttxt.setImmediate(true);
+        subjecttxt.setInputPrompt("Subject");
+        subjecttxt.setNullSelectionAllowed(false);
+        subjecttxt.setWidth("185px");
+        subjecttxt.addValueChangeListener(new Property.ValueChangeListener() {
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if(!subjecttxt.getValue().equals("Select")){
+                    String sub=String.valueOf(subjecttxt.getValue());
+                     row.removeComponent(quickLearnTable);
+                     quickLearnTable = new StudQuickLearnTable(StudQuickLearn.this,getTopicListForMe(sub));
+                     row.addComponent(quickLearnTable);
+               }
+            }
+        });
+        
+        
+        standardtxt = new ComboBox("Standard");
+        standardtxt.setImmediate(true);
+        standardtxt.setInputPrompt("Standard");
+        standardtxt.addItem("Select");
+        standardtxt.setValue("Select"); 
+        standardtxt.setNullSelectionAllowed(false);
+        standardtxt.setWidth("185px");
+        
+         Iterator it=getStandardList().iterator();
+        while(it.hasNext()){
+            Std s=(Std) it.next();
+            standardtxt.addItem(s.getStd());            
+        }
+        standardtxt.addValueChangeListener(new Property.ValueChangeListener() {
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if(!standardtxt.getValue().equals("Select")){
+                    String std=String.valueOf(standardtxt.getValue());
+                    setSubjectList(MasterDataProvider.getSubjectBystd(std));
+                    if(!getSubjectList().isEmpty()){
+                         Iterator subItr=getSubjectList().iterator();
+                         while(subItr.hasNext()){
+                         QuickLearn s=(QuickLearn) subItr.next();
+                         subjecttxt.addItem(s.getSub());            
+                       }  
+                    }     
+               }
+            }
+        });
+        top.addComponent(standardtxt);
+        top.addComponent(subjecttxt);
+        
+        top.setComponentAlignment(standardtxt, Alignment.MIDDLE_RIGHT);
+        top.setComponentAlignment(subjecttxt, Alignment.MIDDLE_RIGHT);
+        
     }
 }
