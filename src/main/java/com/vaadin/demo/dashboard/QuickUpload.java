@@ -557,7 +557,7 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
 
             Client client = Client.create();
             WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_UPLOAD_DETAILS_URL));
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
 
             /*
              * if (response.getStatus() != 201) { throw new RuntimeException("Failed
@@ -661,7 +661,7 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
                 ex.printStackTrace();
             }
 
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
 
           
             JSONObject outNObject = null;

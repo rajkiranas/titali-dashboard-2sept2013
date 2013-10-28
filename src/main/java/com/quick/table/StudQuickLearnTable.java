@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class StudQuickLearnTable extends Table {
     
-    public StudQuickLearnTable(final StudQuickLearn quickLearn){
+    public StudQuickLearnTable(final StudQuickLearn quickLearn, List<MasteParmBean> masterParamList){
         
         ///setCaption("Whats New");
         //setSizeFull();
@@ -43,7 +43,8 @@ public class StudQuickLearnTable extends Table {
         setSortEnabled(false);
         addContainerProperty(GlobalConstants.emptyString, VerticalLayout.class, null);
         
-        List<MasteParmBean> masterParamList = quickLearn.getTopicList();
+        
+        //List<MasteParmBean> masterParamList = quickLearn.getTopicList();
         
         for(MasteParmBean topicDetails:masterParamList)
         {

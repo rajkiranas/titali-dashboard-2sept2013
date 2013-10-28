@@ -41,7 +41,7 @@ public class MasterDataProvider {
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);
@@ -171,7 +171,7 @@ public class MasterDataProvider {
               // Notification.show("Username is already exist",Notification.Type.WARNING_MESSAGE); 
             } 
         } catch (JSONException ex) {
-           // Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
+           ex.printStackTrace();
          
         }
         
@@ -207,7 +207,7 @@ public class MasterDataProvider {
          List<QuickLearn> subjectList = null;
         try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/MasterParam/getSubjectBystd");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_SUB_BY_STD));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
              try{           
@@ -216,7 +216,7 @@ public class MasterDataProvider {
                 ex.printStackTrace(); 
              }
             
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);
