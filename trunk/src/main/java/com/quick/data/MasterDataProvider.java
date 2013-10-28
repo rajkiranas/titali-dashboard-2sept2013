@@ -178,13 +178,16 @@ public class MasterDataProvider {
        return isUsernameExist;
    }
 
-  public static List<MasteParmBean> getQuickLearnUploadList() {
+  public static List<MasteParmBean> getQuickLearnUploadList(String subject) {
         List<MasteParmBean> uploadList = null;
         try {
             Client client = Client.create();
             WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.QUICK_LEARN_UPLOAD_LIST_URL));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
+            
+            if(subject!=null)
+                inputJson.put("subject", subject);
             
             ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
