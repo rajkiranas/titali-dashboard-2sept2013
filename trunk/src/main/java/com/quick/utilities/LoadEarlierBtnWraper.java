@@ -10,7 +10,7 @@ import com.vaadin.ui.*;
 public class LoadEarlierBtnWraper extends VerticalLayout {
 
     private static final String htmlLabel="<table><tr><td align='center'><b>Load earlier</b></td></tr></table>";
-public LoadEarlierBtnWraper(DashboardView dash)
+public LoadEarlierBtnWraper(Object layoutClickImplementor)
 {
     Label loadEarlier = new Label(htmlLabel,ContentMode.HTML);
     //loadEarlier.addStyleName("brownBackgroundColor");
@@ -49,6 +49,6 @@ public LoadEarlierBtnWraper(DashboardView dash)
     addComponent(h);
     setComponentAlignment(h, Alignment.MIDDLE_CENTER);
     setWidth("99%");
-    addLayoutClickListener((LayoutEvents.LayoutClickListener)dash);
+    addLayoutClickListener((LayoutEvents.LayoutClickListener)layoutClickImplementor);
 }
 }

@@ -4,16 +4,15 @@
  */
 package com.quick.table;
 
-import com.google.gwt.thirdparty.javascript.jscomp.mozilla.rhino.tools.shell.Global;
 import com.quick.bean.MasteParmBean;
 import com.quick.entity.Notices;
 import com.quick.entity.Whatsnew;
-import com.quick.entity.Whoisdoingwhat;
 import com.quick.data.MyDashBoardContainer;
 import com.quick.global.GlobalConstants;
 import com.vaadin.data.Property;
 import com.vaadin.demo.dashboard.DashboardView;
 import com.vaadin.ui.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,7 +95,10 @@ public class MyDashBoardDataProvider {
         
         t.setMultiSelect(false);
         t.setImmediate(true); // react at once when something is selected
-        t.setContainerDataSource(MyDashBoardContainer.getWhoIsDoingWhatContainer(whoisdoingwhats));
+        
+        List<List> wrapperList=new ArrayList();
+        wrapperList.add(whoisdoingwhats);
+        t.setContainerDataSource(MyDashBoardContainer.getWhoIsDoingWhatContainer(wrapperList));
         t.setVisibleColumns(MyDashBoardContainer.NATURAL_COL_ORDER_Activity);
         t.setColumnHeaders(MyDashBoardContainer.COL_HEADERS_ENGLISH_Activity);
         

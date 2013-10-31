@@ -88,7 +88,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
     private  Table whatsNewTable;
     private  Table whosDoingWhatTable;
     private static final String strViewMore="View More";
-    private LoadEarlierBtnWraper loadMoreWraper = new LoadEarlierBtnWraper(this);;
+    private LoadEarlierBtnWraper loadMoreWraper = new LoadEarlierBtnWraper(this);
     private List<List> whoIsDoingWhatWraperList = new ArrayList<List>();
     
     
