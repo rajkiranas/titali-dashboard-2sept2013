@@ -9,7 +9,6 @@ import com.google.gson.reflect.TypeToken;
 import com.quick.bean.MasteParmBean;
 import com.quick.bean.QuickLearn;
 import com.quick.bean.Userprofile;
-import com.quick.container.StudQuickLearnContainer;
 import com.vaadin.data.Property;
 import com.quick.data.Generator;
 import com.quick.data.MasterDataProvider;
@@ -19,20 +18,13 @@ import com.quick.global.GlobalConstants;
 import com.quick.table.StudQuickLearnTable;
 import com.quick.ui.QuickLearn.MyNotes;
 import com.quick.ui.QuickLearn.MyOtherNotes;
-import com.quick.ui.QuickLearn.MyVideo;
 import com.quick.ui.QuickLearn.PreviousQuestion;
 import com.quick.ui.QuickLearn.QuickLearnDetailWraper;
-import com.quick.utilities.ConfirmationDialogueBox;
-import com.quick.utilities.UIUtils;
+import com.quick.utilities.LoadEarlierBtnWraper;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.event.FieldEvents;
-import com.vaadin.event.FieldEvents.BlurEvent;
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
@@ -49,9 +41,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -76,6 +65,8 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
     private  Userprofile loggedInUserProfile = null;
     private  SelectedTabChangeListener tabChangeListener;
     private HorizontalLayout row ;
+    private LoadEarlierBtnWraper loadMoreWraper = new LoadEarlierBtnWraper(this);
+    private List<List> wrapperList = new ArrayList<List>();
 
     public String getUserNotes() {
         return userNotes;
@@ -253,8 +244,10 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
     }
 
     private Table CreateFirstPaneview() {
-        //getTopicList();
-        quickLearnTable = new StudQuickLearnTable(this,getTopicList());
+        getTopicList();
+        quickLearnTable = new StudQuickLearnTable(this);
+        
+        addQuickLearnWrapperIntoTable();
         //notes = new TextArea("My short notes for the topic");
         
         //column.setSpacing(true);
@@ -672,6 +665,13 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
             JSONObject inputJson = new JSONObject();
             try {
                 inputJson.put("subject", selectedSub);
+                
+                
+                if (quickLearnTable == null) {
+                     inputJson.put("fetchResultsFrom", 0);
+                 } else {
+                     inputJson.put("fetchResultsFrom", (quickLearnTable.size() - 1));
+                 }
               
             } catch (JSONException ex) {
                 ex.printStackTrace();
@@ -688,6 +688,11 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
             }.getType();
             
             list= new Gson().fromJson(outNObject.getString(GlobalConstants.WHATSNEW), listType);
+            if(list.size()>0)
+            {
+                wrapperList.add(list);
+                
+            }
             
         } catch (JSONException ex) {
             ex.printStackTrace();
@@ -839,18 +844,31 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
     }
 
     @Override
-    public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                QuickLearnDetailWraper topicWraper =(QuickLearnDetailWraper) event.getComponent();
-                MasteParmBean bean = (MasteParmBean)topicWraper.getData();
-                setUploadId(bean.getUploadId());
-                setTopicForNotification(bean.getTopic());
-                setStudQuikLearnDetails(getStudentQuickLearnDetails());
-                String topicIntro=getStudQuikLearnDetails().getLectureNotesInformation();
-                if (topicIntro.length() > 145) {
-                    topicIntro = topicIntro.substring(0, 145) + "...";
-                }
-                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub(),topicIntro);
-                UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(),getUserNotes(),getUploadId()));
+    public void layoutClick(LayoutEvents.LayoutClickEvent event) 
+    {
+        Component c = event.getComponent();
+        if (c instanceof QuickLearnDetailWraper) 
+        {
+            QuickLearnDetailWraper topicWraper = (QuickLearnDetailWraper) event.getComponent();
+            MasteParmBean bean = (MasteParmBean) topicWraper.getData();
+            setUploadId(bean.getUploadId());
+            setTopicForNotification(bean.getTopic());
+            setStudQuikLearnDetails(getStudentQuickLearnDetails());
+            String topicIntro = getStudQuikLearnDetails().getLectureNotesInformation();
+            if (topicIntro.length() > 145) {
+                topicIntro = topicIntro.substring(0, 145) + "...";
+            }
+            sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through, bean.getSub(), topicIntro);
+            UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(), getUserNotes(), getUploadId()));
+
+        }
+        else if (c instanceof LoadEarlierBtnWraper)
+        {
+            getTopicList();
+            quickLearnTable.removeAllItems();
+            addQuickLearnWrapperIntoTable();
+            
+        }
     }
     
     
@@ -891,9 +909,14 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
             public void valueChange(Property.ValueChangeEvent event) {
                 if(!subjecttxt.getValue().equals("Select")){
                     String sub=String.valueOf(subjecttxt.getValue());
-                     row.removeComponent(quickLearnTable);
-                     quickLearnTable = new StudQuickLearnTable(StudQuickLearn.this,getTopicListForMe(sub));
-                     row.addComponent(quickLearnTable);
+                     //row.removeComponent(quickLearnTable
+                    quickLearnTable.removeAllItems();
+                    wrapperList.clear();
+                     getTopicListForMe(sub);
+                     //quickLearnTable = new StudQuickLearnTable(StudQuickLearn.this);
+                     
+                     addQuickLearnWrapperIntoTable();
+                     //row.addComponent(quickLearnTable);
                }
             }
         });
@@ -942,5 +965,17 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
         top.setComponentAlignment(standardtxt, Alignment.MIDDLE_RIGHT);
         top.setComponentAlignment(subjecttxt, Alignment.MIDDLE_RIGHT);
         
+    }
+
+    private void addQuickLearnWrapperIntoTable() 
+    {
+        for(List<MasteParmBean> topicDetailsList:wrapperList)
+        {
+            for(MasteParmBean topicDetails:topicDetailsList)
+            {
+                quickLearnTable.addItem(new Object[]{new QuickLearnDetailWraper(topicDetails,this)},quickLearnTable.size()+1);
+            }
+        }
+        quickLearnTable.addItem(new Object[]{loadMoreWraper},quickLearnTable.size()+1);
     }
 }
