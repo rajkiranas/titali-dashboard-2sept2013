@@ -4,22 +4,11 @@
  */
 package com.quick.table;
 
-import com.quick.bean.ForumEventDetailsBean;
-import com.quick.bean.MasteParmBean;
-import com.quick.container.StudQuickLearnContainer;
-import com.quick.data.MyDashBoardContainer;
-import com.quick.forum.ForumDetailWraper;
 import com.quick.global.GlobalConstants;
-import com.quick.ui.QuickLearn.QuickLearnDetailWraper;
-import com.vaadin.data.Property;
 import com.vaadin.demo.dashboard.StudQuickLearn;
-import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.BaseTheme;
-import java.util.List;
 
 /**
  *
@@ -27,7 +16,8 @@ import java.util.List;
  */
 public class StudQuickLearnTable extends Table {
     
-    public StudQuickLearnTable(final StudQuickLearn quickLearn, List<MasteParmBean> masterParamList){
+    
+    public StudQuickLearnTable(final StudQuickLearn quickLearn){
         
         ///setCaption("Whats New");
         //setSizeFull();
@@ -46,10 +36,8 @@ public class StudQuickLearnTable extends Table {
         
         //List<MasteParmBean> masterParamList = quickLearn.getTopicList();
         
-        for(MasteParmBean topicDetails:masterParamList)
-        {
-            addItem(new Object[]{new QuickLearnDetailWraper(topicDetails,quickLearn) },size()+1);
-        }
+        
+        
 //        setContainerDataSource(StudQuickLearnContainer.getStudQuickLearnContainer(quickLearn.getTopicList()));
 //        setVisibleColumns(StudQuickLearnContainer.NATURAL_COL_ORDER_QUICKLEARN);
 //        setColumnHeaders(StudQuickLearnContainer.COL_HEADERS_ENGLISH_QUICKLEARN);
@@ -78,10 +66,5 @@ public class StudQuickLearnTable extends Table {
             Object arr[]=new Object[]{this,rowItemBean,GlobalConstants.emptyString};
             btnRemove.setData(arr);
         }
-    
-    
-    
-    
-    
     
 }
