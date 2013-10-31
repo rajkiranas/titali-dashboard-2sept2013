@@ -12,38 +12,37 @@ package com.quick.forum;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.quick.bean.ExamBean;
 import com.quick.bean.ForumEventDetailsBean;
+import com.quick.bean.MyDashBoardBean;
+import com.quick.bean.QuickLearn;
 import com.quick.bean.Userprofile;
-import java.text.DecimalFormat;
-import com.vaadin.data.Property;
-import com.quick.entity.ForumEventDetails;
+import com.quick.data.MyDashBoardContainer;
 import com.quick.global.GlobalConstants;
+import com.quick.utilities.LoadEarlierBtnWraper;
+import com.quick.utilities.UIUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.vaadin.demo.dashboard.DashboardActivityWraper;
+import com.vaadin.demo.dashboard.ViewTopicDetailsWindow;
+import com.vaadin.event.LayoutEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
 import java.util.ArrayList;
 import java.util.List;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-public class ForumView extends VerticalLayout implements View {
+public class ForumView extends VerticalLayout implements View,LayoutEvents.LayoutClickListener {
 
     private Table forumTable;
     private String New="New";
     private List <ForumEventDetailsBean> forumEventDetailsList;
     private Userprofile loggedInUserProfile;
+    private List<List> wrapperList = new ArrayList<List>();
+    private LoadEarlierBtnWraper loadMoreWraper = new LoadEarlierBtnWraper(this);
 
     public List<ForumEventDetailsBean> getForumEventDetailsList() {
         return forumEventDetailsList;
@@ -123,23 +122,22 @@ public class ForumView extends VerticalLayout implements View {
         forumTable.addContainerProperty(GlobalConstants.emptyString, VerticalLayout.class, null);
         //forumTable.setCaption("Forum");
 
-        forumTable.setWidth("100%");
-        forumTable.setPageLength(3);
+        
+        //forumTable.setPageLength(3);
         forumTable.addStyleName("plain");
         forumTable.addStyleName("borderless");
-        forumTable.setHeight("500px");
+        forumTable.setHeight("100%");
+        forumTable.setWidth("100%");
         forumTable.setSortEnabled(false);
         setForumEventDetailsList(getForumDetailList());
         
-        for(ForumEventDetailsBean eventDetails:getForumDetailList())
-        {
-            forumTable.addItem(new Object[]{new ForumDetailWraper(eventDetails) },forumTable.size()+1);
-        }
+        addForumEventsInToTable();
         
         //forumTable.setColumnHeaderMode(Table.ColumnHeaderMode.HIDDEN);
         addComponent(forumTable);
         setExpandRatio(forumTable, 1.5f);
-     
+        setHeight("100%");
+        setWidth("99%");
     }
 
     private List<ForumEventDetailsBean> getForumDetailList() {
@@ -150,6 +148,11 @@ public class ForumView extends VerticalLayout implements View {
             JSONObject inputJson = new JSONObject();
              try
              {           
+                 if (forumTable == null) {
+                     inputJson.put("fetchResultsFrom", 0);
+                 } else {
+                     inputJson.put("fetchResultsFrom", (forumTable.size() - 1));
+                 }
 //                inputJson.put("username",userprofile.getUsername());
              }catch(Exception ex){
                  ex.printStackTrace();
@@ -165,6 +168,10 @@ public class ForumView extends VerticalLayout implements View {
             }.getType();
             
             forumEventDetailsList=new Gson().fromJson(outNObject.getString(GlobalConstants.eventDetailsList), listType);
+            if(forumEventDetailsList.size()>0)
+            {
+                wrapperList.add(forumEventDetailsList);
+            }
             
             
         } catch (JSONException ex) 
@@ -175,5 +182,39 @@ public class ForumView extends VerticalLayout implements View {
         return forumEventDetailsList;
     }
     
-    
+     @Override
+    public void layoutClick(LayoutEvents.LayoutClickEvent event) 
+    {
+        /*if(c instanceof DashboardActivityWraper)
+        {
+            DashboardActivityWraper activityWraper =(DashboardActivityWraper) event.getComponent();
+                MyDashBoardBean activityDetails = (MyDashBoardBean)activityWraper.getData();
+                QuickLearn learn =getStudentQuickLearnDetails(activityDetails.getUploadId());
+                UI.getCurrent().addWindow(new ViewTopicDetailsWindow(learn,getUserNotes(),Integer.parseInt(activityDetails.getUploadId())));
+        }
+        else*/
+        Component c = event.getComponent();
+         if(c instanceof LoadEarlierBtnWraper)
+        {
+            getForumDetailList();
+
+            System.out.println("&^^^^^^^^^^^&^&^&^&^ Button Clicked&^&^&^&^&^&^&^^&");
+            forumTable.removeAllItems();
+            addForumEventsInToTable();
+            
+        }
+        
+    }
+
+    private void addForumEventsInToTable() 
+    {
+        for(List<ForumEventDetailsBean> eventDetailsList:wrapperList)
+        {
+            for(ForumEventDetailsBean eventDetails:eventDetailsList)
+            {
+                forumTable.addItem(new Object[]{new ForumDetailWraper(eventDetails) },forumTable.size()+1);
+            }            
+        }
+        forumTable.addItem(new Object[]{loadMoreWraper},forumTable.size()+1);
+    }
 }

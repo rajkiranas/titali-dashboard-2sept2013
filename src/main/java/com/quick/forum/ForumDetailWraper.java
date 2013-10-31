@@ -63,6 +63,8 @@ public class ForumDetailWraper extends VerticalLayout {
 
         this.eventDetails = eventDetails;
         setCaption(eventDetails.getEventDesc());
+        setHeight("99%");
+        setWidth("99%");
 //        addStyleName("no-vertical-drag-hints");
 //        addStyleName("no-horizontal-drag-hints");
         addStyleName("fourSideBorder");
