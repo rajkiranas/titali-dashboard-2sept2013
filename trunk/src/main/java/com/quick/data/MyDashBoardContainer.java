@@ -131,13 +131,17 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
     }
 
       
-       public static MyDashBoardContainer getWhoIsDoingWhatContainer(List<MasteParmBean>whoisdoingwhats) {
+       public static MyDashBoardContainer getWhoIsDoingWhatContainer(List<List> wraperList) {
        MyDashBoardContainer boardContainer=null;
        MyDashBoardBean bean;
        boardContainer=new MyDashBoardContainer();
        try{
        
-            for(MasteParmBean whoisdoingwhat:whoisdoingwhats){
+           System.out.println("WWWWWWWWWWWWWWWWWWWWwraperList="+wraperList.size());
+           for(List<MasteParmBean> whoisdoingwhatsInnerList:wraperList)
+           {
+               System.out.println("IIIIIIIIIIIII whoisdoingwhatsInnerList="+whoisdoingwhatsInnerList.size());
+            for(MasteParmBean whoisdoingwhat:whoisdoingwhatsInnerList){
                 bean = new MyDashBoardBean();
                 /* bean.setItemid(""+whoisdoingwhat.getActivityId());
                 bean.setBywhome(whoisdoingwhat.getByWhom());
@@ -151,13 +155,13 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
                 
                 boardContainer.addItem(bean);
             }
-           
+       }
            
        }catch(Exception ex){
            ex.printStackTrace();
        }
+           System.out.println("CCCCCCCCCCC boardContainer="+boardContainer.size());
        return boardContainer;
-        
     }
         
 }
