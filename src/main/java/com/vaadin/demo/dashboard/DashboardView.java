@@ -34,6 +34,7 @@ import com.quick.data.Generator;
 import com.quick.data.MyDashBoardContainer;
 import com.quick.ui.QuickLearn.QuickLearnDetailWraper;
 import com.quick.ui.exam.StudentExamDataProvider;
+import com.quick.utilities.LoadEarlierBtnWraper;
 import com.quick.utilities.DateUtil;
 import com.quick.utilities.UIUtils;
 import com.vaadin.data.Item;
@@ -87,7 +88,8 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
     private  Table whatsNewTable;
     private  Table whosDoingWhatTable;
     private static final String strViewMore="View More";
-
+    private LoadEarlierBtnWraper loadMoreWraper = new LoadEarlierBtnWraper(this);;
+    private List<List> whoIsDoingWhatWraperList = new ArrayList<List>();
     
     
     
@@ -267,28 +269,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         addComponent(row);
         setExpandRatio(row, 3);
         
-        
-        
-        MyDashBoardContainer doingWhatList = MyDashBoardContainer.getWhoIsDoingWhatContainer(whosDoingWhatFromDB);
-        
-        
-        //whatsNewTable = boardDataProvider.getWhatsNewForme(whatsnewsList,this);
-        whatsNewTable=new Table();
-        whatsNewTable.addStyleName("borderless");
-        whatsNewTable.addStyleName("plain");
-        whatsNewTable.setCaption("ACTIVITIES");
-        whatsNewTable.setSortEnabled(false);
-        whatsNewTable.setWidth("100%");
-        whatsNewTable.setHeight("100%");
-        whatsNewTable.setPageLength(3);
-        whatsNewTable.setSelectable(true);
-        whatsNewTable.setImmediate(true);// react at once when something is selected
-        whatsNewTable.setSortEnabled(false);
-        whatsNewTable.addContainerProperty(GlobalConstants.emptyString, VerticalLayout.class, null);
-        whatsNewTable.setColumnHeaderMode(Table.ColumnHeaderMode.HIDDEN);
-        
-        
-        //whatsnewtable is removed from flow
+         //whatsnewtable is removed from flow
         // instead only whats new table is used
         /* 
          *MyDashBoardContainer newList = MyDashBoardContainer.getWhatsNewForMeContainer(whatsnewsList);
@@ -298,16 +279,23 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
             whatsNewTable.addItem(new Object[]{new DashboardActivityWraper(activityDtls,this) },whatsNewTable.size()+1);
         } */
         
+        whatsNewTable=new Table();
+        whatsNewTable.setImmediate(true);// react at once when something is selected
+        whatsNewTable.addStyleName("borderless");
+        whatsNewTable.addStyleName("plain");
+        whatsNewTable.setCaption("ACTIVITIES");
+        whatsNewTable.setWidth("100%");
+        whatsNewTable.setHeight("100%");
+        //whatsNewTable.setPageLength(3);
+        whatsNewTable.setSelectable(true);
+        whatsNewTable.setSortEnabled(false);
+        whatsNewTable.addContainerProperty(GlobalConstants.emptyString, VerticalLayout.class, null);
+        whatsNewTable.setColumnHeaderMode(Table.ColumnHeaderMode.HIDDEN);
         
         
+        MyDashBoardContainer doingWhatList = MyDashBoardContainer.getWhoIsDoingWhatContainer(whoIsDoingWhatWraperList);
         
-        List<MyDashBoardBean> doingWhatBeanList= doingWhatList.getItemIds();
-
-        for(MyDashBoardBean activityDtls:doingWhatBeanList)
-        {
-            whatsNewTable.addItem(new Object[]{new DashboardActivityWraper(activityDtls,this) },whatsNewTable.size()+1);
-        }
-        
+        addActivityWrapersInToTable(doingWhatList);
         
         //row.addComponent(UIUtils.createPanel(whatsNewTable));
         
@@ -536,11 +524,18 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
 
             Client client = Client.create();
             WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.DASHBOARD_URL));
-            //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
+            //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}"; 
             JSONObject inputJson = new JSONObject();
             try {
                 inputJson.put("standard", profile.getStd());
                 inputJson.put("division", profile.getDiv());
+                
+                if(whatsNewTable==null)
+                    inputJson.put("fetchResultsFrom", 0);
+                else
+                    inputJson.put("fetchResultsFrom", (whatsNewTable.size()-1));
+                
+                
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
@@ -564,8 +559,10 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
             
              Gson whoIsDoingWhatGson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
             whosDoingWhatFromDB = whoIsDoingWhatGson.fromJson(outNObject.getString(GlobalConstants.WHOSEDOINGWHAT), listType1);
-            
-            
+            if(whosDoingWhatFromDB.size()>0)
+            {
+                whoIsDoingWhatWraperList.add(whosDoingWhatFromDB);
+            }
             
              Type listType2 = new TypeToken<ArrayList<Notices>>() {
             }.getType();
@@ -660,11 +657,28 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
     }
 
     @Override
-    public void layoutClick(LayoutClickEvent event) {
-        DashboardActivityWraper activityWraper =(DashboardActivityWraper) event.getComponent();
+    public void layoutClick(LayoutClickEvent event) 
+    {
+        Component c = event.getComponent();
+        if(c instanceof DashboardActivityWraper)
+        {
+            DashboardActivityWraper activityWraper =(DashboardActivityWraper) event.getComponent();
                 MyDashBoardBean activityDetails = (MyDashBoardBean)activityWraper.getData();
                 QuickLearn learn =getStudentQuickLearnDetails(activityDetails.getUploadId());
                 UI.getCurrent().addWindow(new ViewTopicDetailsWindow(learn,getUserNotes(),Integer.parseInt(activityDetails.getUploadId())));
+        }
+        else if(c instanceof LoadEarlierBtnWraper)
+        {
+            getDashBoardData();
+
+            System.out.println("&^^^^^^^^^^^&^&^&^&^ Button Clicked&^&^&^&^&^&^&^^&");
+            whatsNewTable.removeAllItems();
+            MyDashBoardContainer doingWhatList = MyDashBoardContainer.getWhoIsDoingWhatContainer(whoIsDoingWhatWraperList);
+            addActivityWrapersInToTable(doingWhatList);
+            
+            whatsNewTable.select(whatsNewTable.lastItemId());
+        }
+        
     }
     
     private String userNotes;
@@ -717,6 +731,16 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
      */
     public void setUserNotes(String userNotes) {
         this.userNotes = userNotes;
+    }
+
+    private void addActivityWrapersInToTable(MyDashBoardContainer doingWhatList) {
+        List<MyDashBoardBean> doingWhatBeanList= doingWhatList.getItemIds();
+
+        for(MyDashBoardBean activityDtls:doingWhatBeanList)
+        {
+            whatsNewTable.addItem(new Object[]{new DashboardActivityWraper(activityDtls,this) },whatsNewTable.size()+1);
+        }
+        whatsNewTable.addItem(new Object[]{loadMoreWraper},whatsNewTable.size()+1);
     }
 
 }
