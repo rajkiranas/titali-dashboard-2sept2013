@@ -178,7 +178,7 @@ public class MasterDataProvider {
        return isUsernameExist;
    }
 
-  public static List<MasteParmBean> getQuickLearnUploadList(String subject) {
+  public static List<MasteParmBean> getQuickLearnUploadList(String subject, int fetchDataFrom) {
         List<MasteParmBean> uploadList = null;
         try {
             Client client = Client.create();
@@ -188,6 +188,8 @@ public class MasterDataProvider {
             
             if(subject!=null)
                 inputJson.put("subject", subject);
+            
+            inputJson.put("fetchResultsFrom", fetchDataFrom);
             
             ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
