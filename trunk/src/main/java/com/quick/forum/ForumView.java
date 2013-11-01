@@ -11,6 +11,7 @@
 package com.quick.forum;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.quick.bean.ForumEventDetailsBean;
 import com.quick.bean.MyDashBoardBean;
@@ -166,8 +167,10 @@ public class ForumView extends VerticalLayout implements View,LayoutEvents.Layou
 
             java.lang.reflect.Type listType = new TypeToken<ArrayList<ForumEventDetailsBean>>() {
             }.getType();
+    
+            Gson gson=  new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();
             
-            forumEventDetailsList=new Gson().fromJson(outNObject.getString(GlobalConstants.eventDetailsList), listType);
+            forumEventDetailsList=gson.fromJson(outNObject.getString(GlobalConstants.eventDetailsList), listType);
             if(forumEventDetailsList.size()>0)
             {
                 wrapperList.add(forumEventDetailsList);

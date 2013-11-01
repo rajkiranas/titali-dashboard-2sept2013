@@ -1,9 +1,7 @@
 package com.quick.utilities;
 
 import com.quick.global.GlobalConstants;
-import com.vaadin.demo.dashboard.DashboardView;
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.server.AbstractErrorMessage;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 
