@@ -72,7 +72,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         setImmediate(true);
         
         setStandardList(MasterDataProvider.getStandardList());        
-        setUploadedList(MasterDataProvider.getQuickLearnUploadList(null));
+        setUploadedList(MasterDataProvider.getQuickLearnUploadList(null,0));
         
         buildBaseLayout();
         addTopicDetails();

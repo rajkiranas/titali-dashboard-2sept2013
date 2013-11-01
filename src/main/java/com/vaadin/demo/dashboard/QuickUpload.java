@@ -24,6 +24,7 @@ import com.quick.ui.QuickLearn.NewEditTopicDetailsAdmin;
 import com.quick.ui.QuickLearn.QuickLearnDetailWraper;
 import com.quick.ui.QuickLearn.ViewTopicDetailsForAdmin;
 import com.quick.utilities.ConfirmationDialogueBox;
+import com.quick.utilities.LoadEarlierBtnWraper;
 import com.quick.utilities.UIUtils;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.navigator.View;
@@ -70,6 +71,8 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
     private CssLayout cssTabSheetLayout;
     private DashBoardVideoPlayer player;
     private HorizontalLayout topicInformationLayout;
+    private List<List> wrapperList = new ArrayList<List>();
+    private LoadEarlierBtnWraper loadMoreWraper = new LoadEarlierBtnWraper(this);
 
 
     
@@ -86,8 +89,8 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
         buildTopHorizontalRowLayout();
         
         setStandardList(MasterDataProvider.getStandardList());
-        setUploadedList(MasterDataProvider.getQuickLearnUploadList(null));
-       
+        getTopicListFromMasterDataProvider(null);
+        
         row = new HorizontalLayout();
         row.setSizeFull();
         row.setMargin(new MarginInfo(true, true, false, true));
@@ -110,7 +113,9 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
         mainVertical.setSpacing(true);
         mainVertical.setWidth("100%");
         mainVertical.setHeight("97%");
-        quickUploadTable = new QuickUploadTable(this,getUploadedList());
+        getUploadedList();
+        quickUploadTable = new QuickUploadTable(this);
+        addQuickUploadedTopicsIntoTable();
         mainVertical.addComponent(quickUploadTable);
         //mainVertical.addComponent(tableView);
         return quickUploadTable;
@@ -591,14 +596,22 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
    
     private void updateQuickUploadTable() {
         
-        row.removeAllComponents();
+        
       /* quickUploadTable.setContainerDataSource(QuickUploadMasterContainer.getQuickLearnUploadList(getUploadedList()));
       quickUploadTable.setVisibleColumns(QuickUploadMasterContainer.NATURAL_COL_ORDER_QUICKUPLOAD_INFO);
       quickUploadTable.setColumnHeaders(QuickUploadMasterContainer.COL_HEADERS_ENGLISH_QUICKUPLOAD_INFO); */
-        setUploadedList(MasterDataProvider.getQuickLearnUploadList(null));
-        quickUploadTable=new QuickUploadTable(this,getUploadedList());
-       row.addComponent(UIUtils.createPanel(quickUploadTable));
-      // show the first value selected in the table
+        //0 means fetch data from begining of the records
+       
+       //row.removeAllComponents();
+       //setUploadedList(MasterDataProvider.getQuickLearnUploadList(null,0));
+       //quickUploadTable=new QuickUploadTable(this);
+       //row.addComponent(UIUtils.createPanel(quickUploadTable));
+       
+       quickUploadTable.removeAllItems();
+       getTopicListFromMasterDataProvider(null);
+       addQuickUploadedTopicsIntoTable();
+      
+       // show the first value selected in the table
      // quickUploadTable.setValue(quickUploadTable.firstItemId());
     }
 
@@ -905,8 +918,12 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
      }
      
      @Override
-    public void layoutClick(LayoutEvents.LayoutClickEvent event) {
-                QuickLearnDetailWraper topicWraper =(QuickLearnDetailWraper) event.getComponent();
+    public void layoutClick(LayoutEvents.LayoutClickEvent event) 
+     {
+         Component c = event.getComponent();
+         if(c instanceof QuickLearnDetailWraper)
+         {
+             QuickLearnDetailWraper topicWraper =(QuickLearnDetailWraper) event.getComponent();
                 MasteParmBean bean = (MasteParmBean)topicWraper.getData();
                 uploadId = bean.getUploadId();  
                 isNewQuickUpload=false;
@@ -916,6 +933,17 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
 //                setStudQuikLearnDetails(getStudentQuickLearnDetails());
 //                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub());
                 UI.getCurrent().addWindow(new ViewTopicDetailsForAdmin(getQuikLearnMasterParamDetails(),uploadId,this));
+             
+         }
+         else if(c instanceof LoadEarlierBtnWraper)
+         {
+             //sending subject null
+             getTopicListFromMasterDataProvider(null);             
+            quickUploadTable.removeAllItems();
+            addQuickUploadedTopicsIntoTable();
+             
+         }
+                
     }
 
     private void showNewTopicPopup() {
@@ -951,10 +979,13 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
             public void valueChange(Property.ValueChangeEvent event) {
                 if(!subjecttxt.getValue().equals("Select")){
                     String sub=String.valueOf(subjecttxt.getValue());
-                     row.removeComponent(quickUploadTable);
-                     quickUploadTable = new QuickUploadTable(QuickUpload.this,MasterDataProvider.getQuickLearnUploadList(sub));
-                     //quickLearnTable = new StudQuickLearnTable(StudQuickLearn.this,getTopicListForMe(sub));
-                     row.addComponent(quickUploadTable);
+                    wrapperList.clear();
+                    getTopicListFromMasterDataProvider(sub);
+                    quickUploadTable.removeAllItems();
+                    addQuickUploadedTopicsIntoTable();
+                     //row.removeComponent(quickUploadTable);
+                     //quickUploadTable = new QuickUploadTable(QuickUpload.this);                     
+                     //row.addComponent(quickUploadTable);
                }
             }
         });
@@ -1009,5 +1040,31 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
         top.addComponent(subjecttxt);
         top.setComponentAlignment(subjecttxt, Alignment.MIDDLE_RIGHT);
         
+    }
+
+    private void addQuickUploadedTopicsIntoTable() 
+    {
+        for(List<MasteParmBean> topicDetailsList:wrapperList)
+        {
+            for(MasteParmBean topicDetails:topicDetailsList)
+            {
+                quickUploadTable.addItem(new Object[]{new QuickLearnDetailWraper(topicDetails,this) },quickUploadTable.size()+1);
+            }
+        }
+        quickUploadTable.addItem(new Object[]{loadMoreWraper},quickUploadTable.size()+1);
+    }
+
+    private void getTopicListFromMasterDataProvider(String sub) 
+    {
+        int fetchDataFrom=0;
+        if(quickUploadTable!=null)
+        {
+            fetchDataFrom=quickUploadTable.size()-1;
+        }
+        setUploadedList(MasterDataProvider.getQuickLearnUploadList(sub,fetchDataFrom));
+        if(getUploadedList().size()>0)
+        {
+            wrapperList.add(getUploadedList());
+        }
     }
 }

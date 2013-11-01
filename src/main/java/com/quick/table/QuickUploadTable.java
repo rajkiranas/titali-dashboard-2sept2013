@@ -27,7 +27,7 @@ import java.util.List;
 public class QuickUploadTable extends Table {
 
 
-    public QuickUploadTable(final QuickUpload quickUpload,List<MasteParmBean> masterParamList) {
+    public QuickUploadTable(final QuickUpload quickUpload) {
 
         addStyleName("borderless");
         addStyleName("plain");
@@ -42,10 +42,7 @@ public class QuickUploadTable extends Table {
         
         //List<MasteParmBean> masterParamList = quickUpload.getUploadedList();
         
-        for(MasteParmBean topicDetails:masterParamList)
-        {
-            addItem(new Object[]{new QuickLearnDetailWraper(topicDetails,quickUpload) },size()+1);
-        }
+        
     }
     public void setItemData(Button btnRemove, Object rowItemBean)
         {
