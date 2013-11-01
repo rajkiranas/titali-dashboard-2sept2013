@@ -2,6 +2,13 @@
 package com.quick.global;
 
 
+import com.quick.forum.ForumView;
+import com.quick.games.GamesView;
+import com.quick.notices.CreateNotices;
+import com.quick.ui.exam.AdminExam;
+import com.quick.ui.exam.StudentExam;
+import com.quick.upcomingtechnology.CreateUpcomingTechnology;
+import com.vaadin.demo.dashboard.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -77,8 +84,19 @@ public class GlobalConstants
     public static final String FILE_DOWNLOAD_PATH="FILE_DOWNLOAD_PATH";
     public static final String SCHOOL_NAME="SCHOOL_NAME";
     public static final String UPLOAD_TOPIC_IMAGES_PATH="UPLOAD_TOPIC_IMAGES_PATH";
-
     
+    public static final String ROUT_DASHBOARD="/dashboard";
+    public static final String ROUT_LEARN="/learn";
+    public static final String ROUT_TECH_NEWS="/Tech-news";
+    public static final String ROUT_EXAMS="/Exams";
+    public static final String ROUT_NOTICES="/Notices";
+    public static final String ROUT_FORUM="/Forum";
+    public static final String ROUT_GAMES="/Games";
+    public static final String ROUT_REPORTS="/reports";
+    public static final String ROUT_TOPICS="/topics";
+    public static final String ROUT_EXAM_ADMIN="/Exam-Admin";
+    public static final String ROUT_STUDENTS="/students";
+    public static final String ROUT_TEACHERS="/teachers";
     
      // == exam ============
     public static final String EXAMRESOURCE = "examResource";

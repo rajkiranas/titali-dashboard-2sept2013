@@ -527,7 +527,7 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
             public void onDialogResult(boolean flag) {
                 if (flag) {
                     quickupload.deleteTopicInformationFromDB(quickLearnPojo);
-                    getUI().getCurrent().getNavigator().navigateTo("/topics");
+                    getUI().getCurrent().getNavigator().navigateTo(GlobalConstants.ROUT_TOPICS);
                     ViewTopicDetailsForAdmin.this.close();
                 }
             }

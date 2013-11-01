@@ -606,7 +606,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
      */
     private void navigateToQuickLearnTopic(String quickLearnUploadId) {
         getSession().setAttribute("uploadIdToNavigate", quickLearnUploadId);
-        getUI().getNavigator().navigateTo("/learn");
+        getUI().getNavigator().navigateTo(GlobalConstants.ROUT_LEARN);
         
     }
 

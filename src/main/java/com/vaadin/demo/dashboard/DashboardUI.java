@@ -93,18 +93,18 @@ public class DashboardUI extends UI{
 
     HashMap<String, Class<? extends View>> routes = new HashMap<String, Class<? extends View>>() {
         {
-            put("/dashboard", DashboardView.class);
-            put("/learn", StudQuickLearn.class);
-            put("/Tech-news",CreateUpcomingTechnology.class);
-            put("/Exams",StudentExam.class);            
-            put("/Notices",CreateNotices.class);
-            put("/Forum",ForumView.class);
-            put("/Games",GamesView.class);
-            put("/reports", ReportsView.class);
-            put("/topics",QuickUpload.class);            
-            put("/Exam-Admin",AdminExam.class);
-            put("/students",StudentView.class);
-            put("/teachers",TeacherView.class);
+            put(GlobalConstants.ROUT_DASHBOARD, DashboardView.class);
+            put(GlobalConstants.ROUT_LEARN, StudQuickLearn.class);
+            put(GlobalConstants.ROUT_TECH_NEWS,CreateUpcomingTechnology.class);
+            put(GlobalConstants.ROUT_EXAMS,StudentExam.class);            
+            put(GlobalConstants.ROUT_NOTICES,CreateNotices.class);
+            put(GlobalConstants.ROUT_FORUM,ForumView.class);
+            put(GlobalConstants.ROUT_GAMES,GamesView.class);
+            put(GlobalConstants.ROUT_REPORTS, ReportsView.class);
+            put(GlobalConstants.ROUT_TOPICS,QuickUpload.class);            
+            put(GlobalConstants.ROUT_EXAM_ADMIN,AdminExam.class);
+            put(GlobalConstants.ROUT_STUDENTS,StudentView.class);
+            put(GlobalConstants.ROUT_TEACHERS,TeacherView.class);
             
             //put("/transactions", TransactionsView.class);
             //put("/reports", ReportsView.class);
@@ -426,11 +426,11 @@ public class DashboardUI extends UI{
                     @Override
                     public void drop(DragAndDropEvent event) {
                         clearMenuSelection();
-                        viewNameToMenuButton.get("/reports").addStyleName(
+                        viewNameToMenuButton.get(GlobalConstants.ROUT_REPORTS).addStyleName(
                                 "selected");
                         autoCreateReport = true;
                         items = event.getTransferable();
-                        nav.navigateTo("/reports");
+                        nav.navigateTo(GlobalConstants.ROUT_REPORTS);
                     }
 
                     @Override
@@ -451,8 +451,8 @@ public class DashboardUI extends UI{
         menu.addStyleName("menu");
         menu.setHeight("100%");
 
-        viewNameToMenuButton.get("/dashboard").setHtmlContentAllowed(true);
-        viewNameToMenuButton.get("/dashboard").setCaption(
+        viewNameToMenuButton.get(GlobalConstants.ROUT_DASHBOARD).setHtmlContentAllowed(true);
+        viewNameToMenuButton.get(GlobalConstants.ROUT_DASHBOARD).setCaption(
                 "Dashboard<span class=\"badge\">5</span>");
 
         String f = Page.getCurrent().getUriFragment();
@@ -460,7 +460,7 @@ public class DashboardUI extends UI{
             f = f.substring(1);
         }
         if (f == null || f.equals("") || f.equals("/")) {
-            nav.navigateTo("/dashboard");
+            nav.navigateTo(GlobalConstants.ROUT_DASHBOARD);
             menu.getComponent(0).addStyleName("selected");
             helpManager.showHelpFor(DashboardView.class);
         } else {
@@ -509,13 +509,13 @@ public class DashboardUI extends UI{
     }
 
     void updateReportsButtonBadge(String badgeCount) {
-        viewNameToMenuButton.get("/reports").setHtmlContentAllowed(true);
-        viewNameToMenuButton.get("/reports").setCaption(
+        viewNameToMenuButton.get(GlobalConstants.ROUT_REPORTS).setHtmlContentAllowed(true);
+        viewNameToMenuButton.get(GlobalConstants.ROUT_REPORTS).setCaption(
                 "Reports<span class=\"badge\">" + badgeCount + "</span>");
     }
 
     void clearDashboardButtonBadge() {
-        viewNameToMenuButton.get("/dashboard").setCaption("Dashboard");
+        viewNameToMenuButton.get(GlobalConstants.ROUT_DASHBOARD).setCaption("Dashboard");
     }
 
     boolean autoCreateReport = false;
@@ -524,9 +524,9 @@ public class DashboardUI extends UI{
     public void openReports(Table t) {
         transactions = t;
         autoCreateReport = true;
-        nav.navigateTo("/reports");
+        nav.navigateTo(GlobalConstants.ROUT_REPORTS);
         clearMenuSelection();
-        viewNameToMenuButton.get("/reports").addStyleName("selected");
+        viewNameToMenuButton.get(GlobalConstants.ROUT_REPORTS).addStyleName("selected");
     }
 
     HelpManager getHelpManager() {
