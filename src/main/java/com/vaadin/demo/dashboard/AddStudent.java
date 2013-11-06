@@ -80,8 +80,9 @@ public class AddStudent extends Window implements Button.ClickListener{
         center();        
         setClosable(false);
         setWidth("70%");
-        setHeight("80%"); 
+        setHeight("70%"); 
         setStandardList(MasterDataProvider.getStandardList());
+        buildStudentForm();
         buildBaseStudentLayout();
         
     }
@@ -96,8 +97,9 @@ public class AddStudent extends Window implements Button.ClickListener{
         center();        
         setClosable(false);
         setWidth("70%");
-        setHeight("80%");
+        setHeight("70%");
         setStandardList(MasterDataProvider.getStandardList());
+        buildStudentForm();
         buildBaseStudentLayout();
         setStudentFormData(studentList);
     }
@@ -127,11 +129,11 @@ public class AddStudent extends Window implements Button.ClickListener{
        cancelbtn.addStyleName("default");
        buttons.addComponent(cancelbtn); 
        
-       buttonLayout.setComponentAlignment(buttons, Alignment.TOP_RIGHT); 
+       buttonLayout.setComponentAlignment(buttons, Alignment.MIDDLE_CENTER); 
        
        baseLayout.addComponent(buttonLayout);
        
-       buildStudentForm();                 
+            
     }
     
     private void buildStudentForm(){
@@ -240,6 +242,7 @@ public class AddStudent extends Window implements Button.ClickListener{
        studform1.addComponent(address);
 
        formLayout.addComponent(studform1);
+       formLayout.setComponentAlignment(studform1,Alignment.MIDDLE_LEFT);
        
        FormLayout studform2=new FormLayout();       
       
@@ -279,6 +282,7 @@ public class AddStudent extends Window implements Button.ClickListener{
        
        
        formLayout.addComponent(studform2);       
+       formLayout.setComponentAlignment(studform2,Alignment.MIDDLE_RIGHT);
        formPanel.setContent(formLayout);
        baseLayout.addComponent(formPanel);
        baseLayout.setComponentAlignment(formPanel,Alignment.MIDDLE_CENTER);
@@ -329,7 +333,7 @@ public class AddStudent extends Window implements Button.ClickListener{
     
     private void saveStudent(){
         Client client=Client.create();
-        WebResource webResource = client.resource("http://localhost:8084/titali/rest/UserMaster/saveStudent");
+        WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_STUDENT));
         JSONObject inputJson=new JSONObject();
         try{           
            inputJson.put("rollNo", rollNotxt.getValue());  
@@ -353,7 +357,7 @@ public class AddStudent extends Window implements Button.ClickListener{
             ex.printStackTrace();
         }        
         
-        ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+        ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
 
         /*
          * if (response.getStatus() != 201) { throw new RuntimeException("Failed
@@ -424,7 +428,7 @@ public class AddStudent extends Window implements Button.ClickListener{
         boolean isRollNoExist = false;
         try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/UserMaster/IsRollNoAlreadyExist");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.IS_ROLL_NO_ALREADY_EXISTS));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             try {
@@ -434,7 +438,7 @@ public class AddStudent extends Window implements Button.ClickListener{
             }
 
 
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
 
             /*
              * if (response.getStatus() != 201) { throw new

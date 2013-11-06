@@ -538,7 +538,7 @@ public class AdminExam extends VerticalLayout implements View  {
          List<ExamBean> examList = null;
         try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/examResource/getExamList");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_EXAM_LIST));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
              try{           
@@ -570,7 +570,7 @@ public class AdminExam extends VerticalLayout implements View  {
          List<ExamBean> selectedExamDetails = null;
         try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/examResource/getExamDetailsById");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_EXAM_DETAILS_BY_ID));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
              try{           
@@ -580,7 +580,7 @@ public class AdminExam extends VerticalLayout implements View  {
                  ex.printStackTrace();
              }
             
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);

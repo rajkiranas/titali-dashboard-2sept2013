@@ -84,6 +84,8 @@ public class GlobalConstants
     public static final String FILE_DOWNLOAD_PATH="FILE_DOWNLOAD_PATH";
     public static final String SCHOOL_NAME="SCHOOL_NAME";
     public static final String UPLOAD_TOPIC_IMAGES_PATH="UPLOAD_TOPIC_IMAGES_PATH";
+    public static final String LEARN_MORE_IMG="LEARN_MORE_IMG";
+    public static final String IMAGES_PATH="IMAGES_PATH";
     
     public static final String ROUT_DASHBOARD="/dashboard";
     public static final String ROUT_LEARN="/learn";
@@ -143,6 +145,19 @@ public class GlobalConstants
    public static  final String FETCH_SUBS_BY_STD="FETCH_SUBS_BY_STD";
    public static  final String GET_TOPIC_LIST_FOR_ME="GET_TOPIC_LIST_FOR_ME";
    public static  final String GET_SUB_BY_STD="GET_SUB_BY_STD";
+   public static  final String SAVE_TEACHER="SAVE_TEACHER";
+   public static  final String GET_TEACHER_STD_DIV_SUB_ASSOCIATION="GET_TEACHER_STD_DIV_SUB_ASSOCIATION";
+   public static  final String GET_STUD_DTLS_BY_PRN="GET_STUD_DTLS_BY_PRN";
+   public static  final String GET_SEARCH_STUD_FILTER_CRITERIA="GET_SEARCH_STUD_FILTER_CRITERIA";
+   public static  final String GET_TEACHER_DTLS_BY_PRN="GET_TEACHER_DTLS_BY_PRN";
+   public static  final String GET_SEARCH_TEACHER_FILTER_CRITERIA="GET_SEARCH_TEACHER_FILTER_CRITERIA";
+   public static  final String GET_ALL_STUD_LIST="GET_ALL_STUD_LIST";
+   public static  final String GET_QUALIFICATION_LIST="GET_QUALIFICATION_LIST";
+   public static  final String GET_ALL_TEACHER_LIST="GET_ALL_TEACHER_LIST";
+   public static  final String IS_USERNAME_ALREADY_EXISTS="IS_USERNAME_ALREADY_EXISTS";
+   public static  final String GET_DIV_BY_STD="GET_DIV_BY_STD";
+   public static  final String SAVE_STUDENT="SAVE_STUDENT";
+   public static  final String IS_ROLL_NO_ALREADY_EXISTS="IS_ROLL_NO_ALREADY_EXISTS";
    
    //public static final String UserMasterResource = "/UserMaster";
     
