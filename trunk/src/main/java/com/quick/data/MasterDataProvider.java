@@ -62,11 +62,11 @@ public class MasterDataProvider {
          List<Userprofile> studentList = null;
         try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/UserMaster/getAllstudentList");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_ALL_STUD_LIST));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);
@@ -87,11 +87,11 @@ public class MasterDataProvider {
          List<QualificationMaster> qualificationList = null;
         try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/UserMaster/getQualificationList");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_QUALIFICATION_LIST));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);
@@ -112,11 +112,11 @@ public class MasterDataProvider {
          List<Userprofile> teacherList = null;
         try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/UserMaster/getAllTeacherList");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_ALL_TEACHER_LIST));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);
@@ -138,7 +138,7 @@ public class MasterDataProvider {
         boolean isUsernameExist = false;
         try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/UserMaster/IsUsernameAlreadyExist");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.IS_USERNAME_ALREADY_EXISTS));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             try {
@@ -147,7 +147,7 @@ public class MasterDataProvider {
                 ex.printStackTrace();
             }
 
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
 
             /*
              * if (response.getStatus() != 201) { throw new
@@ -243,7 +243,7 @@ public class MasterDataProvider {
          List<QuickLearn> subjectList = null;
         try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/MasterParam/getDivisionBystd");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_DIV_BY_STD));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
              try{           
@@ -252,7 +252,7 @@ public class MasterDataProvider {
                 ex.printStackTrace(); 
              }
             
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);

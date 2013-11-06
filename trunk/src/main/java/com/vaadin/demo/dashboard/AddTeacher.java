@@ -340,7 +340,7 @@ public class AddTeacher extends Window implements Button.ClickListener,Property.
 
     public void saveTeacher(){
         Client client=Client.create();
-        WebResource webResource = client.resource("http://localhost:8084/titali/rest/UserMaster/saveTeacher");
+        WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_TEACHER));
         JSONObject inputJson=new JSONObject();
         try{                 
            inputJson.put("name", teacherNametxt.getValue());
@@ -369,7 +369,7 @@ public class AddTeacher extends Window implements Button.ClickListener,Property.
         }
         
         
-        ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+        ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
 
         /*
          * if (response.getStatus() != 201) { throw new RuntimeException("Failed
@@ -517,7 +517,7 @@ public class AddTeacher extends Window implements Button.ClickListener,Property.
           List<TeacherStddivSubIdBean> teacherStddivSubIdList = null;
         try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/UserMaster/getTeacherStdDivSubListByUsername");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_TEACHER_STD_DIV_SUB_ASSOCIATION));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
              try{           
@@ -526,7 +526,7 @@ public class AddTeacher extends Window implements Button.ClickListener,Property.
                 ex.printStackTrace(); 
              }
             
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);

@@ -167,7 +167,7 @@ public class StudentView extends VerticalLayout implements View,Button.ClickList
          List<Userprofile> studentList = null;
         try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/UserMaster/getStudentDetailsByPrn");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_STUD_DTLS_BY_PRN));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             try {
@@ -175,7 +175,7 @@ public class StudentView extends VerticalLayout implements View,Button.ClickList
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }            
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);
@@ -217,7 +217,7 @@ public class StudentView extends VerticalLayout implements View,Button.ClickList
       List<Userprofile> searchstudentList = null;
         try {
             Client client = Client.create();
-            WebResource webResource = client.resource("http://localhost:8084/titali/rest/UserMaster/getsearchStudentFilterCriteriaList");
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_SEARCH_STUD_FILTER_CRITERIA));
             //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
             JSONObject inputJson = new JSONObject();
             try {
@@ -227,7 +227,7 @@ public class StudentView extends VerticalLayout implements View,Button.ClickList
                 ex.printStackTrace();
             }            
             
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
             
             JSONObject outNObject = null;
             String output = response.getEntity(String.class);
