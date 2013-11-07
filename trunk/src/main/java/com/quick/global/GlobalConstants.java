@@ -52,6 +52,7 @@ public class GlobalConstants
     public static final String ISROLLNOEXIST="isRollNoExist";
     public static final String TEACHERLIST = "teacherList";
     public static final String emptyString="";
+    public static final String spaceString=" ";
     public static final String HYPHEN = "-";
     public static final String ISUSERNAMEEXIST="isUsernameExist";
     public static final String QUICKLEARNLIST = "quickLearnList";

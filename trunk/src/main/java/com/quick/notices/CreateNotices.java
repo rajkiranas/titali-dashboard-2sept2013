@@ -7,11 +7,8 @@ package com.quick.notices;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.quick.bean.NoticeBean;
-import com.quick.bean.UpcomingTechnologyBean;
 import com.quick.bean.Userprofile;
 import com.quick.container.NoticesContainer;
-import com.quick.container.UpcomingTechnologyContainer;
-import com.quick.entity.Notices;
 import com.quick.global.GlobalConstants;
 import com.quick.utilities.ConfirmationDialogueBox;
 import com.quick.utilities.UIUtils;
@@ -29,7 +26,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -440,11 +436,7 @@ public class CreateNotices extends VerticalLayout implements View ,Button.ClickL
             else if(editSaveNoticeBtn.getCaption().equals("Save notice"))
             {
                 createNewNotice();
-                updateNoticeList();
-                
-                row.removeComponent(noticeFormLayout);
-                editSaveNoticeBtn.setCaption("Edit notice");
-                newNoticeBtn.setCaption("New notice");
+
             }
             
         }else if(source==newNoticeBtn){
@@ -491,50 +483,66 @@ public class CreateNotices extends VerticalLayout implements View ,Button.ClickL
          
     }
 
-    private void createNewNotice() {
-        try {
-            Client client = Client.create();
-            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_NOTICE));
-            JSONObject inputJson = new JSONObject();
-            try 
-            {
-                if(noticeId.getValue()!=null && !noticeId.getValue().trim().equals(GlobalConstants.emptyString))
-                {
-                    inputJson.put("noticeId", noticeId.getValue());
+    private void createNewNotice() 
+    {
+        if(notecedate.getValue()==null)
+        {
+            Notification.show("Please enter notice date.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(noticeline.getValue()==null || ((String)noticeline.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter notice subject.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(((String)noticeline.getValue()).trim().length()>150)
+        {
+            Notification.show("Notice subject cannot be more than 150 characters.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(noticebody.getValue()==null || ((String)noticebody.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter notice message.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if (((String) noticebody.getValue()).trim().length() > 300) {
+            Notification.show("Notice message cannot be more than 300 characters.", Notification.Type.WARNING_MESSAGE);
+        } 
+        else {
+            try {
+                Client client = Client.create();
+                WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_NOTICE));
+                JSONObject inputJson = new JSONObject();
+                try {
+                    if (noticeId.getValue() != null && !noticeId.getValue().trim().equals(GlobalConstants.emptyString)) {
+                        inputJson.put("noticeId", noticeId.getValue());
+                    } else {
+                        inputJson.put("noticeId", 0);
+                    }
+                    inputJson.put("noticedate", notecedate.getValue().getTime());
+                    inputJson.put("bywhom", bywhom.getValue());
+                    inputJson.put("noticeline", noticeline.getValue());
+                    inputJson.put("noticebody", noticebody.getValue());
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
                 }
-                else
+
+                ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
+
+                JSONObject outNObject = null;
+                String output = response.getEntity(String.class);
+                outNObject = new JSONObject(output);
+                int status = Integer.parseInt(outNObject.getString(GlobalConstants.STATUS));
+
+                if (status == GlobalConstants.YES) 
                 {
-                    inputJson.put("noticeId", 0);
+                    Notification.show("Successfully saved notice", Notification.Type.WARNING_MESSAGE);
+                    updateNoticeList();
+                    row.removeComponent(noticeFormLayout);
+                    editSaveNoticeBtn.setCaption("Edit notice");
+                    newNoticeBtn.setCaption("New notice");
+                } else {
+                    Notification.show("Notice saving failed", Notification.Type.WARNING_MESSAGE);
                 }
-                inputJson.put("noticedate", notecedate.getValue().getTime());
-                inputJson.put("bywhom", bywhom.getValue());
-                inputJson.put("noticeline", noticeline.getValue());
-                inputJson.put("noticebody", noticebody.getValue());
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
-
-            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
-            
-            JSONObject outNObject = null;
-            String output = response.getEntity(String.class);
-            outNObject = new JSONObject(output);
-            int status = Integer.parseInt(outNObject.getString(GlobalConstants.STATUS));
-            
-            if(status == GlobalConstants.YES)
-            {
-                Notification.show("Successfully saved notice", Notification.Type.WARNING_MESSAGE);
-            }
-            else
-            {
-                Notification.show("Notice saving failed", Notification.Type.WARNING_MESSAGE);
-            }
-
-          
-            
-        } catch (JSONException ex) 
-        {
-            ex.printStackTrace();
         }
     }
 

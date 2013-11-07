@@ -1,30 +1,16 @@
 package com.vaadin.demo.dashboard;
 
-import com.quick.ui.QuickLearn.*;
 import com.quick.bean.MasteParmBean;
 import com.quick.bean.MyDashBoardBean;
-import com.quick.bean.QuickLearn;
 import com.quick.global.GlobalConstants;
-import com.quick.utilities.DateUtil;
-import com.vaadin.demo.dashboard.StudQuickLearn;
-import com.vaadin.demo.dashboard.ViewTopicDetailsWindow;
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.ThemeResource;
 
 
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.io.File;
 
@@ -32,6 +18,7 @@ public class DashboardActivityWraper extends VerticalLayout {
 
     private Label description;
     private MyDashBoardBean activityDetails;
+    private static final String IN="in";
 
     public DashboardActivityWraper(MyDashBoardBean activityDetails, DashboardView dash) {
 
@@ -104,11 +91,11 @@ public class DashboardActivityWraper extends VerticalLayout {
 
         
         String time = activityDetails.getDateTime();
-        label = new Label(time);
+        label = new Label( IN +GlobalConstants.spaceString+ activityDetails.getStandard() + time);
         label.setWidth("100%");
+        label.addStyleName("lightGrayColorAndSmallFont");
+        
         fields.addComponent(label);
-        
-        
         
         HorizontalLayout activityImageLayout = new HorizontalLayout();
         activityImageLayout.setSizeFull();

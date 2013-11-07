@@ -15,39 +15,25 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.vaadin.data.Property;
 import com.quick.data.MasterDataProvider;
-import com.quick.table.QuickUploadTable;
 import com.quick.utilities.ConfirmationDialogueBox;
-import com.quick.utilities.DateUtil;
 import com.quick.utilities.ImageResizer;
 import com.quick.utilities.UIUtils;
 import com.quick.utilities.UploadReceiver;
-import com.vaadin.event.FieldEvents;
-import com.vaadin.event.FieldEvents.BlurEvent;
-import com.vaadin.server.FileResource;
-import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.BaseTheme;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-
-
 
 /**
  *
  * @author sonalis
  */
 public class NewEditTopicDetailsAdmin extends Window implements Button.ClickListener{
-    
     
     private VerticalLayout baseLayout;
     private TabSheet tabsheet;
@@ -79,9 +65,6 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         //addUserNotes();
         setContent(baseLayout);
         addStyleName("schedule");
-        
-        
-        
     }
     
     
@@ -99,7 +82,6 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         setWidth("90%");
         setHeight("100%"); 
         setImmediate(true);
-        
         
         buildBaseLayout();
         addTopicDetails();
@@ -184,7 +166,6 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
     public void setUploadedList(List<MasteParmBean> uploadedList) {
         this.uploadedList = uploadedList;
     }
-    
     
     
     private ComboBox subjecttxt;
@@ -490,40 +471,13 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
             public void buttonClick(ClickEvent event) {
                 try {
                     validateAndSaveQuickUploadDetails();
-                    saveResizedTopicImageToFileSystem();
                 } catch (JSONException ex) {
                     ex.printStackTrace();
                 }
                 
             }
 
-            private void saveResizedTopicImageToFileSystem() 
-            {
-                FileOutputStream fileOuputStream = null;
-                try 
-                {
-                    String ext=topicFileName.substring(topicFileName.indexOf("."));
-                    
-                    /* fileOuputStream = new FileOutputStream(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)
-                            +standardtxt.getValue()+GlobalConstants.HYPHEN
-                            +subjecttxt.getValue() +GlobalConstants.HYPHEN
-                            +topictxt.getValue()+GlobalConstants.HYPHEN
-                            +ext); */
-                    fileOuputStream = new FileOutputStream(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)
-                    +newlyCreatedUploadId + ext);
-                    
-                    fileOuputStream.write(topicImageArray);
-                    fileOuputStream.close();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                } finally {
-                    try {
-                        fileOuputStream.close();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
+            
         });
 
         
@@ -664,10 +618,74 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         {
             Notification.show("Please enter topic.", Notification.Type.WARNING_MESSAGE);
         }
+        else if(((String)topictxt.getValue()).trim().length()>30)
+        {
+            Notification.show("Topic name cannot be more than 30 characters.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(videoInputPath.getValue()==null || ((String)videoInputPath.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter video path.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(((String)videoInputPath.getValue()).trim().length()>200)
+        {
+            Notification.show("Video path cannot be more than 200 characters.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(topicFileName == null)
+        {
+            Notification.show("Please upload image for the topic.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(txtTopicIntro.getValue()==null || ((String)txtTopicIntro.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter topic introduction.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(((String)txtTopicIntro.getValue()).trim().length()>300)
+        {
+            Notification.show("Topic information cannot be more than 300 characters.", Notification.Type.WARNING_MESSAGE);
+        }
         else if(topicTagstxt.getValue()==null || ((String)topicTagstxt.getValue()).trim().equals(GlobalConstants.emptyString))
         {
             Notification.show("Please enter tags for topic.", Notification.Type.WARNING_MESSAGE);
         }
+        
+        else if(notesTextArea.getValue()==null || ((String)notesTextArea.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter topic notes.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(((String)notesTextArea.getValue()).trim().length()>10000)
+        {
+            Notification.show("Topic notes cannot be more than 10000 characters.", Notification.Type.WARNING_MESSAGE);
+        }
+        
+        
+        
+        else if(otherNotesTextArea.getValue()==null || ((String)otherNotesTextArea.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter other references.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(((String)otherNotesTextArea.getValue()).trim().length()>5000)
+        {
+            Notification.show("Other references cannot be more than 5000 characters.", Notification.Type.WARNING_MESSAGE);
+        }
+        
+         else if(previousQuestionsTextArea.getValue()==null || ((String)previousQuestionsTextArea.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter previous questions.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(((String)previousQuestionsTextArea.getValue()).trim().length()>5000)
+        {
+            Notification.show("Previous questions cannot be more than 5000 characters.", Notification.Type.WARNING_MESSAGE);
+        }
+        
+        else if(quizTextArea.getValue()==null || ((String)quizTextArea.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter quiz.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(((String)quizTextArea.getValue()).trim().length()>1000)
+        {
+            Notification.show("Quiz cannot be more than 1000 characters.", Notification.Type.WARNING_MESSAGE);
+        }
+        
+        
         else
         {
             //executions - inserting in db
@@ -762,6 +780,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
             if(Integer.parseInt(outputJson.getString(GlobalConstants.STATUS)) == GlobalConstants.YES)
             {
                 Notification.show("Saved successfully", Notification.Type.WARNING_MESSAGE);
+                saveResizedTopicImageToFileSystem();
                 if(outputJson.has("newlyCreatedUploadId"))
                 {
                     newlyCreatedUploadId=outputJson.getInt("newlyCreatedUploadId");
@@ -776,4 +795,32 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
       
     }
 }
+    
+    private void saveResizedTopicImageToFileSystem() 
+            {
+                FileOutputStream fileOuputStream = null;
+                try 
+                {
+                    String ext=topicFileName.substring(topicFileName.indexOf("."));
+                    
+                    /* fileOuputStream = new FileOutputStream(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)
+                            +standardtxt.getValue()+GlobalConstants.HYPHEN
+                            +subjecttxt.getValue() +GlobalConstants.HYPHEN
+                            +topictxt.getValue()+GlobalConstants.HYPHEN
+                            +ext); */
+                    fileOuputStream = new FileOutputStream(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)
+                    +newlyCreatedUploadId + ext);
+                    
+                    fileOuputStream.write(topicImageArray);
+                    fileOuputStream.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } finally {
+                    try {
+                        fileOuputStream.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
 }
