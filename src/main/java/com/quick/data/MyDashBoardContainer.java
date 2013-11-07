@@ -151,7 +151,7 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
                 bean.setTopicintro(whoisdoingwhat.getTopicintro());                
                 String timeInterval = DateUtil.getTimeIntervalOfTheActivity(whoisdoingwhat.getUploadDate());
                 bean.setDateTime(timeInterval);
-                
+                bean.setStandard(whoisdoingwhat.getStd());
                 
                 boardContainer.addItem(bean);
             }

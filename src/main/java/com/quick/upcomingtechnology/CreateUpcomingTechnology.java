@@ -7,14 +7,11 @@ package com.quick.upcomingtechnology;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.quick.bean.CategoryDistributionBean;
-import com.quick.bean.ExamBean;
-import com.quick.bean.MasteParmBean;
 import com.quick.bean.UpcomingTechnologyBean;
 import com.quick.bean.Userprofile;
 import com.quick.container.CategoryTechnologyContainer;
 import com.quick.container.UpcomingTechnologyContainer;
 import com.quick.global.GlobalConstants;
-import com.quick.table.QuickUploadTable;
 import com.quick.ui.exam.CustomPieChart;
 import com.quick.utilities.ConfirmationDialogueBox;
 import com.quick.utilities.UIUtils;
@@ -23,7 +20,6 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.demo.dashboard.QuickUpload;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.MarginInfo;
@@ -33,7 +29,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
@@ -520,10 +515,7 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
             else if(editSaveBtn.getCaption().equals("Save technology"))
             {
                 createNewTechnology();
-                updateUtList();
-                row.removeComponent(utFormLayout);
-                editSaveBtn.setCaption("Edit technology");
-                newTechnologyBtn.setCaption("New technology");
+                
             }
             
             
@@ -572,51 +564,73 @@ public class CreateUpcomingTechnology extends VerticalLayout implements View ,Bu
          
     }
 
-    private void createNewTechnology() {
-        try {
-            Client client = Client.create();
-            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_TECHNOLOGY));
-            JSONObject inputJson = new JSONObject();
-            try 
-            {
-                if(utId.getValue()!=null && !utId.getValue().trim().equals(GlobalConstants.emptyString))
-                {
-                    inputJson.put("technologyId", utId.getValue());
+    private void createNewTechnology() 
+    {
+        if(utLine.getValue()==null || ((String)utLine.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter technology name.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(((String)utLine.getValue()).trim().length()>150)
+        {
+            Notification.show("Technology name cannot be more than 150 characters.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(utCategory.getValue()==null || ((String)utCategory.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter category name.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(((String)utCategory.getValue()).trim().length()>50)
+        {
+            Notification.show("Technology category cannot be more than 50 characters.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(utBody.getValue()==null || ((String)utBody.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter technology details.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(((String)utBody.getValue()).trim().length()>2000)
+        {
+            Notification.show("Technology details cannot be more than 2000 characters.", Notification.Type.WARNING_MESSAGE);
+        }
+        else {
+            try {
+                Client client = Client.create();
+                WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_TECHNOLOGY));
+                JSONObject inputJson = new JSONObject();
+                try {
+                    if (utId.getValue() != null && !utId.getValue().trim().equals(GlobalConstants.emptyString)) {
+                        inputJson.put("technologyId", utId.getValue());
+                    } else {
+                        inputJson.put("technologyId", 0);
+                    }
+                    inputJson.put("technologydate", new Date().getTime());
+                    inputJson.put("bywhom", bywhom.getValue());
+                    inputJson.put("technologyline", utLine.getValue());
+                    inputJson.put("category", utCategory.getValue());
+                    inputJson.put("technologybody", utBody.getValue());
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
                 }
-                else
+
+                ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
+
+                JSONObject outNObject = null;
+                String output = response.getEntity(String.class);
+                outNObject = new JSONObject(output);
+                int status = Integer.parseInt(outNObject.getString(GlobalConstants.STATUS));
+
+                if (status == GlobalConstants.YES) 
                 {
-                    inputJson.put("technologyId", 0);
+                    Notification.show("Successfully saved technology", Notification.Type.WARNING_MESSAGE);
+                    updateUtList();
+                    row.removeComponent(utFormLayout);
+                    editSaveBtn.setCaption("Edit technology");
+                    newTechnologyBtn.setCaption("New technology");
+                
+                } else {
+                    Notification.show("Technology saving failed", Notification.Type.WARNING_MESSAGE);
                 }
-                inputJson.put("technologydate", new Date().getTime());
-                inputJson.put("bywhom", bywhom.getValue());
-                inputJson.put("technologyline", utLine.getValue());
-                inputJson.put("category", utCategory.getValue());
-                inputJson.put("technologybody", utBody.getValue());
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
-
-            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
-            
-            JSONObject outNObject = null;
-            String output = response.getEntity(String.class);
-            outNObject = new JSONObject(output);
-            int status = Integer.parseInt(outNObject.getString(GlobalConstants.STATUS));
-            
-            if(status == GlobalConstants.YES)
-            {
-                Notification.show("Successfully saved technology", Notification.Type.WARNING_MESSAGE);
-            }
-            else
-            {
-                Notification.show("Technology saving failed", Notification.Type.WARNING_MESSAGE);
-            }
-
-          
-            
-        } catch (JSONException ex) 
-        {
-            ex.printStackTrace();
         }
     }
 

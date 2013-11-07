@@ -5,36 +5,18 @@
 package com.quick.forum;
 
 import com.google.gdata.util.common.util.Base64;
-import com.vaadin.demo.dashboard.*;
-import com.quick.bean.QuickLearn;
 import com.quick.bean.Userprofile;
-import com.quick.entity.Std;
 import com.quick.global.GlobalConstants;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import com.vaadin.data.Property;
-import com.quick.data.MasterDataProvider;
-import com.quick.utilities.DateUtil;
-import com.quick.utilities.FileUtils;
 import com.quick.utilities.ImageResizer;
-import com.quick.utilities.UIUtils;
 import com.quick.utilities.UploadReceiver;
-import com.vaadin.event.FieldEvents;
-import com.vaadin.event.FieldEvents.BlurEvent;
-import com.vaadin.event.ShortcutAction;
-import com.vaadin.server.FileResource;
-import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.BaseTheme;
 import java.io.File;
-import java.util.*;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-
 
 
 /**
@@ -150,8 +132,7 @@ public class NewEventWindow extends Window implements Button.ClickListener{
                @Override
                public void buttonClick(ClickEvent event) {
                    saveEventDetails();
-                   getUI().getNavigator().navigateTo(GlobalConstants.ROUT_FORUM);
-                   w.close();
+                   
                }
            });
            
@@ -184,35 +165,61 @@ public class NewEventWindow extends Window implements Button.ClickListener{
     }
     
     
-    private void saveEventDetails(){
-       try {
-            Client client = Client.create();
-            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_EVENT_DETAILS));
-            //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
-            JSONObject inputJson = new JSONObject();
+    private void saveEventDetails() 
+    {
+        if (subject.getValue() == null || ((String) subject.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter event subject.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if (((String) subject.getValue()).trim().length() > 100) 
+        {
+            Notification.show("Event subject cannot be more than 100 characters.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(imageFileName == null)
+        {
+            Notification.show("Please upload image for the event.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if (desc.getValue() == null || ((String) desc.getValue()).trim().equals(GlobalConstants.emptyString))
+        {
+            Notification.show("Please enter event description.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if (((String) desc.getValue()).trim().length() > 1000) 
+        {
+            Notification.show("Event description cannot be more than 1000 characters.", Notification.Type.WARNING_MESSAGE);
+        }
+         else {
             try {
+                Client client = Client.create();
+                WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_EVENT_DETAILS));
+                //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
+                JSONObject inputJson = new JSONObject();
+                try {
+
+                    Userprofile loggedinProfile = (Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile);
+                    inputJson.put("event_desc", subject.getValue());
+                    inputJson.put("event_body", desc.getValue());
+                    inputJson.put("image", new String(Base64.encode(eventImageArray)));
+                    inputJson.put("owner", loggedinProfile.getUsername());
+                    inputJson.put("image_filename", imageFileName);
+
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+                ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
+
+
+                JSONObject outNObject = null;
+                String output = response.getEntity(String.class);
+                outNObject = new JSONObject(output);
+                Notification.show(outNObject.getString(GlobalConstants.STATUS), Notification.Type.WARNING_MESSAGE);
                 
-                Userprofile loggedinProfile= (Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile);
-                inputJson.put("event_desc",subject.getValue());
-                inputJson.put("event_body", desc.getValue());
-                inputJson.put("image", new String(Base64.encode(eventImageArray)));
-                inputJson.put("owner", loggedinProfile.getUsername());
-                inputJson.put("image_filename", imageFileName);
-              
+                getUI().getNavigator().navigateTo(GlobalConstants.ROUT_FORUM);
+                w.close();
+
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
-            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
 
-          
-            JSONObject outNObject = null;
-            String output = response.getEntity(String.class);
-            outNObject = new JSONObject(output);
-            Notification.show(outNObject.getString(GlobalConstants.STATUS), Notification.Type.WARNING_MESSAGE);
-            
-        } catch (JSONException ex) 
-        {
-            ex.printStackTrace();
         }
-    }  
+    }
 }
