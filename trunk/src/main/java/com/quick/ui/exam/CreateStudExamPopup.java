@@ -8,7 +8,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.quick.bean.ExamBean;
 import com.quick.bean.ExamQueAnsBean;
-import com.quick.bean.MasteParmBean;
 import com.quick.bean.QuickLearn;
 import com.quick.bean.Userprofile;
 import com.quick.data.MasterDataProvider;
@@ -21,13 +20,10 @@ import com.sun.jersey.api.client.WebResource;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.server.Sizeable;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -72,7 +68,7 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
     private static final List<String> examTypeList = Arrays.asList(new String[]{
         "Objective", "Descriptive"});
                 //"Objective", "Descriptive","Hybrid"});
-    private HorizontalSplitPanel baseHorizontalSplit;
+    private VerticalSplitPanel baseHorizontalSplit;
     
     private Button createExamBtn;
     private int noOfQue = 0;
@@ -107,7 +103,7 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
         center();        
        // setClosable(false);
         setWidth("80%");
-        setHeight("80%");  
+        setHeight("95%");  
         isNewExam=true;
         BuildUI();
     }
@@ -130,7 +126,7 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
         }
         
         setWidth("80%");
-        setHeight("80%");        
+        setHeight("95%");        
         BuildUI();
         setExamDetailsToForm(eb);
         setExamQuestionAnswersById(eb.getExamId());
@@ -143,8 +139,8 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
     private void BuildUI() 
     {
         setStandardList(MasterDataProvider.getStandardList());
-        baseHorizontalSplit = new HorizontalSplitPanel();
-        baseHorizontalSplit.setSplitPosition(380,Sizeable.UNITS_PIXELS);
+        baseHorizontalSplit = new VerticalSplitPanel();
+        baseHorizontalSplit.setSplitPosition(40,Unit.PERCENTAGE);
         baseHorizontalSplit.setSizeFull();
         baseHorizontalSplit.setImmediate(true);
         
@@ -159,10 +155,7 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
         setContent(baseHorizontalSplit);
     } 
     
-    private CssLayout getfirstcomponet(){
-        
-        FormLayout examDetails = new FormLayout();
-        
+    private VerticalLayout getfirstcomponet(){
         
        divcmb=new ComboBox("Division");
        divcmb.setInputPrompt("Division");
@@ -249,29 +242,54 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
         createExamBtn.addClickListener(this);
         createExamBtn.setImmediate(true);
         
+        
+        VerticalLayout examDetailsVerticallayout = new VerticalLayout();
+       examDetailsVerticallayout.setSizeFull();
+       examDetailsVerticallayout.setCaption("Exam details");
+        
+       HorizontalLayout examDetails = new HorizontalLayout();
+       examDetails.setSpacing(true);
+        examDetails.setMargin(true);
+        examDetails.setSizeFull();
+        
         examDetails.addComponent(calsscmb);
         examDetails.addComponent(divcmb);
         examDetails.addComponent(subcbm);
         examDetails.addComponent(examNametxt);
-        examDetails.addComponent(examTypeOpt);
+        
+        examDetailsVerticallayout.addComponent(examDetails);
+        examDetailsVerticallayout.setComponentAlignment(examDetails, Alignment.MIDDLE_CENTER);
+        
+        examDetails = new HorizontalLayout();
+        examDetails.setSpacing(true);
+        examDetails.setMargin(true);
+        examDetails.setSizeFull();
+        
+        
+        
         examDetails.addComponent(topic);
         examDetails.addComponent(startDate);
         examDetails.addComponent(endDate);
+        examDetails.addComponent(examTypeOpt);
+        examDetailsVerticallayout.addComponent(examDetails);
+        examDetailsVerticallayout.setComponentAlignment(examDetails, Alignment.MIDDLE_CENTER);
+        
+        examDetails = new HorizontalLayout();
+        examDetails.setSpacing(true);
+        examDetails.setMargin(true);
+        examDetails.setSizeFull();
+        
         examDetails.addComponent(marksPerQuestion);
         examDetails.addComponent(passingMarks);
         examDetails.addComponent(contestLine);
         examDetails.addComponent(createExamBtn);
-        
-        
-       VerticalLayout examDetailsVerticallayout = new VerticalLayout();
-       examDetailsVerticallayout.setSizeFull();
        
        examDetailsVerticallayout.addComponent(examDetails);
        examDetailsVerticallayout.setComponentAlignment(examDetails, Alignment.MIDDLE_CENTER);
        
-       CssLayout cl= UIUtils.createPanel(examDetailsVerticallayout);
-       cl.setCaption("Exam details");
-       return cl;
+//       CssLayout cl= UIUtils.createPanel(examDetailsVerticallayout);
+//       cl.setCaption("Exam details");
+       return examDetailsVerticallayout;
     }
 
     private VerticalLayout getsecondComponent() {
@@ -310,6 +328,7 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
         question.setCaption("Question");        
         question.setVisible(false);
         question.setInputPrompt("Enter question here");
+        question.setWidth("70%");
         
 //        descAnsTextArea= new TextArea();
 //        descAnsTextArea.setVisible(false);
@@ -318,6 +337,8 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
 
         VerticalLayout vertical = new VerticalLayout();
         vertical.setSpacing(true);
+        vertical.setCaption("Question-Answers");
+        vertical.setMargin(true);
         
         op1chk = new CheckBox();
         op1chk.setVisible(false);
@@ -346,16 +367,22 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
         op1txt = new TextField();
         op1txt.setVisible(false);
         op1txt.setInputPrompt("Option 1");
+        op1txt.setWidth("60%");
+        
         op2txt = new TextField();
         op2txt.setVisible(false);
         op2txt.setInputPrompt("Option 2");
+        op2txt.setWidth("60%");
+        
         op3txt = new TextField();
         op3txt.setVisible(false);
         op3txt.setInputPrompt("Option 3");
+        op3txt.setWidth("60%");
+        
         op4txt = new TextField();
         op4txt.setVisible(false);
         op4txt.setInputPrompt("Option 4");
-        
+        op4txt.setWidth("60%");
         
         vertical.addComponent(getHorizontalLayoutForTwoComponents(new Label(),question));
         
@@ -418,38 +445,40 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
        }
        
 
-       CssLayout cl=UIUtils.createPanel(vertical);
-        cl.setCaption("Question-Answers");
-        cl.setWidth("98%");
+//       CssLayout cl=UIUtils.createPanel(vertical);
+//        cl.setCaption("Question-Answers");
+//        cl.setWidth("98%");
 //        cl.setHeight("98%");
         
-        CssLayout clButton=UIUtils.createPanel(buttonHorizontal);
+//        CssLayout clButton=UIUtils.createPanel(buttonHorizontal);
+//        
+//        clButton.setWidth("98%");
+//        clButton.setHeight("98%");
         
-        clButton.setWidth("98%");
-        clButton.setHeight("98%");
         
-        
-        VerticalLayout  examDetailsBaselayput = new VerticalLayout();
-        examDetailsBaselayput.setSizeFull();
-        
-        examDetailsBaselayput.addComponent(cl);
-        examDetailsBaselayput.setComponentAlignment(cl, Alignment.BOTTOM_CENTER);
-        examDetailsBaselayput.setExpandRatio(cl, 2);
-        
-        examDetailsBaselayput.addComponent(clButton);
-        examDetailsBaselayput.setComponentAlignment(clButton, Alignment.TOP_CENTER);
-        examDetailsBaselayput.setExpandRatio(clButton, 1);
+//        VerticalLayout  examDetailsBaselayput = new VerticalLayout();
+//        examDetailsBaselayput.setSizeFull();
+//        
+//        examDetailsBaselayput.addComponent(cl);
+//        examDetailsBaselayput.setComponentAlignment(cl, Alignment.BOTTOM_CENTER);
+//        examDetailsBaselayput.setExpandRatio(cl, 2);
+//        
+//        examDetailsBaselayput.addComponent(clButton);
+//        examDetailsBaselayput.setComponentAlignment(clButton, Alignment.TOP_CENTER);
+//        examDetailsBaselayput.setExpandRatio(clButton, 1);
         
         
 //       
 //        examDetailsBaselayput.addComponent(vertical);
 //        examDetailsBaselayput.setComponentAlignment(vertical, Alignment.MIDDLE_CENTER);
 
-        
+       
+       vertical.addComponent(buttonHorizontal);
+       vertical.setComponentAlignment(buttonHorizontal, Alignment.TOP_CENTER);
        setVisibilityOfQuestionsLayoutAccordingToExamType();
        //examTypeOpt.setReadOnly(true); because exam type cannot be changed once exam created
         examTypeOpt.setReadOnly(true);
-        return examDetailsBaselayput;      
+        return vertical;      
     }
     
     private Component getHorizontalLayoutForTwoComponents(Component a, Component b)
@@ -457,11 +486,16 @@ public class CreateStudExamPopup extends Window implements Button.ClickListener,
         HorizontalLayout h = new HorizontalLayout();
         
         h.setSizeFull();
+        Label dummy = new Label(GlobalConstants.emptyString);
+        
+        h.addComponent(dummy);
         h.addComponent(a);
         h.addComponent(b);
         
-        h.setExpandRatio(a, 0.5f);
-        h.setExpandRatio(b, 3f);
+        h.setExpandRatio(dummy, 1.25f);
+        h.setExpandRatio(a, 0.25f);
+        h.setExpandRatio(b, 5f);
+        
         return h;
     }
 
