@@ -20,61 +20,33 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.quick.bean.ExamBean;
-import com.quick.bean.MasteParmBean;
 import com.quick.bean.Userprofile;
 import com.quick.container.StudentExamListContainer;
-import com.vaadin.demo.dashboard.TopSixTheatersChart;
-
-
-import com.quick.entity.Notices;
-import com.quick.entity.Whatsnew;
-import com.quick.entity.Whoisdoingwhat;
-import com.quick.table.MyDashBoardDataProvider;
-import java.text.DecimalFormat;
 
 import com.vaadin.data.Property;
 import com.quick.data.Generator;
 import com.quick.global.GlobalConstants;
-import com.quick.table.QuickUploadTable;
 import com.quick.utilities.ConfirmationDialogueBox;
 import com.quick.utilities.UIUtils;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import com.vaadin.addon.charts.Chart;
-import com.vaadin.addon.charts.model.ChartType;
-import com.vaadin.addon.charts.model.Configuration;
-import com.vaadin.addon.charts.model.HorizontalAlign;
-import com.vaadin.addon.charts.model.Labels;
-import com.vaadin.addon.charts.model.Legend;
-import com.vaadin.addon.charts.model.ListSeries;
-import com.vaadin.addon.charts.model.PlotOptionsColumn;
-import com.vaadin.addon.charts.model.Tooltip;
-import com.vaadin.addon.charts.model.XAxis;
-import com.vaadin.addon.charts.model.YAxis;
-import com.vaadin.addon.charts.model.style.SolidColor;
-import com.vaadin.addon.charts.model.style.Style;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.demo.dashboard.QuickUpload;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Table.Align;
-import com.vaadin.ui.Table.RowHeaderMode;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -357,20 +329,20 @@ public class AdminExam extends VerticalLayout implements View  {
             VerticalLayout v = new VerticalLayout();
             v.setSizeFull();
             v.addComponent(examDeatils);
-            v.setExpandRatio(examDeatils, 2);
+            v.setExpandRatio(examDeatils, 2.5f);
             
             if(ebList!=null && ebList.size()>0)
             {
                 HorizontalLayout h = new HorizontalLayout();
                 h.setSizeFull();
-                Label contestLine=new Label("<b><h3>"+ebList.get(0).getContestLine()+"</h3></b>", ContentMode.HTML);
+                Label contestLine=new Label("<b>"+ebList.get(0).getContestLine()+"</b>", ContentMode.HTML);
                 h.addComponent(contestLine);
                 h.setComponentAlignment(contestLine, Alignment.MIDDLE_CENTER);
                 h.addStyleName("YellowBackground");
                 
                 v.addComponent(h);
                 v.setComponentAlignment(h,Alignment.MIDDLE_CENTER);
-                v.setExpandRatio(h, 0.5f);
+                v.setExpandRatio(h, 0.35f);
             }
             
             
@@ -391,15 +363,39 @@ public class AdminExam extends VerticalLayout implements View  {
     }
     
     public  Component getSelectedExamDetailsForm() {
-        FormLayout formLayout = new FormLayout();
-        formLayout.setMargin(true);
-        formLayout.setCaption("Exam details");
-        formLayout.addComponent(subtxt);
+        VerticalLayout formLayout = new VerticalLayout();
+        formLayout.setMargin(false);
+        formLayout.setSizeFull();
+        //formLayout.setCaption("Exam details");
+        
+        /* formLayout.addComponent(subtxt);
         formLayout.addComponent(questionstxt);
         formLayout.addComponent(markstxt);
-        formLayout.addComponent(scoretxt);
+        formLayout.addComponent(scoretxt); */
         
-        //throw new UnsupportedOperationException("Not yet implemented");
+        Label caption = new Label("Exam details");
+        caption.setSizeFull();
+        caption.setStyleName("brownBackgroundColor");
+        formLayout.addComponent(caption); 
+        formLayout.setComponentAlignment(caption, Alignment.MIDDLE_LEFT);
+        formLayout.setExpandRatio(caption, 0.25f);
+        
+        HorizontalLayout adj = new HorizontalLayout();
+        adj.setSizeFull();
+        Label emptyLbl=new Label(GlobalConstants.emptyString);
+        adj.addComponent(emptyLbl);
+        adj.setExpandRatio(emptyLbl, 1);
+        Label l = new Label("<h3>Subject: <b>"+subtxt+"</b></h3>" +
+                            "<h3>Questions: <b>"+questionstxt+"</b></h3>" + 
+                            "<h3>Total marks: <b>"+markstxt+"</b></h3>" +
+                            "<h3>Obtained marks: <b>"+scoretxt+"</b></h3>" , ContentMode.HTML);
+        l.setSizeFull();
+        adj.addComponent(l);
+        adj.setExpandRatio(l, 2);
+        
+        formLayout.addComponent(adj); 
+        formLayout.setExpandRatio(adj, 2.75f);
+        
         return formLayout;
     }
     

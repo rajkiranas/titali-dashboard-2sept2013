@@ -401,14 +401,14 @@ public class StudentExam extends VerticalLayout implements View  {
             {
                 HorizontalLayout h = new HorizontalLayout();
                 h.setSizeFull();
-                Label contestLine=new Label("<b><h3>"+ebList.get(0).getContestLine()+"</h3></b>", ContentMode.HTML);
+                Label contestLine=new Label("<b>"+ebList.get(0).getContestLine()+"</b>", ContentMode.HTML);
                 h.addComponent(contestLine);
                 h.setComponentAlignment(contestLine, Alignment.MIDDLE_CENTER);
                 h.addStyleName("YellowBackground");
                 
                 v.addComponent(h);
                 v.setComponentAlignment(h,Alignment.MIDDLE_CENTER);
-                v.setExpandRatio(h, 0.5f);
+                v.setExpandRatio(h, 0.35f);
             }
             
             cssLayoutFormAndBarGraph=UIUtils.createPanel(v);
@@ -419,7 +419,7 @@ public class StudentExam extends VerticalLayout implements View  {
         //return examDetailsForm;
     }
    
-    public  Component getSelectedExamDetailsForm(List<ExamBean> ebList) {
+    /* public  Component getSelectedExamDetailsForm(List<ExamBean> ebList) {
         FormLayout formLayout = new FormLayout();
         formLayout.setCaption("Exam details");
         formLayout.setMargin(true);
@@ -428,6 +428,43 @@ public class StudentExam extends VerticalLayout implements View  {
         formLayout.addComponent(questionstxt);
         formLayout.addComponent(markstxt);
         formLayout.addComponent(scoretxt);
+        
+        return formLayout;
+    } */
+    
+    public  Component getSelectedExamDetailsForm(List<ExamBean> ebList) {
+        VerticalLayout formLayout = new VerticalLayout();
+        formLayout.setMargin(false);
+        formLayout.setSizeFull();
+        //formLayout.setCaption("Exam details");
+        
+        /* formLayout.addComponent(subtxt);
+        formLayout.addComponent(questionstxt);
+        formLayout.addComponent(markstxt);
+        formLayout.addComponent(scoretxt); */
+        
+        Label caption = new Label("Exam details");
+        caption.setSizeFull();
+        caption.setStyleName("brownBackgroundColor");
+        formLayout.addComponent(caption); 
+        formLayout.setComponentAlignment(caption, Alignment.MIDDLE_LEFT);
+        formLayout.setExpandRatio(caption, 0.25f);
+        
+        HorizontalLayout adj = new HorizontalLayout();
+        adj.setSizeFull();
+        Label emptyLbl=new Label(GlobalConstants.emptyString);
+        adj.addComponent(emptyLbl);
+        adj.setExpandRatio(emptyLbl, 1);
+        Label l = new Label("<h3>Subject: <b>"+subtxt+"</b></h3>" +
+                            "<h3>Questions: <b>"+questionstxt+"</b></h3>" + 
+                            "<h3>Total marks: <b>"+markstxt+"</b></h3>" +
+                            "<h3>Obtained marks: <b>"+scoretxt+"</b></h3>" , ContentMode.HTML);
+        l.setSizeFull();
+        adj.addComponent(l);
+        adj.setExpandRatio(l, 2);
+        
+        formLayout.addComponent(adj); 
+        formLayout.setExpandRatio(adj, 2.75f);
         
         return formLayout;
     }

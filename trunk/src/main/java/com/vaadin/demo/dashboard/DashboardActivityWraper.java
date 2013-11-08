@@ -18,7 +18,7 @@ public class DashboardActivityWraper extends VerticalLayout {
 
     private Label description;
     private MyDashBoardBean activityDetails;
-    private static final String IN="in";
+    private static final String IN="In";
 
     public DashboardActivityWraper(MyDashBoardBean activityDetails, DashboardView dash) {
 
@@ -91,7 +91,7 @@ public class DashboardActivityWraper extends VerticalLayout {
 
         
         String time = activityDetails.getDateTime();
-        label = new Label( IN +GlobalConstants.spaceString+ activityDetails.getStandard() + time);
+        label = new Label( IN +GlobalConstants.spaceString+ activityDetails.getStandard() +GlobalConstants.spaceString +GlobalConstants.HYPHEN +GlobalConstants.spaceString + time);
         label.setWidth("100%");
         label.addStyleName("lightGrayColorAndSmallFont");
         
