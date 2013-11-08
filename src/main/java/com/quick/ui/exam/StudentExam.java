@@ -290,17 +290,18 @@ public class StudentExam extends VerticalLayout implements View  {
             @Override
             public void valueChange(ValueChangeEvent event) {
                ExamBean eb = (ExamBean) event.getProperty().getValue(); 
-               setSelectedExam(getSelectedExamDetailsById(eb.getExamId()));
-                System.out.println("//////////"+getSelectedExam().get(0).getResponseDt());
-               updateExamDetails();
-               getExamDetailsLayout(getSelectedExam());
-               updateExamSummary();
-               decidevisibilityAndCaptionOfStartExamBtn(eb);
-               if(barchartAdded==1)
-               {
-                    getExamScoreComparisonBarChart();
-               }
-               
+               if(eb!=null)
+                {
+                    setSelectedExam(getSelectedExamDetailsById(eb.getExamId()));
+                    System.out.println("//////////" + getSelectedExam().get(0).getResponseDt());
+                    updateExamDetails();
+                    getExamDetailsLayout(getSelectedExam());
+                    updateExamSummary();
+                    decidevisibilityAndCaptionOfStartExamBtn(eb);
+                    if (barchartAdded == 1) {
+                        getExamScoreComparisonBarChart();
+                    }
+                }
             }
         });
         
@@ -448,7 +449,7 @@ public class StudentExam extends VerticalLayout implements View  {
         caption.setStyleName("brownBackgroundColor");
         formLayout.addComponent(caption); 
         formLayout.setComponentAlignment(caption, Alignment.MIDDLE_LEFT);
-        formLayout.setExpandRatio(caption, 0.25f);
+        formLayout.setExpandRatio(caption, 0.35f);
         
         HorizontalLayout adj = new HorizontalLayout();
         adj.setSizeFull();

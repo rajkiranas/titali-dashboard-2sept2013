@@ -4,21 +4,11 @@
  */
 package com.quick.table;
 
-import com.quick.bean.MasteParmBean;
 import com.quick.global.GlobalConstants;
-import com.quick.ui.QuickLearn.QuickLearnDetailWraper;
-import com.quick.utilities.ConfirmationDialogueBox;
-import com.vaadin.data.Property;
 import com.vaadin.demo.dashboard.QuickUpload;
-import com.vaadin.demo.dashboard.QuickUploadMasterContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.BaseTheme;
-import java.io.File;
-import java.util.List;
 
 /**
  *

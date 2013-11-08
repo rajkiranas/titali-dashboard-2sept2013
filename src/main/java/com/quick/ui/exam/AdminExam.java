@@ -259,15 +259,16 @@ public class AdminExam extends VerticalLayout implements View  {
 
             @Override
             public void valueChange(ValueChangeEvent event) {
-               ExamBean eb = (ExamBean) event.getProperty().getValue(); 
-               setSelectedExam(getSelectedExamDetailsById(eb.getExamId()));
-               updateExamDetails();
-               getExamDetailsLayout(getSelectedExam());
-               updateExamSummary();
-               if(barchartAdded==1)
-               {
-                    getExamScoreComparisonBarChart();
-               }
+                ExamBean eb = (ExamBean) event.getProperty().getValue();
+                if (eb != null) {
+                    setSelectedExam(getSelectedExamDetailsById(eb.getExamId()));
+                    updateExamDetails();
+                    getExamDetailsLayout(getSelectedExam());
+                    updateExamSummary();
+                    if (barchartAdded == 1) {
+                        getExamScoreComparisonBarChart();
+                    }
+                }
             }
         };
          
@@ -378,7 +379,7 @@ public class AdminExam extends VerticalLayout implements View  {
         caption.setStyleName("brownBackgroundColor");
         formLayout.addComponent(caption); 
         formLayout.setComponentAlignment(caption, Alignment.MIDDLE_LEFT);
-        formLayout.setExpandRatio(caption, 0.25f);
+        formLayout.setExpandRatio(caption, 0.35f);
         
         HorizontalLayout adj = new HorizontalLayout();
         adj.setSizeFull();
