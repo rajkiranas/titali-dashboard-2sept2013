@@ -67,6 +67,7 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
     private HorizontalLayout row ;
     private LoadEarlierBtnWraper loadMoreWraper = new LoadEarlierBtnWraper(this);
     private List<List> wrapperList = new ArrayList<List>();
+    private static final String strTrippleDots="...";
 
     public String getUserNotes() {
         return userNotes;
@@ -710,6 +711,8 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
             JSONObject inputJson = new JSONObject();
             try {
                 inputJson.put("uploadId", getUploadId());
+                Userprofile loggedinProfile= (Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile);
+                inputJson.put("userName", loggedinProfile.getUsername());
               
             } catch (JSONException ex) {
                 ex.printStackTrace();
@@ -856,7 +859,7 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
             setStudQuikLearnDetails(getStudentQuickLearnDetails());
             String topicIntro = getStudQuikLearnDetails().getLectureNotesInformation();
             if (topicIntro.length() > 145) {
-                topicIntro = topicIntro.substring(0, 145) + "...";
+                topicIntro = topicIntro.substring(0, 145) + strTrippleDots;
             }
             sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through, bean.getSub(), topicIntro);
             UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(), getUserNotes(), getUploadId()));
