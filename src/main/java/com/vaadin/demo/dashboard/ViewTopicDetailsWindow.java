@@ -6,14 +6,10 @@ package com.vaadin.demo.dashboard;
 
 import com.quick.bean.QuickLearn;
 import com.quick.bean.Userprofile;
-import com.quick.entity.Std;
 import com.quick.global.GlobalConstants;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import com.vaadin.data.Property;
-import com.quick.data.MasterDataProvider;
-import com.quick.utilities.DateUtil;
 import com.quick.utilities.UIUtils;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
@@ -22,14 +18,9 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.BaseTheme;
 import java.io.File;
-import java.util.*;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-
-
 
 /**
  *
@@ -407,8 +398,13 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         userNotesTxtArea.addBlurListener(new FieldEvents.BlurListener() {
 
             @Override
-            public void blur(BlurEvent event) {
-                setUserNotes(userNotesTxtArea.getValue());
+            public void blur(BlurEvent event) 
+            {
+                String userNotes=userNotesTxtArea.getValue();
+                if(userNotes.length()>1000)
+                    userNotes=userNotes.substring(0, 999);
+                
+                setUserNotes(userNotes);
                 if(selectedUploadId!=0)
                 {
                     updateUserShortNotes();
@@ -455,7 +451,7 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
 
           
             JSONObject outNObject = null;
