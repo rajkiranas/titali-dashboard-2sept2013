@@ -674,6 +674,8 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
             JSONObject inputJson = new JSONObject();
             try {
                 inputJson.put("uploadId", Integer.parseInt(uploadId));
+                 Userprofile loggedinProfile= (Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile);
+                inputJson.put("userName", loggedinProfile.getUsername());
               
             } catch (JSONException ex) {
                 ex.printStackTrace();
