@@ -67,7 +67,6 @@ public class AdminExam extends VerticalLayout implements View  {
         private CssLayout cssExamScoreComparisonLayout;
     private int barchartAdded=0;
         
-    private Table t;
     //private MyDashBoardDataProvider boardDataProvider = new MyDashBoardDataProvider();
     private List<ExamBean> selectedExam;
 
@@ -107,114 +106,7 @@ public class AdminExam extends VerticalLayout implements View  {
         top.addComponent(title);
         top.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
         top.setExpandRatio(title, 1);
-
-        Button notify = new Button("2");
-        notify.setDescription("Notifications (2 unread)");
-        // notify.addStyleName("borderless");
-        notify.addStyleName("notifications");
-        notify.addStyleName("unread");
-        notify.addStyleName("icon-only");
-        notify.addStyleName("icon-bell");
-        notify.addClickListener(new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                //((DashboardUI) getUI()).clearDashboardButtonBadge();
-                event.getButton().removeStyleName("unread");
-                event.getButton().setDescription("Notifications");
-
-                if (notifications != null && notifications.getUI() != null)
-                    notifications.close();
-                else {
-                    buildNotifications(event);
-                    getUI().addWindow(notifications);
-                    notifications.focus();
-                    ((CssLayout) getUI().getContent())
-                            .addLayoutClickListener(new LayoutClickListener() {
-                                @Override
-                                public void layoutClick(LayoutClickEvent event) {
-                                    notifications.close();
-                                    ((CssLayout) getUI().getContent())
-                                            .removeLayoutClickListener(this);
-                                }
-                            });
-                }
-
-            }
-        });
-//        top.addComponent(notify);
-//        top.setComponentAlignment(notify, Alignment.MIDDLE_LEFT);
-
-        Button edit = new Button();
-        edit.addStyleName("icon-edit");
-        edit.addStyleName("icon-only");
-        //top.addComponent(edit);
-        edit.setDescription("Edit Dashboard");
-        edit.addClickListener(new ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                final Window w = new Window("Edit Dashboard");
-
-                w.setModal(true);
-                w.setClosable(false);
-                w.setResizable(false);
-                w.addStyleName("edit-dashboard");
-
-                getUI().addWindow(w);
-
-                w.setContent(new VerticalLayout() {
-                    TextField name = new TextField("Dashboard Name");
-                    {
-                        addComponent(new FormLayout() {
-                            {
-                                setSizeUndefined();
-                                setMargin(true);
-                                name.setValue(title.getValue());
-                                addComponent(name);
-                                name.focus();
-                                name.selectAll();
-                            }
-                        });
-
-                        addComponent(new HorizontalLayout() {
-                            {
-                                setMargin(true);
-                                setSpacing(true);
-                                addStyleName("footer");
-                                setWidth("100%");
-
-                                Button cancel = new Button("Cancel");
-                                cancel.addClickListener(new ClickListener() {
-                                    @Override
-                                    public void buttonClick(ClickEvent event) {
-                                        w.close();
-                                    }
-                                });
-                                cancel.setClickShortcut(KeyCode.ESCAPE, null);
-                                addComponent(cancel);
-                                setExpandRatio(cancel, 1);
-                                setComponentAlignment(cancel,
-                                        Alignment.TOP_RIGHT);
-
-                                Button ok = new Button("Save");
-                                ok.addStyleName("wide");
-                                ok.addStyleName("default");
-                                ok.addClickListener(new ClickListener() {
-                                    @Override
-                                    public void buttonClick(ClickEvent event) {
-                                        title.setValue(name.getValue());
-                                        w.close();
-                                    }
-                                });
-                                ok.setClickShortcut(KeyCode.ENTER, null);
-                                addComponent(ok);
-                            }
-                        });
-
-                    }
-                });
-
-            }
-        });
+        
         //top.setComponentAlignment(edit, Alignment.MIDDLE_LEFT);
         newExamBtn = new Button("New Exam");
         newExamBtn.addStyleName("default");
@@ -250,9 +142,8 @@ public class AdminExam extends VerticalLayout implements View  {
         setExpandRatio(row1, 2); 
 
         Userprofile userprofile = (Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile);
-          Component examdtls = buildSelectedExamDetails();
+        Component examdtls = buildSelectedExamDetails();
          
-        
         AdminExamDataProvider provider = new AdminExamDataProvider(this);
          examlistTbl = provider.getExamListForTeacher(getExamList(userprofile.getStd(),userprofile.getDiv()));
          exmlistListner = new Property.ValueChangeListener() {
@@ -314,7 +205,7 @@ public class AdminExam extends VerticalLayout implements View  {
             {
                 row2.removeComponent(cssLayoutFormAndBarGraph);            
             }
-            Component examDeatils = getSelectedExamDetailsForm();
+            Component examDeatils = getSelectedExamDetailsForm(ebList);
             
 //            examDetailsForm.addComponent(examDeatils);
 //            //examDetailsForm.addComponent(barChart);
@@ -363,7 +254,17 @@ public class AdminExam extends VerticalLayout implements View  {
             Component barChart=UIUtils.getBarChart(title,scores,"Score comparison","Score","Marks","260px","325px");
     }
     
-    public  Component getSelectedExamDetailsForm() {
+    private  Component getSelectedExamDetailsForm(List<ExamBean> ebList) {
+        int iPassingMarks=0;
+        String strExamName=GlobalConstants.HYPHEN;
+        int iMarksPerQuestion=0;
+        
+        if(ebList!=null && ebList.size()>0)
+            {
+                iPassingMarks=ebList.get(0).getPassingMarks();
+                strExamName=ebList.get(0).getExName();
+                iMarksPerQuestion=ebList.get(0).getMarksPerQuestion();
+            }
         VerticalLayout formLayout = new VerticalLayout();
         formLayout.setMargin(false);
         formLayout.setSizeFull();
@@ -386,13 +287,24 @@ public class AdminExam extends VerticalLayout implements View  {
         Label emptyLbl=new Label(GlobalConstants.emptyString);
         adj.addComponent(emptyLbl);
         adj.setExpandRatio(emptyLbl, 1);
-        Label l = new Label("<h3>Subject: <b>"+subtxt+"</b></h3>" +
-                            "<h3>Questions: <b>"+questionstxt+"</b></h3>" + 
-                            "<h3>Total marks: <b>"+markstxt+"</b></h3>" +
-                            "<h3>Obtained marks: <b>"+scoretxt+"</b></h3>" , ContentMode.HTML);
-        l.setSizeFull();
-        adj.addComponent(l);
-        adj.setExpandRatio(l, 2);
+        Label lbl1 = new Label("<h5><b>Exam Name: "+strExamName+"</b></h5>" +
+                            "<h5><b>No. of Questions: "+questionstxt+"</b></h5>" + 
+                            "<h5><b>Passing marks: "+iPassingMarks+"</b></h5>" , ContentMode.HTML);
+        
+        lbl1.setSizeFull();
+        adj.addComponent(lbl1);
+        adj.setExpandRatio(lbl1, 2);
+        
+        Label lbl2 = new Label("<h5><b>Subject: "+subtxt+"</b></h5>" +
+                            
+                            "<h5><b>Total marks: "+markstxt+"</b></h5>" +
+                            
+                            "<h5><b>Marks/Question: "+iMarksPerQuestion+"</b></h5>", ContentMode.HTML);
+        
+        lbl2.setSizeFull();
+        adj.addComponent(lbl2);
+        adj.setExpandRatio(lbl2, 2);
+        
         
         formLayout.addComponent(adj); 
         formLayout.setExpandRatio(adj, 2.75f);
