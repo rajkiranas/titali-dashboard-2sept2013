@@ -392,12 +392,19 @@ public class ForumDetailWraper extends VerticalLayout {
             @Override
             public void handleAction(Object sender, Object target) {
                 if (txtNewComment.getValue() != null && !txtNewComment.getValue().equals(GlobalConstants.emptyString)) {
-                    saveComment(txtNewComment.getValue());
-                    fetchEventLikesAndComments();
-                    fields.removeComponent(verticalForCommentStack);
-                    fields.removeComponent(likeCommentBtnLayout);
-                    showLikeAndCommentsForm();
-                    showFullCommentsStack();
+                    if(txtNewComment.getValue().length()>1000)
+                    {
+                        Notification.show("Comment cannot be more than 1000 characters.", Notification.Type.WARNING_MESSAGE);
+                    }
+                    else
+                    {
+                        saveComment(txtNewComment.getValue());
+                        fetchEventLikesAndComments();
+                        fields.removeComponent(verticalForCommentStack);
+                        fields.removeComponent(likeCommentBtnLayout);
+                        showLikeAndCommentsForm();
+                        showFullCommentsStack();
+                    }
                 }
             }
         });
@@ -417,6 +424,7 @@ public class ForumDetailWraper extends VerticalLayout {
             Userprofile profile = ((Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile));
             JSONObject input = new JSONObject();
             input.put("event_id", eventDetails.getEventDetailId());
+            input.put("event_desc", eventDetails.getEventDesc());
             input.put("username", profile.getUsername());
             input.put("name", profile.getName());
             input.put("comment", value);

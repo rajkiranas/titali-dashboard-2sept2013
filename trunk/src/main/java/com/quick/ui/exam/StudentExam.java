@@ -456,13 +456,39 @@ public class StudentExam extends VerticalLayout implements View  {
         Label emptyLbl=new Label(GlobalConstants.emptyString);
         adj.addComponent(emptyLbl);
         adj.setExpandRatio(emptyLbl, 1);
-        Label l = new Label("<h3>Subject: <b>"+subtxt+"</b></h3>" +
-                            "<h3>Questions: <b>"+questionstxt+"</b></h3>" + 
-                            "<h3>Total marks: <b>"+markstxt+"</b></h3>" +
-                            "<h3>Obtained marks: <b>"+scoretxt+"</b></h3>" , ContentMode.HTML);
-        l.setSizeFull();
-        adj.addComponent(l);
-        adj.setExpandRatio(l, 2);
+        
+        int iPassingMarks=0;
+        String strExamName=GlobalConstants.HYPHEN;
+        int iMarksPerQuestion=0;
+        
+        if(ebList!=null && ebList.size()>0)
+            {
+                iPassingMarks=ebList.get(0).getPassingMarks();
+                strExamName=ebList.get(0).getExName();
+                iMarksPerQuestion=ebList.get(0).getMarksPerQuestion();
+            }
+        
+        
+        
+       
+        Label lbl1 = new Label("<h5><b>Exam Name: "+strExamName+"</b></h5>" +
+                            "<h5><b>No. of Questions: "+questionstxt+"</b></h5>" + 
+                            "<h5><b>Passing marks: "+iPassingMarks+"</b></h5>" +
+                            "<h5><b>Obtained marks: "+scoretxt+"</b></h5>", ContentMode.HTML);
+        
+        lbl1.setSizeFull();
+        adj.addComponent(lbl1);
+        adj.setExpandRatio(lbl1, 2);
+        
+        Label lbl2 = new Label("<h5><b>Subject: "+subtxt+"</b></h5>" +
+                            
+                            "<h5><b>Total marks: "+markstxt+"</b></h5>" +
+                            
+                            "<h5><b>Marks/Question: "+iMarksPerQuestion+"</b></h5>", ContentMode.HTML);
+        
+        lbl2.setSizeFull();
+        adj.addComponent(lbl2);
+        adj.setExpandRatio(lbl2, 2);
         
         formLayout.addComponent(adj); 
         formLayout.setExpandRatio(adj, 2.75f);
