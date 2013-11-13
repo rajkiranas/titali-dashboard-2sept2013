@@ -159,6 +159,29 @@ public class GlobalConstants
    public static  final String GET_DIV_BY_STD="GET_DIV_BY_STD";
    public static  final String SAVE_STUDENT="SAVE_STUDENT";
    public static  final String IS_ROLL_NO_ALREADY_EXISTS="IS_ROLL_NO_ALREADY_EXISTS";
+   public static  final String MemoryGame="MemoryGame";
+   public static  final String CrosswordGame="CrosswordGame";
+   
+   
+   
+   public static  final String HalloweenGame="HalloweenGame";
+   public static  final String TypingGame="TypingGame";
+   public static  final String QuizfindGame="QuizfindGame";
+   public static  final String NumbersGame="NumbersGame";
+   public static  final String ScrambledGame="ScrambledGame";
+   public static  final String FoodGame="FoodGame";
+   public static  final String FamilyGame="FamilyGame";
+   public static  final String FaceGame="FaceGame";
+   
+   public static  final String ColorsGame="ColorsGame";
+   public static  final String ChristmasGame="ChristmasGame";
+   public static  final String BikestormGame="BikestormGame";
+   public static  final String SudokuGame="SudokuGame";
+   
+   public static  final String DisneyColoringGame="DisneyColoringGame";
+   public static  final String EightWordsGame="EightWordsGame";
+   public static  final String IdeaWorkshopGame="IdeaWorkshopGame";
+   public static  final String WordmazeGame="WordmazeGame";
    
    //public static final String UserMasterResource = "/UserMaster";
     
