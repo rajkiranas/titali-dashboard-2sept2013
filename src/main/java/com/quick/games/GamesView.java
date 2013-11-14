@@ -308,8 +308,8 @@ public class GamesView extends VerticalLayout implements View, LayoutEvents.Layo
                 v.setSizeFull();
                 Flash f = new Flash(GlobalConstants.emptyString,new FileResource(new File((String)clicked.getData())));
                 f.setImmediate(true);
-                f.setWidth("550px");
-                f.setHeight("550px");
+                f.setWidth("600px");
+                f.setHeight("500px");
                 v.addComponent(f);
                 
                 split.setSecondComponent(v);

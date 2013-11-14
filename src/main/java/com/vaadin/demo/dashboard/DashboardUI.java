@@ -25,8 +25,8 @@ import java.util.Locale;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.quick.data.DataProvider;
-import com.quick.data.Generator;
 import com.quick.data.MyConverterFactory;
+import com.quick.dictionary.DictView;
 import com.quick.forum.ForumView;
 import com.quick.games.GamesView;
 import com.quick.notices.CreateNotices;
@@ -105,6 +105,7 @@ public class DashboardUI extends UI{
             put(GlobalConstants.ROUT_EXAM_ADMIN,AdminExam.class);
             put(GlobalConstants.ROUT_STUDENTS,StudentView.class);
             put(GlobalConstants.ROUT_TEACHERS,TeacherView.class);
+            put(GlobalConstants.ROUT_DICT,DictView.class);
             
             //put("/transactions", TransactionsView.class);
             //put("/reports", ReportsView.class);
@@ -394,11 +395,11 @@ public class DashboardUI extends UI{
         
         if(userRole.equalsIgnoreCase(GlobalConstants.student))
         {
-                   actions= new String[] { "dashboard", "learn","Tech-news","Exams","Forum","Games","Notices","reports"};
+                   actions= new String[] { "dashboard", "learn","Tech-news","Exams","Forum","dictionary","Games","Notices","reports"};
             
         }else
         {
-                actions= new String[] { "dashboard","topics","Tech-news","Exam-Admin","Forum","Games","Notices","reports",
+                actions= new String[] { "dashboard","topics","Tech-news","Exam-Admin","Forum","dictionary","Games","Notices","reports",
             "students","teachers" };
         }
         

@@ -79,6 +79,7 @@ public class GlobalConstants
     public static final String Technologies="Technologies";
     public static final String category_distribution = "category_distribution";
     public static final String eventDetailsList="eventDetailsList";
+    public static final String dictWordList="dictWordList";
     public static final String eventLikes="eventLikes";
     public static final String eventComments="eventComments";
     public static final String FILE_UPLOAD_PATH="FILE_UPLOAD_PATH";
@@ -100,6 +101,7 @@ public class GlobalConstants
     public static final String ROUT_EXAM_ADMIN="/Exam-Admin";
     public static final String ROUT_STUDENTS="/students";
     public static final String ROUT_TEACHERS="/teachers";
+    public static final String ROUT_DICT="/dictionary";
     
      // == exam ============
     public static final String EXAMRESOURCE = "examResource";
@@ -138,6 +140,7 @@ public class GlobalConstants
    public static  final String GET_TECHNOLOGY_BY_CATEGORY="GET_TECHNOLOGY_BY_CATEGORY";
    public static  final String GET_SUB_WISE_COMPARISON="GET_SUB_WISE_COMPARISON";
    public static  final String GET_All_FORUM_EVENTS="GET_All_FORUM_EVENTS";
+   public static  final String GET_WORD_LIST="GET_WORD_LIST";
    public static  final String SAVE_EVENT_DETAILS="SAVE_EVENT_DETAILS";
    public static  final String GET_STUD_QUICK_LEARN_DTLS="GET_STUD_QUICK_LEARN_DTLS";
    public static  final String SAVE_EVENT_LIKE="SAVE_EVENT_LIKE";
