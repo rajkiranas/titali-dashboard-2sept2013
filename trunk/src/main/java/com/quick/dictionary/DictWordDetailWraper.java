@@ -35,7 +35,9 @@ public class DictWordDetailWraper extends VerticalLayout {
         //details.setMargin(true);
         //set size full - used to display data in one screen only without scroll
         details.setSizeFull();
-        details.addStyleName("fourSideBorder");
+        //details.addStyleName("fourSideBorder");
+        details.addStyleName("topBorder");
+        
         addComponent(details);
         setData(wordDetails);
         addLayoutClickListener((LayoutEvents.LayoutClickListener)dictView);
@@ -43,7 +45,7 @@ public class DictWordDetailWraper extends VerticalLayout {
        
         FormLayout fields = new FormLayout();
         fields.setWidth("100%");
-        fields.addStyleName("rightBorder");
+        //fields.addStyleName("rightBorder");
         details.addComponent(fields);
         details.setComponentAlignment(fields, Alignment.MIDDLE_LEFT);
         details.setExpandRatio(fields, 3);
@@ -84,7 +86,7 @@ public class DictWordDetailWraper extends VerticalLayout {
         
         label = new Label(timeAndInstructor, ContentMode.HTML);
         //label.setSizeUndefined();
-        label.setWidth("98%");        
+        label.setWidth("100%");        
         label.addStyleName("backgroundColor");
         fields.addComponent(label);
         fields.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
