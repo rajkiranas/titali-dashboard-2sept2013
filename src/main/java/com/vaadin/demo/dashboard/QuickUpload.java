@@ -723,7 +723,10 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
         HorizontalLayout top = new HorizontalLayout();
         top.setWidth("100%");
         top.setSpacing(true);
+        top.setMargin(true);
         top.addStyleName(GlobalConstants.toolbar_style);
+        top.addStyleName("lightBackgroundForDashboardActivity");
+        top.addStyleName("lightGrayFourSideBorder");
         addComponent(top);
         final Label title = new Label(GlobalConstants.Upload_Topics);
         title.setSizeUndefined();

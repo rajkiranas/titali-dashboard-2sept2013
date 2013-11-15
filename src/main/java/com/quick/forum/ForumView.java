@@ -63,7 +63,7 @@ public class ForumView extends VerticalLayout implements View,LayoutEvents.Layou
         HorizontalLayout top = new HorizontalLayout();
         top.setWidth("100%");
         top.setSpacing(true);
-        //top.setMargin(new MarginInfo(true, true, false, true));
+        top.setMargin(true);
         top.addStyleName("toolbar");
         addComponent(top);
         final Label title = new Label("Forum");
@@ -72,6 +72,8 @@ public class ForumView extends VerticalLayout implements View,LayoutEvents.Layou
         top.addComponent(title);
         top.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
         top.setExpandRatio(title, 1);
+        top.addStyleName("lightBackgroundForDashboardActivity");
+        top.addStyleName("lightGrayFourSideBorder");
         
         Button newEventBtn =  new Button(New);
         newEventBtn.setImmediate(true);

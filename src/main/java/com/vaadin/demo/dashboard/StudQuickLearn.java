@@ -157,8 +157,10 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
         HorizontalLayout top = new HorizontalLayout();
         top.setWidth("100%");
         top.setSpacing(true);
-        top.setMargin(new MarginInfo(true, true, false, true));
-        top.addStyleName("toolbar");
+        top.setMargin(true);
+        top.addStyleName(GlobalConstants.toolbar_style);
+        top.addStyleName("lightBackgroundForDashboardActivity");
+        top.addStyleName("lightGrayFourSideBorder");
         addComponent(top);
         final Label title = new Label("Learn");
         title.setSizeUndefined();

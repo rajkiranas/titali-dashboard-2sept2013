@@ -10,9 +10,7 @@
 
 package com.quick.games;
 
-import com.vaadin.data.Property;
 import com.quick.global.GlobalConstants;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.navigator.View;
@@ -20,7 +18,6 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Flash;
 import com.vaadin.ui.HorizontalLayout;
@@ -46,8 +43,10 @@ public class GamesView extends VerticalLayout implements View, LayoutEvents.Layo
         HorizontalLayout top = new HorizontalLayout();
         top.setWidth("100%");
         top.setSpacing(true);
-        //top.setMargin(new MarginInfo(true, true, false, true));
-        top.addStyleName("toolbar");
+        top.setMargin(true);
+        top.addStyleName(GlobalConstants.toolbar_style);
+        top.addStyleName("lightBackgroundForDashboardActivity");
+        top.addStyleName("lightGrayFourSideBorder");
         
         final Label title = new Label("Games");
         title.setSizeUndefined();

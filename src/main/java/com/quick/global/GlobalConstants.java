@@ -141,7 +141,8 @@ public class GlobalConstants
    public static  final String GET_SUB_WISE_COMPARISON="GET_SUB_WISE_COMPARISON";
    public static  final String GET_All_FORUM_EVENTS="GET_All_FORUM_EVENTS";
    public static  final String GET_WORD_LIST="GET_WORD_LIST";
-   public static  final String SAVE_EVENT_DETAILS="SAVE_EVENT_DETAILS";
+   public static  final String SAVE_NEW_WORD_DETAILS="SAVE_NEW_WORD_DETAILS";
+   public static  final String SAVE_EVENT_DETAILS="SAVE_EVENT_DETAILS";   
    public static  final String GET_STUD_QUICK_LEARN_DTLS="GET_STUD_QUICK_LEARN_DTLS";
    public static  final String SAVE_EVENT_LIKE="SAVE_EVENT_LIKE";
    public static  final String SAVE_EVENT_COMMENT="SAVE_EVENT_COMMENT";
@@ -162,11 +163,10 @@ public class GlobalConstants
    public static  final String GET_DIV_BY_STD="GET_DIV_BY_STD";
    public static  final String SAVE_STUDENT="SAVE_STUDENT";
    public static  final String IS_ROLL_NO_ALREADY_EXISTS="IS_ROLL_NO_ALREADY_EXISTS";
+   
+   
    public static  final String MemoryGame="MemoryGame";
-   public static  final String CrosswordGame="CrosswordGame";
-   
-   
-   
+   public static  final String CrosswordGame="CrosswordGame";   
    public static  final String HalloweenGame="HalloweenGame";
    public static  final String TypingGame="TypingGame";
    public static  final String QuizfindGame="QuizfindGame";

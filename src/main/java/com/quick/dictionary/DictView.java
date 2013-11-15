@@ -25,9 +25,11 @@ import com.sun.jersey.api.client.WebResource;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -41,6 +43,7 @@ public class DictView extends VerticalLayout implements View,LayoutEvents.Layout
     private List<List> wrapperList = new ArrayList<List>();
     private LoadEarlierBtnWraper loadMoreWraper = new LoadEarlierBtnWraper(this);
     private static final String dict="Dictionary";
+    private static final List<String> searchOptions = Arrays.asList(new String[] {"Word", "Labels"});
 
     public List<DictWordDetailsBean> getDictWordDetailsList() {
         return dictWordDetailsList;
@@ -63,7 +66,7 @@ public class DictView extends VerticalLayout implements View,LayoutEvents.Layout
         HorizontalLayout top = new HorizontalLayout();
         top.setWidth("100%");
         top.setSpacing(true);
-        //top.setMargin(new MarginInfo(true, true, false, true));
+        // add page title
         top.addStyleName(GlobalConstants.toolbar_style);
         addComponent(top);
         final Label title = new Label(dict);
@@ -72,14 +75,49 @@ public class DictView extends VerticalLayout implements View,LayoutEvents.Layout
         top.addComponent(title);
         top.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
         top.setExpandRatio(title, 1);
+        top.addStyleName("lightBackgroundForDashboardActivity");
+        top.addStyleName("lightGrayFourSideBorder");
+        // add serach layout
         
+        
+
+        
+        OptionGroup searchSelect = new OptionGroup(GlobalConstants.emptyString, searchOptions);
+        searchSelect.setSizeUndefined();
+        searchSelect.addStyleName("horizontal");
+        searchSelect.setNullSelectionAllowed(false); // user can not 'unselect'
+        searchSelect.select("Word"); // select this by default
+        searchSelect.setImmediate(true); // send the change to the server at once
+        
+        
+        TextField searchBox = new TextField(GlobalConstants.emptyString);
+        searchBox.setImmediate(true);
+        searchBox.setInputPrompt("Enter here");
+        
+        
+        HorizontalLayout serachLayout = new HorizontalLayout();
+        serachLayout.setMargin(true);
+        serachLayout.setSpacing(true);
+        
+        
+        serachLayout.addComponent(new Label("<br><b>Search</b>",ContentMode.HTML));
+        serachLayout.addComponent(searchSelect);
+        serachLayout.addComponent(searchBox);
+        
+        top.addComponent(serachLayout);        
+        top.setComponentAlignment(serachLayout, Alignment.MIDDLE_CENTER);
+        top.setExpandRatio(serachLayout, 1);
+        
+        
+        
+        // add new button
         Button newEventBtn =  new Button(New);
         newEventBtn.setImmediate(true);
         newEventBtn.addStyleName(GlobalConstants.default_style);
         newEventBtn.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                UI.getCurrent().addWindow(new NewEventWindow(event));
+                UI.getCurrent().addWindow(new NewWordWindow(event));
             }
         });
         
