@@ -45,6 +45,7 @@ public class GlobalConstants
     public static final String role="role";
     public static final String WHATSNEW = "whatsNew";
     public static final String NOTICES = "notices";
+    public static final String wordOfTheDay = "wordOfTheDay";
     public static final String WHOSEDOINGWHAT = "Whodwht";
     public static final String STANDARDLIST = "standardList";
     public static final String STUDENTLIST = "studentList";
