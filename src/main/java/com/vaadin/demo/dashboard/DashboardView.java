@@ -13,11 +13,7 @@ package com.vaadin.demo.dashboard;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.quick.bean.ExamBean;
-import com.quick.bean.MasteParmBean;
-import com.quick.bean.MyDashBoardBean;
-import com.quick.bean.QuickLearn;
-import com.quick.bean.Userprofile;
+import com.quick.bean.*;
 import com.quick.entity.Notices;
 import com.quick.entity.Whatsnew;
 import com.quick.table.MyDashBoardDataProvider;
@@ -67,6 +63,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
     private  List<Whatsnew> whatsnewsList;
     private  List<MasteParmBean> whosDoingWhatFromDB;
     private  List<Notices> noticeses;
+    List<DictWordDetailsBean> wordOfTheDayList;
     private  Table whatsNewTable;
     private  Table whosDoingWhatTable;
     private static final String strViewMore="View More";
@@ -349,9 +346,34 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
 //        hl.setCaption("My score");
 //        hl.setSizeFull();
 //        hl.addComponent(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud()));
+        DictWordDetailsBean wordDetails = wordOfTheDayList.get(0);
+//        Label word = new Label("<h2><div style='background-color:grey;color:white;white-space: nowrap;display:inline-block;'>"+wordDetails.getWord().toUpperCase()+"</div></h2>", ContentMode.HTML);
+//        word.setWidth("100%");
+//        Label meaning = new Label("<h5>"+wordDetails.getMeaning()+"</h5>", ContentMode.HTML);
+//        meaning.setWidth("100%");
+//        Label appearsIn = new Label("<h5><div style='background-color:lightgrey;color:black;white-space: nowrap;display:inline-block;'>Appears in: "+wordDetails.getLabels()+"</div></h5>", ContentMode.HTML);
+//        appearsIn.setWidth("100%");
+        Label word = new Label("<b>&nbsp;&nbsp;&nbsp;"+wordDetails.getWord().toUpperCase()+"</b>", ContentMode.HTML);
+        word.setImmediate(true);
+        word.setWidth("100%");
+        word.addStyleName("greyBackgroundWhiteColor");
         
+        Label meaning = new Label("<h5>"+wordDetails.getMeaning()+"</h5>", ContentMode.HTML);
+        meaning.setWidth("100%");
         
-        if(profile.getRole().equals(GlobalConstants.student))
+        Label appearsIn = new Label("<h5>Appears in: "+wordDetails.getLabels()+"</h5>", ContentMode.HTML);
+        appearsIn.setImmediate(true);
+        appearsIn.setWidth("100%");
+        //appearsIn.addStyleName("lightgreyBackgroundBlackColor");
+        
+        VerticalLayout wordLayout = new VerticalLayout();
+        wordLayout.setCaption("Word Power");
+        wordLayout.addComponent(word);
+        wordLayout.addComponent(meaning);
+        wordLayout.addComponent(appearsIn);
+        noticeAndGraphLayout.addComponent(UIUtils.createPanel(wordLayout));
+        
+        /*  if(profile.getRole().equals(GlobalConstants.student))
         {
             getSubWiseComparisonList();
             noticeAndGraphLayout.addComponent(UIUtils.createPanel(StudentExamDataProvider.getMyExamPieChart(getSubjectWiseAvgPerformanceList(),getSubwiseAvgScoreForStud())));
@@ -365,7 +387,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
 //            f.setSizeFull();
 //            
 //            row.addComponent(UIUtils.createPanel(f));
-        }
+        } */
 //        row.setExpandRatio(whosDoingWhatTable, 3);
 //        row.setExpandRatio(c, 1);
 
@@ -379,74 +401,9 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         
     }
     
-    public  List<ExamBean> getSubWiseComparisonList() {
-       
-         List<ExamBean> subWiseComparisonList = null;
-        try {
-            Client client = Client.create();
-            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_SUB_WISE_COMPARISON));
-            //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
-            JSONObject inputJson = new JSONObject();
-             try
-             {           
-                Userprofile userprofile = (Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile);
-                inputJson.put("std", userprofile.getStd());
-                inputJson.put("div", userprofile.getDiv());
-                inputJson.put("username",userprofile.getUsername());
-             }catch(Exception ex){
-                 ex.printStackTrace();
-             }
-            
-            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
-            
-            JSONObject outNObject = null;
-            String output = response.getEntity(String.class);
-            outNObject = new JSONObject(output);
-
-            java.lang.reflect.Type listType = new TypeToken<ArrayList<ExamBean>>() {
-            }.getType();
-            
-            subjectWiseAvgPerformanceList = new Gson().fromJson(outNObject.getString(GlobalConstants.subjectWiseAvgPerformance), listType);
-            subwiseAvgScoreForStud = new Gson().fromJson(outNObject.getString(GlobalConstants.subwiseAvgScoreForStud), listType);
-        } catch (JSONException ex) 
-        {
-            ex.printStackTrace();
-          //  L.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return subWiseComparisonList;            
-    }
     
-    private List<ExamBean> subjectWiseAvgPerformanceList;
     
-    private List<ExamBean> subwiseAvgScoreForStud;
     
-    /**
-     * @return the subjectWiseAvgPerformanceList
-     */
-    public List<ExamBean> getSubjectWiseAvgPerformanceList() {
-        return subjectWiseAvgPerformanceList;
-    }
-
-    /**
-     * @param subjectWiseAvgPerformanceList the subjectWiseAvgPerformanceList to set
-     */
-    public void setSubjectWiseAvgPerformanceList(List<ExamBean> subjectWiseAvgPerformanceList) {
-        this.subjectWiseAvgPerformanceList = subjectWiseAvgPerformanceList;
-    }
-
-    /**
-     * @return the subwiseAvgScoreForStud
-     */
-    public List<ExamBean> getSubwiseAvgScoreForStud() {
-        return subwiseAvgScoreForStud;
-    }
-
-    /**
-     * @param subwiseAvgScoreForStud the subwiseAvgScoreForStud to set
-     */
-    public void setSubwiseAvgScoreForStud(List<ExamBean> subwiseAvgScoreForStud) {
-        this.subwiseAvgScoreForStud = subwiseAvgScoreForStud;
-    }
 
     Window notifications;
 
@@ -551,6 +508,12 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
             
              Gson noticesGson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
             noticeses = noticesGson.fromJson(outNObject.getString(GlobalConstants.NOTICES), listType2);
+            
+            Type wordOfTheDayType = new TypeToken<ArrayList<DictWordDetailsBean>>() {
+            }.getType();
+            
+             Gson wordOfTheDay_gson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
+            wordOfTheDayList = wordOfTheDay_gson.fromJson(outNObject.getString(GlobalConstants.wordOfTheDay), wordOfTheDayType);
             
            
         } catch (JSONException ex) 

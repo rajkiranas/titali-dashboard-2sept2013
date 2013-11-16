@@ -77,10 +77,12 @@ public class NewEventWindow extends Window implements Button.ClickListener{
     {
         subject = new TextField("Subject");
         subject.setImmediate(true);
+        subject.setInputPrompt("Event heading comes here");
         subject.setWidth("50%");
         
         desc = new TextArea("Description");
         desc.setImmediate(true);
+        desc.setInputPrompt("Event description comes here");
         desc.setWidth("90%");
         desc.setRows(8);
         

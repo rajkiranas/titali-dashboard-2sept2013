@@ -84,7 +84,7 @@ public class DictView extends VerticalLayout implements View,LayoutEvents.Layout
         
 
         
-        final OptionGroup select = new OptionGroup(GlobalConstants.emptyString, searchOptions);
+        final OptionGroup select = new OptionGroup(null, searchOptions);
         select.setSizeUndefined();
         select.addStyleName("horizontal");
         select.setNullSelectionAllowed(false); // user can not 'unselect'
@@ -92,7 +92,7 @@ public class DictView extends VerticalLayout implements View,LayoutEvents.Layout
         select.setImmediate(true); // send the change to the server at once
         
         
-        final TextField searchBox = new TextField(GlobalConstants.emptyString);
+        final TextField searchBox = new TextField();
         searchBox.setImmediate(true);
         searchBox.setInputPrompt("Enter here");
         searchBox.addShortcutListener(new ShortcutListener("Shortcut Name", ShortcutAction.KeyCode.ENTER, null) {
@@ -119,9 +119,10 @@ public class DictView extends VerticalLayout implements View,LayoutEvents.Layout
         serachLayout.setSpacing(true);
         
         
-        serachLayout.addComponent(new Label("<br><b>Search</b>",ContentMode.HTML));
+        serachLayout.addComponent(new Label("<b>Search</b>",ContentMode.HTML));
         serachLayout.addComponent(select);
         serachLayout.addComponent(searchBox);
+        //serachLayout.addStyleName("fourSideBorder");
         
         top.addComponent(serachLayout);        
         top.setComponentAlignment(serachLayout, Alignment.MIDDLE_CENTER);

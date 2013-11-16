@@ -82,7 +82,7 @@ public class DictWordDetailWraper extends VerticalLayout {
         
         String timeAndInstructor = "<b>&nbsp;&nbsp;&nbsp;FROM: </b>"+" " + DateUtil.formatDateInddMMyyyyFormat(wordDetails.getAddDate())
                 +"" + " <b>. INSTRUCTORS: </b>"+" "+ wordDetails.getOwnerName()                
-                + " <b>. LABELS: </b>"+wordDetails.getLabels()+"&nbsp;&nbsp;&nbsp;";
+                + " <b>. LABELS: </b><div style='background-color:grey;color:white;white-space: nowrap;display:inline-block;'>"+wordDetails.getLabels()+"</div>&nbsp;&nbsp;&nbsp;";
         
         label = new Label(timeAndInstructor, ContentMode.HTML);
         //label.setSizeUndefined();
@@ -99,8 +99,7 @@ public class DictWordDetailWraper extends VerticalLayout {
             description.setData(wordDetails.getMeaning());
         }
         if (!expand) {
-            synopsisText = synopsisText.length() > 150 ? synopsisText
-                    .substring(0, 150) + "…" : synopsisText;
+            //synopsisText = synopsisText.length() > 150 ? synopsisText.substring(0, 150) + "…" : synopsisText;
 
         }
         description.setValue(synopsisText);
