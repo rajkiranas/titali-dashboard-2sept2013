@@ -23,6 +23,8 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.vaadin.event.LayoutEvents;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -82,17 +84,34 @@ public class DictView extends VerticalLayout implements View,LayoutEvents.Layout
         
 
         
-        OptionGroup searchSelect = new OptionGroup(GlobalConstants.emptyString, searchOptions);
-        searchSelect.setSizeUndefined();
-        searchSelect.addStyleName("horizontal");
-        searchSelect.setNullSelectionAllowed(false); // user can not 'unselect'
-        searchSelect.select("Word"); // select this by default
-        searchSelect.setImmediate(true); // send the change to the server at once
+        final OptionGroup select = new OptionGroup(GlobalConstants.emptyString, searchOptions);
+        select.setSizeUndefined();
+        select.addStyleName("horizontal");
+        select.setNullSelectionAllowed(false); // user can not 'unselect'
+        select.select("Word"); // select this by default
+        select.setImmediate(true); // send the change to the server at once
         
         
-        TextField searchBox = new TextField(GlobalConstants.emptyString);
+        final TextField searchBox = new TextField(GlobalConstants.emptyString);
         searchBox.setImmediate(true);
         searchBox.setInputPrompt("Enter here");
+        searchBox.addShortcutListener(new ShortcutListener("Shortcut Name", ShortcutAction.KeyCode.ENTER, null) {
+
+            @Override
+            public void handleAction(Object sender, Object target) {
+                if (searchBox.getValue() != null && !searchBox.getValue().equals(GlobalConstants.emptyString)) {
+                    if(searchBox.getValue().length()>300)
+                    {
+                        Notification.show("Comment cannot be more than 300 characters.", Notification.Type.WARNING_MESSAGE);
+                    }
+                    else
+                    {
+                        searchWordsList(searchBox.getValue(),(String)select.getValue());
+                        
+                    }
+                }
+            }
+        });
         
         
         HorizontalLayout serachLayout = new HorizontalLayout();
@@ -101,7 +120,7 @@ public class DictView extends VerticalLayout implements View,LayoutEvents.Layout
         
         
         serachLayout.addComponent(new Label("<br><b>Search</b>",ContentMode.HTML));
-        serachLayout.addComponent(searchSelect);
+        serachLayout.addComponent(select);
         serachLayout.addComponent(searchBox);
         
         top.addComponent(serachLayout);        
@@ -185,6 +204,70 @@ public class DictView extends VerticalLayout implements View,LayoutEvents.Layout
             if(dictWordDetailsList.size()>0)
             {
                 wrapperList.add(dictWordDetailsList);
+            }
+            
+            
+        } catch (JSONException ex) 
+        {
+            ex.printStackTrace();
+        }
+        return dictWordDetailsList;
+    }
+    
+    private List<DictWordDetailsBean> searchWordsList(String wordOrLabelToBeSearched, String select) {
+        try {
+            Client client = Client.create();
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SEARCH_WORD_LIST));
+            //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
+            JSONObject inputJson = new JSONObject();
+             try
+             {           
+                 if(select.equals("Word"))
+                 {
+                     inputJson.put("searchFor", "Word");
+                     inputJson.put("searchWord", wordOrLabelToBeSearched);
+                 }
+                 else
+                 {
+                     inputJson.put("searchFor", "Label");
+                     inputJson.put("searchWord", wordOrLabelToBeSearched);
+                 }
+                 
+                 if (dictTable == null) 
+                 {
+                     inputJson.put("fetchResultsFrom", 0);
+                 } else 
+                 {
+                     inputJson.put("fetchResultsFrom", (dictTable.size() - 1));
+                 }
+//                inputJson.put("username",userprofile.getUsername());
+             }catch(Exception ex){
+                 ex.printStackTrace();
+             }
+            
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
+            
+            JSONObject outNObject = null;
+            String output = response.getEntity(String.class);
+            outNObject = new JSONObject(output);
+
+            java.lang.reflect.Type listType = new TypeToken<ArrayList<DictWordDetailsBean>>() {
+            }.getType();
+    
+            Gson gson=  new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();
+            
+            dictWordDetailsList=gson.fromJson(outNObject.getString(GlobalConstants.dictWordList), listType);
+            if(dictWordDetailsList.size()>0)
+            {
+                wrapperList = new ArrayList<List>();
+                wrapperList.add(dictWordDetailsList);
+                
+                if (dictTable != null) 
+                 {
+                     dictTable.removeAllItems();
+                     addDictWordsIntoTable();
+                 }
+                
             }
             
             
