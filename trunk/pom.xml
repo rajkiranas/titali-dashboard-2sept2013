@@ -52,8 +52,8 @@
                                     <mainClass>com.vaadin.sass.SassCompiler</mainClass>
                                     <workingDirectory>${project.basedir}</workingDirectory>
                                     <arguments>
-                                        <argument>${project.build.directory}/${artifactId}-${version}/VAADIN/themes/dashboard/styles.scss</argument>
-                                        <argument>${project.build.directory}/${artifactId}-${version}/VAADIN/themes/dashboard/styles.css</argument>
+                                        <argument>${project.build.directory}/${{project.artifactId}-${{project.version}/VAADIN/themes/dashboard/styles.scss</argument>
+                                        <argument>${project.build.directory}/${{project.artifactId}-${{project.version}/VAADIN/themes/dashboard/styles.css</argument>
                                     </arguments>
                                 </configuration>
                                 <goals>

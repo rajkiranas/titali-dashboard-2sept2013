@@ -141,6 +141,7 @@ public class GlobalConstants
    public static  final String GET_SUB_WISE_COMPARISON="GET_SUB_WISE_COMPARISON";
    public static  final String GET_All_FORUM_EVENTS="GET_All_FORUM_EVENTS";
    public static  final String GET_WORD_LIST="GET_WORD_LIST";
+   public static  final String SEARCH_WORD_LIST="SEARCH_WORD_LIST";
    public static  final String SAVE_NEW_WORD_DETAILS="SAVE_NEW_WORD_DETAILS";
    public static  final String SAVE_EVENT_DETAILS="SAVE_EVENT_DETAILS";   
    public static  final String GET_STUD_QUICK_LEARN_DTLS="GET_STUD_QUICK_LEARN_DTLS";
