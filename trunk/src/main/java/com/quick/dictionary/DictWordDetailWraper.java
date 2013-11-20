@@ -52,7 +52,7 @@ public class DictWordDetailWraper extends VerticalLayout {
         Label label;
         //String data="The activity of neurons in the brain and the code used by these neurons is described by mathematical neuron models at different levels of detail";
         
-        String caption = "<table><tr><td bgcolor='deeppink' style='color: #fff;'>NEW</td><td><b>"+wordDetails.getWord()+"</b></td></tr></table>" +GlobalConstants.emptyString;
+        String caption = "<table><tr><td bgcolor='deeppink' style='color: #fff;'>NEW</td><td><b>"+GlobalConstants.spaceString+wordDetails.getWord().toUpperCase()+"</b></td></tr></table>" +GlobalConstants.emptyString;
         
         label = new Label(caption, ContentMode.HTML);
         label.setSizeUndefined();
