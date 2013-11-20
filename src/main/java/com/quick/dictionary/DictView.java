@@ -113,6 +113,25 @@ public class DictView extends VerticalLayout implements View,LayoutEvents.Layout
             }
         });
         
+         searchBox.addShortcutListener(new ShortcutListener("Shortcut Name", ShortcutAction.KeyCode.BACKSPACE, null) {
+
+            @Override
+            public void handleAction(Object sender, Object target) {
+                if (searchBox.getValue() == null || searchBox.getValue().equals(GlobalConstants.emptyString)) {
+                    dictTable.removeAllItems();
+                    wrapperList=new ArrayList<List>();
+                    setDictWordDetailsList(getDictWordsList());
+                    addDictWordsIntoTable();
+                }
+                else
+                {
+                    searchBox.setValue(searchBox.getValue().substring(0,searchBox.getValue().length()-1));
+                }
+            }
+        });
+        
+        
+        
         
         HorizontalLayout serachLayout = new HorizontalLayout();
         serachLayout.setMargin(true);

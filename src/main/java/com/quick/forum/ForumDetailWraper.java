@@ -65,13 +65,14 @@ public class ForumDetailWraper extends VerticalLayout {
         setCaption(eventDetails.getEventDesc());
         setHeight("99%");
         setWidth("99%");
+        setMargin(false);
 //        addStyleName("no-vertical-drag-hints");
 //        addStyleName("no-horizontal-drag-hints");
         addStyleName("fourSideBorder");
 
         HorizontalLayout details = new HorizontalLayout();
         details.setSpacing(true);
-        details.setMargin(true);
+        details.setMargin(false);
         details.setSizeFull();
         addComponent(details);
 
@@ -116,12 +117,12 @@ public class ForumDetailWraper extends VerticalLayout {
 
 
 
-        final Button more = new Button("More…");
+        final Button more = new Button("More...");
 
         DragAndDropWrapper cover = new DragAndDropWrapper(coverImage);
         cover.setDragStartMode(DragStartMode.NONE);
-        cover.setWidth("150px");
-        cover.setHeight("150px");
+        cover.setWidth("140px");
+        cover.setHeight("140px");
         cover.addStyleName("cover");
         cover.setDropHandler(new DropHandler() {
 
@@ -343,6 +344,7 @@ public class ForumDetailWraper extends VerticalLayout {
         verticalForCommentStack.setMargin(false);
         verticalForCommentStack.setSpacing(true);
         verticalForCommentStack.setWidth("65%");
+        //verticalForCommentStack.setHeight("200px");
         verticalForCommentStack.addStyleName("backgroundColor");
         HorizontalLayout fullCommentsLayout;
         for (EventCommentsBean comment : eventCommentsList) {
