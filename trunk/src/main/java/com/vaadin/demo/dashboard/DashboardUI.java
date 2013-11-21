@@ -33,6 +33,7 @@ import com.quick.notices.CreateNotices;
 import com.quick.ui.exam.AdminExam;
 import com.quick.ui.exam.StudentExam;
 import com.quick.upcomingtechnology.CreateUpcomingTechnology;
+import com.quick.utilities.UIUtils;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.event.Transferable;
@@ -139,7 +140,15 @@ public class DashboardUI extends UI{
         bg.setSizeUndefined();
         bg.addStyleName(loginBgStyleName);
         root.addComponent(bg);
-
+        
+        loginLayout = new VerticalLayout();
+        loginLayout.setSizeFull();
+        loginLayout.addStyleName(loginLayoutStyle);
+        loginLayout.setSpacing(false);
+        loginLayout.setMargin(true);
+        root.addComponent(loginLayout);
+        
+        addHeadingLabels();
         buildLoginView(false);
 
     }
@@ -180,13 +189,11 @@ public class DashboardUI extends UI{
 
         addStyleName(loginStyle);
 
-        loginLayout = new VerticalLayout();
-        loginLayout.setSizeFull();
-        loginLayout.addStyleName(loginLayoutStyle);
-        root.addComponent(loginLayout);
+        
 
         final CssLayout loginPanel = new CssLayout();
         loginPanel.addStyleName(loginPanelStyle);
+        loginPanel.setWidth("30%");
 
         HorizontalLayout labels = new HorizontalLayout();
         labels.setWidth("100%");
@@ -207,7 +214,7 @@ public class DashboardUI extends UI{
         labels.addComponent(title);
         labels.setComponentAlignment(title, Alignment.MIDDLE_RIGHT);
 
-        HorizontalLayout fields = new HorizontalLayout();
+        VerticalLayout fields = new VerticalLayout();
         fields.setSpacing(true);
         fields.setMargin(true);
         fields.addStyleName(fieldsStyle);
@@ -270,9 +277,12 @@ public class DashboardUI extends UI{
         signin.addShortcutListener(enter);
 
         loginPanel.addComponent(fields);
-
+        
         loginLayout.addComponent(loginPanel);
+        
         loginLayout.setComponentAlignment(loginPanel, Alignment.MIDDLE_CENTER);
+        
+        loginLayout.setExpandRatio(loginPanel, 4);
     }
 
      
@@ -583,7 +593,7 @@ public class DashboardUI extends UI{
                  Notification.show(GlobalNotifications.INVALID_CREDENTIALS);
             }
         } catch (JSONException ex) {
-            Logger.getLogger(DashboardUI.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
           
         }
         
@@ -592,4 +602,29 @@ public class DashboardUI extends UI{
     
     private Userprofile loggedinProfile;
     private String userRole;
+
+    private VerticalLayout addHeadingLabels() 
+    {
+        VerticalLayout headings = new VerticalLayout();
+        headings.setSpacing(true);
+        
+        Label titali = new Label("Titali Dashboard",ContentMode.HTML);
+        titali.addStyleName("login-product-label");
+        
+        Label signIn = new Label("Sign in to continue to dashboard",ContentMode.HTML);
+        signIn.addStyleName("sign-in-tocontinue");
+        
+        headings.addComponent(titali);
+        headings.setComponentAlignment(titali, Alignment.MIDDLE_CENTER);
+        headings.addComponent(UIUtils.getSchoolBannerLayout());
+        headings.addComponent(signIn);
+        headings.setComponentAlignment(signIn, Alignment.MIDDLE_CENTER);
+        
+        loginLayout.addComponent(headings);
+        loginLayout.setComponentAlignment(headings, Alignment.MIDDLE_CENTER);
+        loginLayout.setExpandRatio(headings,0.5f);
+        
+        return headings;
+        
+    }
 }
