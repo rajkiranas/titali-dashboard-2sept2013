@@ -33,11 +33,8 @@ import com.vaadin.addon.charts.model.XAxis;
 import com.vaadin.addon.charts.model.YAxis;
 import com.vaadin.addon.charts.model.style.SolidColor;
 import com.vaadin.addon.charts.model.style.Style;
-import com.vaadin.annotations.Title;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -63,7 +60,7 @@ public class UIUtils {
     
     public static Component getSchoolBannerLayout() 
     {
-        Label collegeBanner=new Label("<b>"+GlobalConstants.getProperty(GlobalConstants.SCHOOL_NAME)+"</b>", ContentMode.HTML);
+        Label collegeBanner=new Label("<h3 style='text-align:center;'><b>"+GlobalConstants.getProperty(GlobalConstants.SCHOOL_NAME)+"</b><h3>", ContentMode.HTML);
         collegeBanner.setImmediate(true);
         
         VerticalLayout bannerLayout = new VerticalLayout();
