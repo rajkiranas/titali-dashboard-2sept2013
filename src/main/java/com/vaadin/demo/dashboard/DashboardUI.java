@@ -152,8 +152,6 @@ public class DashboardUI extends UI{
         buildLoginView(false);
 
     }
-    
-    
 
     private static final String loginStyle="login";
     private static final String loginLayoutStyle="login-layout";
@@ -178,14 +176,14 @@ public class DashboardUI extends UI{
             root.removeAllComponents();
         }
         helpManager.closeAll();
-        HelpOverlay w = helpManager
-                .addOverlay(
-                        "Welcome to the Titali Dashboard",
-                        "<p>The application helps students to learn better and get smarter.</p>"
-                        +"<p>It also helps to learn ongoing and upcoming technology trends while providing an effective platform of sharing, where everyone learns.</p>",
-                        "login");
-        w.center();
-        addWindow(w);
+//        HelpOverlay w = helpManager
+//                .addOverlay(
+//                        "Welcome to the Titali Dashboard",
+//                        "<p>The application helps students to learn better and get smarter.</p>"
+//                        +"<p>It also helps to learn ongoing and upcoming technology trends while providing an effective platform of sharing, where everyone learns.</p>",
+//                        "login");
+//        w.center();
+//        addWindow(w);
 
         addStyleName(loginStyle);
 
@@ -194,8 +192,21 @@ public class DashboardUI extends UI{
         final CssLayout loginPanel = new CssLayout();
         loginPanel.addStyleName(loginPanelStyle);
         loginPanel.setWidth("30%");
-
+        
         HorizontalLayout labels = new HorizontalLayout();
+        labels.setWidth("100%");
+        labels.setMargin(true);
+        labels.addStyleName(lablesStyle);
+        
+        Image userImage = new Image(null, new ThemeResource("img/dashboard-pie.png"));
+
+         userImage.setWidth("75px");
+         userImage.setWidth("75px");
+         labels.addComponent(userImage);
+         labels.setComponentAlignment(userImage,Alignment.MIDDLE_CENTER);
+            loginPanel.addComponent(labels);
+
+        labels = new HorizontalLayout();
         labels.setWidth("100%");
         labels.setMargin(true);
         labels.addStyleName(lablesStyle);
@@ -218,6 +229,8 @@ public class DashboardUI extends UI{
         fields.setSpacing(true);
         fields.setMargin(true);
         fields.addStyleName(fieldsStyle);
+        
+         
 
         final TextField username = new TextField(strUsername);
         username.focus();
@@ -282,7 +295,7 @@ public class DashboardUI extends UI{
         
         loginLayout.setComponentAlignment(loginPanel, Alignment.MIDDLE_CENTER);
         
-        loginLayout.setExpandRatio(loginPanel, 4);
+        loginLayout.setExpandRatio(loginPanel, 3);
     }
 
      
@@ -622,7 +635,7 @@ public class DashboardUI extends UI{
         
         loginLayout.addComponent(headings);
         loginLayout.setComponentAlignment(headings, Alignment.MIDDLE_CENTER);
-        loginLayout.setExpandRatio(headings,0.5f);
+        loginLayout.setExpandRatio(headings,1);
         
         return headings;
         
