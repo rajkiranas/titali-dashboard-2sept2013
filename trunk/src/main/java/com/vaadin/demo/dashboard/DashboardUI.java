@@ -71,8 +71,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -187,23 +185,21 @@ public class DashboardUI extends UI{
 
         addStyleName(loginStyle);
 
-        
-
         final CssLayout loginPanel = new CssLayout();
         loginPanel.addStyleName(loginPanelStyle);
-        loginPanel.setWidth("30%");
+        loginPanel.setWidth("85%");
         
         HorizontalLayout labels = new HorizontalLayout();
         labels.setWidth("100%");
         labels.setMargin(true);
         labels.addStyleName(lablesStyle);
         
-        Image userImage = new Image(null, new ThemeResource("img/dashboard-pie.png"));
+        Image schoolLogo = new Image(null, new ThemeResource("img/mitlogo.png"));
 
-         userImage.setWidth("75px");
-         userImage.setWidth("75px");
-         labels.addComponent(userImage);
-         labels.setComponentAlignment(userImage,Alignment.MIDDLE_CENTER);
+         schoolLogo.setWidth("90px");
+         schoolLogo.setHeight("90px");
+         labels.addComponent(schoolLogo);
+         labels.setComponentAlignment(schoolLogo,Alignment.MIDDLE_CENTER);
             loginPanel.addComponent(labels);
 
         labels = new HorizontalLayout();
@@ -291,11 +287,26 @@ public class DashboardUI extends UI{
 
         loginPanel.addComponent(fields);
         
-        loginLayout.addComponent(loginPanel);
-        
-        loginLayout.setComponentAlignment(loginPanel, Alignment.MIDDLE_CENTER);
-        
-        loginLayout.setExpandRatio(loginPanel, 3);
+         HorizontalLayout h = new HorizontalLayout();
+         h.setSizeFull();
+
+         Image Logo = new Image(null, new ThemeResource("img/m1.jpg"));
+         Logo.setWidth("500px");
+         Logo.setHeight("350px");
+
+         h.addComponent(Logo);
+         h.setComponentAlignment(Logo, Alignment.MIDDLE_CENTER);
+         h.setExpandRatio(Logo, 3);
+
+         h.addComponent(loginPanel);
+         h.setComponentAlignment(loginPanel, Alignment.MIDDLE_RIGHT);
+         h.setExpandRatio(loginPanel, 2);
+
+         loginLayout.addComponent(h);
+
+         loginLayout.setComponentAlignment(h, Alignment.MIDDLE_CENTER);
+
+         loginLayout.setExpandRatio(h, 3);
     }
 
      

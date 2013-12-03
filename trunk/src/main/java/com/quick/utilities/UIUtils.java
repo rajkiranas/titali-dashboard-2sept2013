@@ -33,11 +33,14 @@ import com.vaadin.addon.charts.model.XAxis;
 import com.vaadin.addon.charts.model.YAxis;
 import com.vaadin.addon.charts.model.style.SolidColor;
 import com.vaadin.addon.charts.model.style.Style;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
@@ -60,17 +63,31 @@ public class UIUtils {
     
     public static Component getSchoolBannerLayout() 
     {
-        Label collegeBanner=new Label("<h3 style='text-align:center;'><b>"+GlobalConstants.getProperty(GlobalConstants.SCHOOL_NAME)+"</b><h3>", ContentMode.HTML);
+        Label collegeBanner=new Label("<div style='text-align:center;'><b>"+GlobalConstants.getProperty(GlobalConstants.SCHOOL_NAME)+"</b></div>", ContentMode.HTML);
+        //Label collegeBanner=new Label("<div><b>"+GlobalConstants.getProperty(GlobalConstants.SCHOOL_NAME)+"</b></div>", ContentMode.HTML);
         collegeBanner.setImmediate(true);
         
         VerticalLayout bannerLayout = new VerticalLayout();
            //layout.setSpacing(true);
            bannerLayout.setWidth("100%");
            bannerLayout.setHeight("100%");
-           bannerLayout.setMargin(new MarginInfo(true, true, false, true));
+           bannerLayout.setMargin(new MarginInfo(true, true, true, true));
            bannerLayout.addStyleName("brownBackgroundColor");
            
+         //Image schoolLogo = new Image(null, new ThemeResource("img/inside-logo.jpg"));
+//         Image schoolLogo = new Image(null, new ThemeResource("img/mitlogo.png"));
+//         
+//         schoolLogo.setWidth("50px");
+//         schoolLogo.setHeight("50px");
+//         
+//         bannerLayout.addComponent(schoolLogo);
+//         bannerLayout.setComponentAlignment(schoolLogo,Alignment.MIDDLE_RIGHT);         
+//         bannerLayout.setExpandRatio(schoolLogo, 1);
+           
        bannerLayout.addComponent(collegeBanner);
+       //bannerLayout.setComponentAlignment(collegeBanner,Alignment.MIDDLE_LEFT);         
+       //bannerLayout.setExpandRatio(collegeBanner, 2);
+       
        return bannerLayout;       
     }
     
