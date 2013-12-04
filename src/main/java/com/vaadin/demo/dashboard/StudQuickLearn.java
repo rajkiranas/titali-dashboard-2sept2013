@@ -779,7 +779,7 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
     }  
     
     
-    private void sendWhosDoingWhatNotificationToStudents(String activity, String subject, String topicIntro){
+    private void sendWhosDoingWhatNotificationToStudents(String activity, String subject, String topicIntro,String classToInvoke){
         try {
             JSONObject inputRequest = new JSONObject();
             
@@ -792,6 +792,7 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
                 inputRequest.put("sub",subject);
                 inputRequest.put("topic",getTopicForNotification());
                 inputRequest.put("topicIntro",topicIntro);
+                inputRequest.put("classToInvoke",classToInvoke);
                                    
             Client client = Client.create();
                 WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SEND_WHOS_DOING_WHAT_NOTIFICATIONS));
@@ -863,8 +864,10 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
             if (topicIntro.length() > 145) {
                 topicIntro = topicIntro.substring(0, 145) + strTrippleDots;
             }
-            sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through, bean.getSub(), topicIntro);
-            UI.getCurrent().addWindow(new ViewTopicDetailsWindow(getStudQuikLearnDetails(), getUserNotes(), getUploadId()));
+            
+            ViewTopicDetailsWindow w = new ViewTopicDetailsWindow(getStudQuikLearnDetails(), getUserNotes(), getUploadId());
+            sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through, bean.getSub(), topicIntro,w.getClass().getName());
+            UI.getCurrent().addWindow(w);
 
         }
         else if (c instanceof LoadEarlierBtnWraper)

@@ -53,6 +53,8 @@ import com.vaadin.ui.themes.BaseTheme;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -610,7 +612,25 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
             DashboardActivityWraper activityWraper =(DashboardActivityWraper) event.getComponent();
                 MyDashBoardBean activityDetails = (MyDashBoardBean)activityWraper.getData();
                 QuickLearn learn =getStudentQuickLearnDetails(activityDetails.getUploadId());
-                UI.getCurrent().addWindow(new ViewTopicDetailsWindow(learn,getUserNotes(),Integer.parseInt(activityDetails.getUploadId())));
+                
+                ///UI.getCurrent().addWindow(new ViewTopicDetailsWindow(learn,getUserNotes(),Integer.parseInt(activityDetails.getUploadId())));
+                
+            //1. As Kel has told you (+1), you need to use 
+            //Java reflection to get the Class Object.
+            Class cl;
+            try {
+                cl = Class.forName(activityDetails.getClassToInvoke());
+                Object o = cl.newInstance();
+                ViewTopicDetailsWindow topic=(ViewTopicDetailsWindow) o;
+                Window w=topic.doConstructorsWorKForReflection(learn,getUserNotes(),Integer.parseInt(activityDetails.getUploadId()));
+                UI.getCurrent().addWindow(w);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            //2. Then, you can create a new instance of the bean. 
+            //Assuming your Bean1 class has an empty public constructor:
+                
         }
         else if(c instanceof LoadEarlierBtnWraper)
         {

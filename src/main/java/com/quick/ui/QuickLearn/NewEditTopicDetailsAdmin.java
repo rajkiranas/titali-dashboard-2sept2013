@@ -751,6 +751,9 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
                 inputJson.put("isNewQuickUpload", true);
                 inputJson.put("uploadId", "null");
                 
+                ViewTopicDetailsWindow w = new ViewTopicDetailsWindow();
+                inputJson.put("classToInvoke",w.getClass().getName());
+                
 //                if (isNewQuickUpload) {
 //                    inputJson.put("uploadId", "null");
 //                } else {
