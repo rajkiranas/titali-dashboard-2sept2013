@@ -20,7 +20,7 @@ public class MyDashBoardBean {
     private String  notification;
     private String  uploadId;
     private String topicintro;
-
+    private String classToInvoke;
    
 
     public String getBywhome() {
@@ -121,6 +121,20 @@ public class MyDashBoardBean {
      */
     public void setTopicintro(String topicintro) {
         this.topicintro = topicintro;
+    }
+
+    /**
+     * @return the classToInvoke
+     */
+    public String getClassToInvoke() {
+        return classToInvoke;
+    }
+
+    /**
+     * @param classToInvoke the classToInvoke to set
+     */
+    public void setClassToInvoke(String classToInvoke) {
+        this.classToInvoke = classToInvoke;
     }
     
     

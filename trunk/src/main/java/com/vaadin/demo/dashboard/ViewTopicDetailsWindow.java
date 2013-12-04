@@ -58,6 +58,35 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         addStyleName("schedule");
     }
     
+    public ViewTopicDetailsWindow(){
+        
+        
+    }
+    
+    public Window doConstructorsWorKForReflection(QuickLearn learnRow, String strUserNotes, int selectedUploadId)
+    {
+        this.selectedUploadId=selectedUploadId;
+        this.quickLearnPojo=learnRow;
+        this.strUserNotes=strUserNotes;
+        setModal(true);
+        setCaption("View topic details");
+        center();        
+        setClosable(true);
+        setWidth("90%");
+        setHeight("100%"); 
+        setImmediate(true);
+        
+        
+        buildBaseStudentLayout();
+        addTopicDetails();
+        //addUserNotes();
+        setContent(baseLayout);
+        addStyleName("schedule");
+        
+        return this;
+        
+    }
+    
    /*  public ViewTopicDetailsWindow(StudentView studentView, List<Userprofile> studentList) {
             
         setModal(true);       

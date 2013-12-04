@@ -38,6 +38,7 @@ public class MasteParmBean {
     private String displaynotification;
     private String quiz;
     private String topicintro;
+    private String classToInvoke;
 
     public int getActivityId() {
         return activityId;
@@ -231,6 +232,20 @@ public class MasteParmBean {
      */
     public void setTopicintro(String topicintro) {
         this.topicintro = topicintro;
+    }
+
+    /**
+     * @return the classToInvoke
+     */
+    public String getClassToInvoke() {
+        return classToInvoke;
+    }
+
+    /**
+     * @param classToInvoke the classToInvoke to set
+     */
+    public void setClassToInvoke(String classToInvoke) {
+        this.classToInvoke = classToInvoke;
     }
 
    
