@@ -46,7 +46,7 @@ public class ForumDetailWraper extends VerticalLayout {
     private HorizontalLayout likeCommentBtnLayout;
     private String People_who_like_this="People who like this";
 
-    public ForumDetailWraper(final ForumEventDetailsBean eventDetails) {
+    public ForumDetailWraper(final ForumEventDetailsBean eventDetails,ForumView view) {
 
         this.eventDetails = eventDetails;
         setCaption(eventDetails.getEventDesc());
@@ -56,12 +56,13 @@ public class ForumDetailWraper extends VerticalLayout {
 //        addStyleName("no-vertical-drag-hints");
 //        addStyleName("no-horizontal-drag-hints");
         addStyleName("fourSideBorder");
-
+        setData(eventDetails);
         HorizontalLayout details = new HorizontalLayout();
         details.setSpacing(true);
         details.setMargin(false);
         details.setSizeFull();
         addComponent(details);
+        addLayoutClickListener(view);
 
 //        final Image coverImage = new Image("", new ExternalResource(
 //                ""));

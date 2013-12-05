@@ -13,6 +13,8 @@ package com.quick.forum;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.quick.bean.EventCommentsBean;
+import com.quick.bean.EventLikeBean;
 import com.quick.bean.ForumEventDetailsBean;
 import com.quick.bean.Userprofile;
 import com.quick.global.GlobalConstants;
@@ -25,6 +27,7 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import org.codehaus.jettison.json.JSONException;
@@ -184,23 +187,23 @@ public class ForumView extends VerticalLayout implements View,LayoutEvents.Layou
      @Override
     public void layoutClick(LayoutEvents.LayoutClickEvent event) 
     {
-        /*if(c instanceof DashboardActivityWraper)
-        {
-            DashboardActivityWraper activityWraper =(DashboardActivityWraper) event.getComponent();
-                MyDashBoardBean activityDetails = (MyDashBoardBean)activityWraper.getData();
-                QuickLearn learn =getStudentQuickLearnDetails(activityDetails.getUploadId());
-                UI.getCurrent().addWindow(new ViewTopicDetailsWindow(learn,getUserNotes(),Integer.parseInt(activityDetails.getUploadId())));
-        }
-        else*/
         Component c = event.getComponent();
-         if(c instanceof LoadEarlierBtnWraper)
+        
+        if(c instanceof ForumDetailWraper)
         {
+            ForumDetailWraper activityWraper =(ForumDetailWraper) event.getComponent();
+            ForumEventDetailsBean eventDtls = (ForumEventDetailsBean)activityWraper.getData();
+            fetchEventLikesAndComments(eventDtls);
+            ViewEventDetailsWindow w = new ViewEventDetailsWindow();
+            UI.getCurrent().addWindow(w.doConstructorsWorKForReflection(eventDtls, eventLikesList, eventCommentsList));
+        }
+         else if (c instanceof LoadEarlierBtnWraper) {
             getForumDetailList();
 
             System.out.println("&^^^^^^^^^^^&^&^&^&^ Button Clicked&^&^&^&^&^&^&^^&");
             forumTable.removeAllItems();
             addForumEventsInToTable();
-            
+
         }
         
     }
@@ -211,9 +214,51 @@ public class ForumView extends VerticalLayout implements View,LayoutEvents.Layou
         {
             for(ForumEventDetailsBean eventDetails:eventDetailsList)
             {
-                forumTable.addItem(new Object[]{new ForumDetailWraper(eventDetails) },forumTable.size()+1);
+                forumTable.addItem(new Object[]{new ForumDetailWraper(eventDetails,this) },forumTable.size()+1);
             }            
         }
         forumTable.addItem(new Object[]{loadMoreWraper},forumTable.size()+1);
+    }
+    
+    private List<EventLikeBean> eventLikesList;
+    private List<EventCommentsBean> eventCommentsList;
+    
+    private void fetchEventLikesAndComments(ForumEventDetailsBean eventDtls) {
+        try {
+            JSONObject input = new JSONObject();
+            input.put("event_id", eventDtls.getEventDetailId());
+
+            Client client = Client.create();
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.FETCH_EVENT_LIKES_BY_ID));
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, input);
+
+            /*
+             * if (response.getStatus() != 201) { throw new
+             * RuntimeException("Failed : HTTP error code : " +
+             * response.getStatus()); }
+             */
+
+            JSONObject outNObject = null;
+            String output = response.getEntity(String.class);
+            outNObject = new JSONObject(output);
+
+             Type listType1 = new TypeToken<ArrayList<EventLikeBean>>() {
+            }.getType();
+            
+             Gson eventLikesGson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
+            eventLikesList = eventLikesGson.fromJson(outNObject.getString(GlobalConstants.eventLikes), listType1);
+            
+            Type listType2 = new TypeToken<ArrayList<EventCommentsBean>>() {
+            }.getType();
+            
+             Gson eventCommentsGson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
+            eventCommentsList = eventCommentsGson.fromJson(outNObject.getString(GlobalConstants.eventComments), listType2);
+            
+            //System.out.println("eve"+eventLikesList);
+            
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+
     }
 }
