@@ -12,6 +12,8 @@ import com.quick.utilities.DateUtil;
 import com.quick.utilities.MyImageSource;
 import com.sun.jersey.core.util.Base64;
 import com.vaadin.event.MouseEvents;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -34,6 +36,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
     private ForumEventDetailsBean eventDtls;
     private List<EventLikeBean> eventLikesList;
     private List<EventCommentsBean> eventCommentsList;
+    private TextField txtNewComment;
     
     
     
@@ -44,7 +47,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         setCaption("View topic details");
         center();        
         setClosable(true);
-        setWidth("80%");
+        setWidth("85%");
         setHeight("90%"); 
         setImmediate(true);
         
@@ -68,7 +71,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         setCaption("View topic details");
         center();        
         setClosable(true);
-        setWidth("80%");
+        setWidth("85%");
         setHeight("90%"); 
         setImmediate(true);
         
@@ -97,11 +100,10 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
               
        baseLayout = new HorizontalLayout();
        baseLayout.setImmediate(true);
-
-       baseLayout.setSpacing(true);   
-       baseLayout.setMargin(true);
-//       baseLayout.setWidth("100%");
-//       baseLayout.setHeight("100%");
+       baseLayout.setSpacing(false);   
+       baseLayout.setMargin(false);
+       baseLayout.setWidth("93%");
+       baseLayout.setHeight("98%");
     }
 
     @Override
@@ -123,18 +125,25 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         //CssLayout tabsheetLayout = UIUtils.createPanel(tabsheet);
         getEventImage();
         getEventDetails();
+        showLikeAndCommentsForm();
+        showFullCommentsStack();
         
         //baseLayout.setExpandRatio(tabsheetLayout,2);
     }
 
-    private Image getEventImage() 
+    private Component getEventImage() 
     {
         byte[] by = eventDtls.getStringImage().getBytes();
         StreamResource.StreamSource imagesource = new MyImageSource(Base64.decode(by));
         StreamResource resource = new StreamResource(imagesource, "myimage.png");
-        Image coverImage = new Image("Image", resource);
-        coverImage.setHeight("425px");
-        coverImage.setWidth("475px");
+        resource.setCacheTime(0);
+//        Image coverImage = new Image(GlobalConstants.emptyString, resource);
+//        coverImage.setHeight("425px");
+//        coverImage.setWidth("475px");
+        
+        Embedded coverImage = new Embedded(null,resource);
+        coverImage.setType(Embedded.TYPE_IMAGE);
+        coverImage.setSizeFull();
         //coverImage.setSizeFull();
         baseLayout.addComponent(coverImage);
         baseLayout.setExpandRatio(coverImage,3);
@@ -145,13 +154,16 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
     private Component getEventDetails() 
     {
         v = new VerticalLayout();
-        v.setSizeFull();
+        //v.setSizeFull();
+        v.setSpacing(true);
+        v.setMargin(true);
+        //v.setHeight("100%");
         
         HorizontalLayout photoAndEventDtls = new HorizontalLayout();
 
         photoAndEventDtls.addStyleName("whiteBottomBorder");
         photoAndEventDtls.setMargin(false);
-        photoAndEventDtls.setSpacing(true);
+        photoAndEventDtls.setSpacing(false);
         photoAndEventDtls.setWidth("100%");
         photoAndEventDtls.setHeight("100%");
         Image userImage = new Image(null, new ThemeResource("img/profile-pic.png"));
@@ -159,7 +171,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         userImage.setWidth("30px");
         userImage.setWidth("30px");
         photoAndEventDtls.addComponent(userImage);
-        photoAndEventDtls.setExpandRatio(userImage, 1);
+        photoAndEventDtls.setExpandRatio(userImage, 0.5f);
         photoAndEventDtls.setComponentAlignment(userImage, Alignment.MIDDLE_LEFT);
         
         String cap = "<div style='color:deeppink;display:inline-block;'> <b>" + eventDtls.getEventOwner() + "</b></div>" + "<div style='color:grey;font-size:13px;display:inline-block;'>&nbsp; shared </div> <div style='color:deeppink;display:inline-block;'>"
@@ -175,11 +187,20 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         eventDesc.setHeight("100%");
         
         v.addComponent(photoAndEventDtls);
+        //v.setExpandRatio(photoAndEventDtls, 1);
         v.addComponent(eventDesc);
-        showLikeAndCommentsForm();
+        //v.setExpandRatio(eventDesc, 3);
         
-        baseLayout.addComponent(v);
-        baseLayout.setExpandRatio(v,2);
+        Table forumTable=new Table();
+        forumTable.addContainerProperty(GlobalConstants.emptyString, VerticalLayout.class, null);
+        forumTable.addStyleName("plain");
+        forumTable.addStyleName("borderless");
+        forumTable.setHeight("100%");
+        //forumTable.setWidth("100%");
+        forumTable.setSortEnabled(false);
+        forumTable.addItem(new Object[]{v},forumTable.size()+1);
+        baseLayout.addComponent(forumTable);
+        baseLayout.setExpandRatio(forumTable,2);
         return v;
     }
     
@@ -244,6 +265,94 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         eventTime.addStyleName("lightGrayColorAndSmallFont");
         likeCommentBtnLayout.addComponent(eventTime);
         v.addComponent(likeCommentBtnLayout);
+        //v.setExpandRatio(likeCommentBtnLayout, 1);
+    }
+    
+    private void showFullCommentsStack() 
+    {
+        
+        
+        VerticalLayout verticalForCommentStack = new VerticalLayout();
+        verticalForCommentStack.setMargin(false);
+        verticalForCommentStack.setSpacing(true);
+        verticalForCommentStack.setWidth("100%");
+        verticalForCommentStack.setHeight("100%");
+        verticalForCommentStack.addStyleName("backgroundColor");
+        HorizontalLayout fullCommentsLayout;
+        for (EventCommentsBean comment : eventCommentsList) {
+            fullCommentsLayout = new HorizontalLayout();
+            fullCommentsLayout.addStyleName("whiteBottomBorder");
+            fullCommentsLayout.setMargin(false);
+            fullCommentsLayout.setSpacing(true);
+            fullCommentsLayout.setWidth("100%");
+            fullCommentsLayout.setHeight("100%");
+            Image userImage = new Image(null, new ThemeResource("img/profile-pic.png"));
+
+            userImage.setWidth("30px");
+            userImage.setWidth("30px");
+            fullCommentsLayout.addComponent(userImage);
+            fullCommentsLayout.setExpandRatio(userImage, 0.5f);
+            fullCommentsLayout.setComponentAlignment(userImage, Alignment.TOP_LEFT);
+            Label lblComment = new Label("<b>" + comment.getName() + ": </b>" + comment.getCommentBody(), ContentMode.HTML);
+            fullCommentsLayout.addComponent(lblComment);
+            fullCommentsLayout.setExpandRatio(lblComment, 4);
+            fullCommentsLayout.setComponentAlignment(lblComment, Alignment.MIDDLE_LEFT);
+            
+            Label lblCommentTime=new Label(DateUtil.getTimeIntervalOfTheActivity(comment.getCommentTime()));
+            lblCommentTime.addStyleName("lightGrayColorAndSmallFont");
+            fullCommentsLayout.addComponent(lblCommentTime);
+            fullCommentsLayout.setExpandRatio(lblCommentTime, 1);
+            fullCommentsLayout.setComponentAlignment(lblCommentTime, Alignment.MIDDLE_RIGHT);
+
+            verticalForCommentStack.addComponent(fullCommentsLayout);
+
+        }
+        fullCommentsLayout = new HorizontalLayout();
+        fullCommentsLayout.addStyleName("whiteBottomBorder");
+        fullCommentsLayout.setMargin(false);
+        fullCommentsLayout.setSpacing(false);
+        fullCommentsLayout.setWidth("100%");
+        fullCommentsLayout.setHeight("100%");
+
+        Image userImage = new Image(null, new ThemeResource("img/profile-pic.png"));
+        userImage.setWidth("30px");
+        userImage.setWidth("30px");
+        txtNewComment = new TextField();
+        txtNewComment.setWidth("100%");
+        txtNewComment.setImmediate(true);
+        txtNewComment.setInputPrompt("Write a comment...");
+        txtNewComment.addShortcutListener(new ShortcutListener("Shortcut Name", ShortcutAction.KeyCode.ENTER, null) {
+
+            @Override
+            public void handleAction(Object sender, Object target) {
+                if (txtNewComment.getValue() != null && !txtNewComment.getValue().equals(GlobalConstants.emptyString)) {
+                    if(txtNewComment.getValue().length()>1000)
+                    {
+                        Notification.show("Comment cannot be more than 1000 characters.", Notification.Type.WARNING_MESSAGE);
+                    }
+                    else
+                    {
+//                        saveComment(txtNewComment.getValue());
+//                        fetchEventLikesAndComments();
+//                        fields.removeComponent(verticalForCommentStack);
+//                        fields.removeComponent(likeCommentBtnLayout);
+//                        showLikeAndCommentsForm();
+//                        showFullCommentsStack();
+                    }
+                }
+            }
+        });
+
+        fullCommentsLayout.addComponent(userImage);
+        fullCommentsLayout.setExpandRatio(userImage, 0.5f);
+        fullCommentsLayout.setComponentAlignment(userImage, Alignment.TOP_LEFT);
+        fullCommentsLayout.addComponent(txtNewComment);
+        fullCommentsLayout.setExpandRatio(txtNewComment, 4);
+        fullCommentsLayout.setComponentAlignment(txtNewComment, Alignment.MIDDLE_LEFT);
+        verticalForCommentStack.addComponent(fullCommentsLayout);
+        
+        v.addComponent(verticalForCommentStack);
+        //v.setExpandRatio(verticalForCommentStack, 5);
     }
     
       
