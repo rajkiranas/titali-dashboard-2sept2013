@@ -4,23 +4,35 @@
  */
 package com.quick.forum;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.quick.bean.EventCommentsBean;
 import com.quick.bean.EventLikeBean;
 import com.quick.bean.ForumEventDetailsBean;
+import com.quick.bean.Userprofile;
 import com.quick.global.GlobalConstants;
 import com.quick.utilities.DateUtil;
 import com.quick.utilities.MyImageSource;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.Base64;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 /**
  *
@@ -37,6 +49,9 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
     private List<EventLikeBean> eventLikesList;
     private List<EventCommentsBean> eventCommentsList;
     private TextField txtNewComment;
+    private String People_who_like_this="People who like this";
+    private VerticalLayout verticalForCommentStack;
+    private HorizontalLayout likeCommentBtnLayout;
     
     
     
@@ -47,7 +62,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         setCaption("View topic details");
         center();        
         setClosable(true);
-        setWidth("85%");
+        setWidth("90%");
         setHeight("90%"); 
         setImmediate(true);
         
@@ -71,7 +86,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         setCaption("View topic details");
         center();        
         setClosable(true);
-        setWidth("85%");
+        setWidth("90%");
         setHeight("90%"); 
         setImmediate(true);
         
@@ -102,7 +117,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
        baseLayout.setImmediate(true);
        baseLayout.setSpacing(false);   
        baseLayout.setMargin(false);
-       baseLayout.setWidth("93%");
+       baseLayout.setWidth("100%");
        baseLayout.setHeight("98%");
     }
 
@@ -146,7 +161,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         coverImage.setSizeFull();
         //coverImage.setSizeFull();
         baseLayout.addComponent(coverImage);
-        baseLayout.setExpandRatio(coverImage,3);
+        baseLayout.setExpandRatio(coverImage,2.75f);
         return coverImage;
     }
 
@@ -154,9 +169,9 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
     private Component getEventDetails() 
     {
         v = new VerticalLayout();
-        //v.setSizeFull();
+        v.setSizeFull();
         v.setSpacing(true);
-        v.setMargin(true);
+        v.setMargin(new MarginInfo(true, false, true, false));
         //v.setHeight("100%");
         
         HorizontalLayout photoAndEventDtls = new HorizontalLayout();
@@ -175,7 +190,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         photoAndEventDtls.setComponentAlignment(userImage, Alignment.MIDDLE_LEFT);
         
         String cap = "<div style='color:deeppink;display:inline-block;'> <b>" + eventDtls.getEventOwner() + "</b></div>" + "<div style='color:grey;font-size:13px;display:inline-block;'>&nbsp; shared </div> <div style='color:deeppink;display:inline-block;'>"
-                + eventDtls.getEventDesc() + "</div>";
+                + eventDtls.getEventDesc()+"</div><br><div style='color:grey;font-size:11px;display:inline-block;'>" +DateUtil.getTimeIntervalOfTheActivity(eventDtls.getEventDate()) + "</div>";
         Label eventIntro = new Label(cap, ContentMode.HTML);
         eventIntro.setWidth("100%");
         photoAndEventDtls.addComponent(eventIntro);
@@ -196,54 +211,56 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         forumTable.addStyleName("plain");
         forumTable.addStyleName("borderless");
         forumTable.setHeight("100%");
-        //forumTable.setWidth("100%");
+        forumTable.setWidth("100%");
         forumTable.setSortEnabled(false);
         forumTable.addItem(new Object[]{v},forumTable.size()+1);
         baseLayout.addComponent(forumTable);
-        baseLayout.setExpandRatio(forumTable,2);
+        baseLayout.setExpandRatio(forumTable,2.25f);
         return v;
     }
     
     private void showLikeAndCommentsForm() {
-        HorizontalLayout likeCommentBtnLayout = new HorizontalLayout();
+        likeCommentBtnLayout = new HorizontalLayout();
         Embedded likeImage ;
         Embedded commentImage;
         
-        likeCommentBtnLayout.setSpacing(true);
+        likeCommentBtnLayout.setSpacing(false);
+        likeCommentBtnLayout.setWidth("50%");
         //likeCommentLayout.setMargin(true);
         //likeCommentBtnLayout.addStyleName("backgroundColor");
 
         //likeCommentBtnLayout.setWidth("60%");
         Button likeBtn = new Button("Like");
-        Button commentBtn = new Button("Comment");
+        ///Button commentBtn = new Button("Comment");
 
         likeBtn.addStyleName(BaseTheme.BUTTON_LINK);
         likeBtn.addClickListener(new Button.ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
-//                sendLike();
+                sendLike();
+                fetchEventLikesAndComments(eventDtls);
 //                fetchEventLikesAndComments();
 //                               
 //                if(verticalForCommentStack!=null)
-//                    fields.removeComponent(verticalForCommentStack);
-//                fields.removeComponent(likeCommentBtnLayout);
-//                showLikeAndCommentsForm();
-//                showFullCommentsStack();
+                  v.removeComponent(verticalForCommentStack);
+                  v.removeComponent(likeCommentBtnLayout);
+                showLikeAndCommentsForm();
+                showFullCommentsStack();
             }
         });
-        commentBtn.addStyleName(BaseTheme.BUTTON_LINK);
-        commentBtn.addClickListener(new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(ClickEvent event) {  
-                //showFullCommentsStack();
-            }
-        });
+//        commentBtn.addStyleName(BaseTheme.BUTTON_LINK);
+//        commentBtn.addClickListener(new Button.ClickListener() {
+//
+//            @Override
+//            public void buttonClick(ClickEvent event) {  
+//                //showFullCommentsStack();
+//            }
+//        });
 //        likeBtn.addStyleName("link");
 //        commentBtn.addStyleName("link");
         likeCommentBtnLayout.addComponent(likeBtn);
-        likeCommentBtnLayout.addComponent(commentBtn);
+        //likeCommentBtnLayout.addComponent(commentBtn);
         likeImage =  new Embedded(null,new ThemeResource("./img/like-icon.jpg"));
         likeImage.setHeight("22px");
         likeImage.setWidth("22px");
@@ -251,7 +268,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
 
             @Override
             public void click(MouseEvents.ClickEvent event) {
-                //showLikesWindow();
+                showLikesWindow();
             }
      });
         likeCommentBtnLayout.addComponent(likeImage);
@@ -261,18 +278,16 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         commentImage.setWidth("22px");
         likeCommentBtnLayout.addComponent(commentImage);
         likeCommentBtnLayout.addComponent(new Label(GlobalConstants.emptyString + eventCommentsList.size() ));
-        Label eventTime=new Label( DateUtil.getTimeIntervalOfTheActivity(eventDtls.getEventDate()));
-        eventTime.addStyleName("lightGrayColorAndSmallFont");
-        likeCommentBtnLayout.addComponent(eventTime);
+//        Label eventTime=new Label( DateUtil.getTimeIntervalOfTheActivity(eventDtls.getEventDate()));
+//        eventTime.addStyleName("lightGrayColorAndSmallFont");
+//        likeCommentBtnLayout.addComponent(eventTime);
         v.addComponent(likeCommentBtnLayout);
         //v.setExpandRatio(likeCommentBtnLayout, 1);
     }
     
     private void showFullCommentsStack() 
     {
-        
-        
-        VerticalLayout verticalForCommentStack = new VerticalLayout();
+        verticalForCommentStack = new VerticalLayout();
         verticalForCommentStack.setMargin(false);
         verticalForCommentStack.setSpacing(true);
         verticalForCommentStack.setWidth("100%");
@@ -301,7 +316,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
             Label lblCommentTime=new Label(DateUtil.getTimeIntervalOfTheActivity(comment.getCommentTime()));
             lblCommentTime.addStyleName("lightGrayColorAndSmallFont");
             fullCommentsLayout.addComponent(lblCommentTime);
-            fullCommentsLayout.setExpandRatio(lblCommentTime, 1);
+            fullCommentsLayout.setExpandRatio(lblCommentTime, 1.25f);
             fullCommentsLayout.setComponentAlignment(lblCommentTime, Alignment.MIDDLE_RIGHT);
 
             verticalForCommentStack.addComponent(fullCommentsLayout);
@@ -332,12 +347,12 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
                     }
                     else
                     {
-//                        saveComment(txtNewComment.getValue());
-//                        fetchEventLikesAndComments();
-//                        fields.removeComponent(verticalForCommentStack);
-//                        fields.removeComponent(likeCommentBtnLayout);
-//                        showLikeAndCommentsForm();
-//                        showFullCommentsStack();
+                        saveComment(txtNewComment.getValue());
+                        fetchEventLikesAndComments(eventDtls);
+                        v.removeComponent(verticalForCommentStack);
+                        v.removeComponent(likeCommentBtnLayout);
+                        showLikeAndCommentsForm();
+                        showFullCommentsStack();
                     }
                 }
             }
@@ -355,6 +370,141 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         //v.setExpandRatio(verticalForCommentStack, 5);
     }
     
-      
+    private void showLikesWindow() {
+
+        verticalForCommentStack = new VerticalLayout();
+        verticalForCommentStack.setMargin(false);
+        verticalForCommentStack.setSpacing(true);
+        verticalForCommentStack.setWidth("100%");
+        verticalForCommentStack.addStyleName("backgroundColor");
+        HorizontalLayout likeNamesLayout;
+        for (EventLikeBean like : eventLikesList) {
+            likeNamesLayout = new HorizontalLayout();
+            likeNamesLayout.addStyleName("whiteBottomBorder");
+            likeNamesLayout.setMargin(false);
+            likeNamesLayout.setSpacing(false);
+            likeNamesLayout.setWidth("100%");
+            likeNamesLayout.setHeight("100%");
+            Image userImage = new Image(null, new ThemeResource("img/profile-pic.png"));
+
+            userImage.setWidth("30px");
+            userImage.setWidth("30px");
+            likeNamesLayout.addComponent(userImage);
+            likeNamesLayout.setExpandRatio(userImage, 0.5f);
+            likeNamesLayout.setComponentAlignment(userImage, Alignment.TOP_LEFT);
+            Label lblComment = new Label("<b>" + like.getName() + "</b>", ContentMode.HTML);
+            likeNamesLayout.addComponent(lblComment);
+            likeNamesLayout.setExpandRatio(lblComment, 1);
+            likeNamesLayout.setComponentAlignment(lblComment, Alignment.MIDDLE_LEFT);
+
+            Label lblCommentTime = new Label(DateUtil.getTimeIntervalOfTheActivity(like.getLikeTime()));
+            lblCommentTime.addStyleName("lightGrayColorAndSmallFont");
+            likeNamesLayout.addComponent(lblCommentTime);
+            likeNamesLayout.setExpandRatio(lblCommentTime, 1);
+            likeNamesLayout.setComponentAlignment(lblCommentTime, Alignment.MIDDLE_RIGHT);
+
+            verticalForCommentStack.addComponent(likeNamesLayout);
+
+        }
+
+        Window w = new Window(People_who_like_this);
+        w.center();
+        w.setWidth("35%");
+        w.setHeight("40%");
+        w.setContent(verticalForCommentStack);
+        getUI().getCurrent().addWindow(w);
+    }
+    
+    private void sendLike() {
+        try {
+            Userprofile profile = ((Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile));
+            JSONObject input = new JSONObject();
+            input.put("event_id", eventDtls.getEventDetailId());
+            input.put("username", profile.getUsername());
+            input.put("name", profile.getName());
+
+            Client client = Client.create();
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_EVENT_LIKE));
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, input);
+
+            /*
+             * if (response.getStatus() != 201) { throw new
+             * RuntimeException("Failed : HTTP error code : " +
+             * response.getStatus()); }
+             */
+
+            String output = response.getEntity(String.class);
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+    
+    private void fetchEventLikesAndComments(ForumEventDetailsBean eventDtls) {
+        try {
+            JSONObject input = new JSONObject();
+            input.put("event_id", eventDtls.getEventDetailId());
+
+            Client client = Client.create();
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.FETCH_EVENT_LIKES_BY_ID));
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, input);
+
+            /*
+             * if (response.getStatus() != 201) { throw new
+             * RuntimeException("Failed : HTTP error code : " +
+             * response.getStatus()); }
+             */
+
+            JSONObject outNObject = null;
+            String output = response.getEntity(String.class);
+            outNObject = new JSONObject(output);
+
+             Type listType1 = new TypeToken<ArrayList<EventLikeBean>>() {
+            }.getType();
+            
+             Gson eventLikesGson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
+            eventLikesList = eventLikesGson.fromJson(outNObject.getString(GlobalConstants.eventLikes), listType1);
+            
+            Type listType2 = new TypeToken<ArrayList<EventCommentsBean>>() {
+            }.getType();
+            
+             Gson eventCommentsGson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
+            eventCommentsList = eventCommentsGson.fromJson(outNObject.getString(GlobalConstants.eventComments), listType2);
+            
+            //System.out.println("eve"+eventLikesList);
+            
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+    
+    private void saveComment(String value) 
+    {
+          try {
+            Userprofile profile = ((Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile));
+            JSONObject input = new JSONObject();
+            input.put("event_id", eventDtls.getEventDetailId());
+            input.put("event_desc", eventDtls.getEventDesc());
+            input.put("username", profile.getUsername());
+            input.put("name", profile.getName());
+            input.put("comment", value);
+
+            Client client = Client.create();
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_EVENT_COMMENT));
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, input);
+
+            /*
+             * if (response.getStatus() != 201) { throw new
+             * RuntimeException("Failed : HTTP error code : " +
+             * response.getStatus()); }
+             */
+
+            String output = response.getEntity(String.class);
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+          
+   }
     
 }
