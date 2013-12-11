@@ -105,7 +105,7 @@ public class ForumDetailWraper extends VerticalLayout {
 
 
 
-        final Button more = new Button("More...");
+        final Label more = new Label("<div style='color:blue;display:inline-block;'> <b>" +"More..."+ "</b></div>",ContentMode.HTML);
 
         DragAndDropWrapper cover = new DragAndDropWrapper(coverImage);
         cover.setDragStartMode(DragStartMode.NONE);
@@ -190,9 +190,9 @@ public class ForumDetailWraper extends VerticalLayout {
         updateSynopsis(eventDetails, false);
         fields.addComponent(synopsis);
 
-        more.addStyleName("link");
+        //more.addStyleName("link");
         fields.addComponent(more);
-        more.addClickListener(new ClickListener() {
+        /* more.addClickListener(new ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -202,7 +202,7 @@ public class ForumDetailWraper extends VerticalLayout {
                 fetchEventLikesAndComments();
                 showLikeAndCommentsForm();
             }
-        });
+        }); */
 
         
 
