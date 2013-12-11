@@ -348,9 +348,9 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
                     else
                     {
                         saveComment(txtNewComment.getValue());
-                        fetchEventLikesAndComments(eventDtls);
                         v.removeComponent(verticalForCommentStack);
                         v.removeComponent(likeCommentBtnLayout);
+                        fetchEventLikesAndComments(eventDtls);
                         showLikeAndCommentsForm();
                         showFullCommentsStack();
                     }
@@ -372,11 +372,11 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
     
     private void showLikesWindow() {
 
-        verticalForCommentStack = new VerticalLayout();
-        verticalForCommentStack.setMargin(false);
-        verticalForCommentStack.setSpacing(true);
-        verticalForCommentStack.setWidth("100%");
-        verticalForCommentStack.addStyleName("backgroundColor");
+        VerticalLayout verticalForLikes = new VerticalLayout();
+        verticalForLikes.setMargin(false);
+        verticalForLikes.setSpacing(true);
+        verticalForLikes.setWidth("100%");
+        verticalForLikes.addStyleName("backgroundColor");
         HorizontalLayout likeNamesLayout;
         for (EventLikeBean like : eventLikesList) {
             likeNamesLayout = new HorizontalLayout();
@@ -403,7 +403,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
             likeNamesLayout.setExpandRatio(lblCommentTime, 1);
             likeNamesLayout.setComponentAlignment(lblCommentTime, Alignment.MIDDLE_RIGHT);
 
-            verticalForCommentStack.addComponent(likeNamesLayout);
+            verticalForLikes.addComponent(likeNamesLayout);
 
         }
 
@@ -411,7 +411,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         w.center();
         w.setWidth("35%");
         w.setHeight("40%");
-        w.setContent(verticalForCommentStack);
+        w.setContent(verticalForLikes);
         getUI().getCurrent().addWindow(w);
     }
     
