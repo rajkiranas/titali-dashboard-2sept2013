@@ -176,14 +176,14 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         StreamResource.StreamSource imagesource = new MyImageSource(Base64.decode(by));
         StreamResource resource = new StreamResource(imagesource, "myimage.png");
         resource.setCacheTime(0);
-//        Image coverImage = new Image(GlobalConstants.emptyString, resource);
+        //Image coverImage = new Image(GlobalConstants.emptyString, resource);
 //        coverImage.setHeight("425px");
 //        coverImage.setWidth("475px");
         
         Embedded coverImage = new Embedded(null,resource);
         coverImage.setType(Embedded.TYPE_IMAGE);
+//        coverImage.setSizeFull();
         coverImage.setSizeFull();
-        //coverImage.setSizeFull();
         baseLayout.addComponent(coverImage);
         baseLayout.setExpandRatio(coverImage,2.75f);
         return coverImage;

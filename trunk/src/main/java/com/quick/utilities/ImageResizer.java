@@ -23,10 +23,10 @@ public class ImageResizer {
     public static byte[] resize(File icon, String topicFileName) {
         try 
         {
-            String ext=topicFileName.substring(topicFileName.indexOf(".")+1);
+            String ext=topicFileName.substring(topicFileName.indexOf(GlobalConstants.FULL_STOP)+1);
            BufferedImage originalImage = ImageIO.read(icon);
 
-           originalImage= Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_EXACT, 150, 150);
+           originalImage= Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_EXACT, originalImage.getWidth(), originalImage.getHeight());
             //To save with original ratio uncomment next line and comment the above.
             //originalImage= Scalr.resize(originalImage, 153, 128);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
