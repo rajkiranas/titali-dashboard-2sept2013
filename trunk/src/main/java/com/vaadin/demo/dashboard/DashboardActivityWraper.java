@@ -91,7 +91,18 @@ public class DashboardActivityWraper extends VerticalLayout {
 
         
         String time = activityDetails.getDateTime();
-        label = new Label( IN +GlobalConstants.spaceString+ activityDetails.getStandard() +GlobalConstants.spaceString +GlobalConstants.HYPHEN +GlobalConstants.spaceString + time);
+        
+        String activityRoom;
+        if(activityDetails.getStandard()!=null)
+        {
+            activityRoom=activityDetails.getStandard();
+        }
+        else
+        {
+            activityRoom=activityDetails.getTopic();
+        }
+        
+        label = new Label( IN +GlobalConstants.spaceString+ activityRoom +GlobalConstants.spaceString +GlobalConstants.HYPHEN +GlobalConstants.spaceString + time);
         label.setWidth("100%");
         label.addStyleName("lightGrayColorAndSmallFont");
         

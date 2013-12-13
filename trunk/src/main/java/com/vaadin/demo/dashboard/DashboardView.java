@@ -24,6 +24,7 @@ import com.sun.jersey.api.client.WebResource;
 
 import com.vaadin.data.Property;
 import com.quick.data.MyDashBoardContainer;
+import com.quick.forum.ViewEventDetailsWindow;
 import com.quick.ui.exam.StudentExamDataProvider;
 import com.quick.utilities.LoadEarlierBtnWraper;
 import com.quick.utilities.DateUtil;
@@ -621,9 +622,19 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
             try {
                 cl = Class.forName(activityDetails.getClassToInvoke());
                 Object o = cl.newInstance();
-                ViewTopicDetailsWindow topic=(ViewTopicDetailsWindow) o;
-                Window w=topic.doConstructorsWorKForReflection(learn,getUserNotes(),Integer.parseInt(activityDetails.getUploadId()));
-                UI.getCurrent().addWindow(w);
+                if(o instanceof ViewTopicDetailsWindow)
+                {
+                    ViewTopicDetailsWindow topic=(ViewTopicDetailsWindow) o;
+                    Window w=topic.doConstructorsWorKForReflection(learn,getUserNotes(),Integer.parseInt(activityDetails.getUploadId()));
+                    UI.getCurrent().addWindow(w);
+                }
+                else if(o instanceof ViewEventDetailsWindow)
+                {
+                    ViewEventDetailsWindow e=(ViewEventDetailsWindow) o;
+                    Window w=e.getEventDetailsWindow(activityDetails.getUploadId());
+                    UI.getCurrent().addWindow(w);
+                }
+                
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
