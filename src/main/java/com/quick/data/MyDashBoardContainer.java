@@ -137,10 +137,8 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
        boardContainer=new MyDashBoardContainer();
        try{
        
-           System.out.println("WWWWWWWWWWWWWWWWWWWWwraperList="+wraperList.size());
            for(List<MasteParmBean> whoisdoingwhatsInnerList:wraperList)
            {
-               System.out.println("IIIIIIIIIIIII whoisdoingwhatsInnerList="+whoisdoingwhatsInnerList.size());
             for(MasteParmBean whoisdoingwhat:whoisdoingwhatsInnerList){
                 bean = new MyDashBoardBean();
                 /* bean.setItemid(""+whoisdoingwhat.getActivityId());
@@ -153,6 +151,7 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
                 bean.setDateTime(timeInterval);
                 bean.setStandard(whoisdoingwhat.getStd());
                 bean.setClassToInvoke(whoisdoingwhat.getClassToInvoke());
+                bean.setTopic(whoisdoingwhat.getTopic());
                 boardContainer.addItem(bean);
             }
        }

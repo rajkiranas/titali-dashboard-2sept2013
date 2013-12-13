@@ -76,12 +76,36 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
     public ViewEventDetailsWindow(){
     }
     
+    //called from forum wrapper click
     public Window doConstructorsWorKForReflection(ForumEventDetailsBean eventDtls,List<EventLikeBean> eventLikesList, List<EventCommentsBean> eventCommentsList)
     {
         this.eventDtls=eventDtls;
         //this.selectedUploadId=selectedUploadId;
         this.eventCommentsList=eventCommentsList;
         this.eventLikesList=eventLikesList;
+        setModal(true);
+        setCaption("View topic details");
+        center();        
+        setClosable(true);
+        setWidth("90%");
+        setHeight("90%"); 
+        setImmediate(true);
+        
+        buildBaseStudentLayout();
+        addEventDetails();
+        //addUserNotes();
+        setContent(baseLayout);
+        addStyleName("schedule");
+        
+        return this;
+    }
+    
+    
+    //called from dashborad activity feeds
+    public Window getEventDetailsWindow(String eventId)
+    {
+        getEventDetailsById(eventId);        
+       
         setModal(true);
         setCaption("View topic details");
         center();        
@@ -438,6 +462,49 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
             ex.printStackTrace();
         }
 
+    }
+    
+    private void getEventDetailsById(String eventId) {
+        try 
+        {
+            Client client = Client.create();
+            
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_FORUM_EVENT_BY_ID));
+            
+            JSONObject inputJson = new JSONObject();
+            
+            inputJson.put("eventId",eventId);
+             
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
+            
+            JSONObject outNObject = null;
+            String output = response.getEntity(String.class);
+            outNObject = new JSONObject(output);
+
+            java.lang.reflect.Type listType = new TypeToken<ArrayList<ForumEventDetailsBean>>() {
+            }.getType();
+    
+            Gson gson=  new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();
+            
+            List <ForumEventDetailsBean> forumEventDetailsList=gson.fromJson(outNObject.getString(GlobalConstants.eventDetailsList), listType);
+            this.eventDtls=forumEventDetailsList.get(0);
+            
+           Type listType1 = new TypeToken<ArrayList<EventLikeBean>>() {
+            }.getType();
+            
+             Gson eventLikesGson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
+            eventLikesList = eventLikesGson.fromJson(outNObject.getString(GlobalConstants.eventLikes), listType1);
+            
+            Type listType2 = new TypeToken<ArrayList<EventCommentsBean>>() {
+            }.getType();
+            
+             Gson eventCommentsGson = new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();       
+            eventCommentsList = eventCommentsGson.fromJson(outNObject.getString(GlobalConstants.eventComments), listType2);
+            
+        } catch (JSONException ex) 
+        {
+            ex.printStackTrace();
+        }
     }
     
     private void fetchEventLikesAndComments(ForumEventDetailsBean eventDtls) {

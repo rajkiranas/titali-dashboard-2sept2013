@@ -26,7 +26,7 @@ public class ImageResizer {
             String ext=topicFileName.substring(topicFileName.indexOf(".")+1);
            BufferedImage originalImage = ImageIO.read(icon);
 
-           originalImage= Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_EXACT, 100, 100);
+           originalImage= Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_EXACT, 150, 150);
             //To save with original ratio uncomment next line and comment the above.
             //originalImage= Scalr.resize(originalImage, 153, 128);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

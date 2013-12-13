@@ -203,6 +203,8 @@ public class NewEventWindow extends Window implements Button.ClickListener{
                     inputJson.put("image", new String(Base64.encode(eventImageArray)));
                     inputJson.put("owner", loggedinProfile.getUsername());
                     inputJson.put("image_filename", imageFileName);
+                    ViewEventDetailsWindow w = new ViewEventDetailsWindow();
+                    inputJson.put("classToInvoke", w.getClass().getName());
 
                 } catch (JSONException ex) {
                     ex.printStackTrace();
