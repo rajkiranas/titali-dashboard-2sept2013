@@ -89,6 +89,7 @@ public class GlobalConstants
     public static final String UPLOAD_TOPIC_IMAGES_PATH="UPLOAD_TOPIC_IMAGES_PATH";
     public static final String LEARN_MORE_IMG="LEARN_MORE_IMG";
     public static final String IMAGES_PATH="IMAGES_PATH";
+    public static final String FULL_STOP=".";
     
     public static final String ROUT_DASHBOARD="/dashboard";
     public static final String ROUT_LEARN="/learn";

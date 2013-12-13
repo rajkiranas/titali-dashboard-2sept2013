@@ -100,8 +100,9 @@ public class ForumDetailWraper extends VerticalLayout {
         Image coverImage = new Image("Image", resource);
 
 
-        coverImage.setHeight("150px");
-        coverImage.setWidth("150px");
+//        coverImage.setHeight("150px");
+//        coverImage.setWidth("150px");
+        coverImage.setSizeFull();
 
 
 
@@ -109,8 +110,9 @@ public class ForumDetailWraper extends VerticalLayout {
 
         DragAndDropWrapper cover = new DragAndDropWrapper(coverImage);
         cover.setDragStartMode(DragStartMode.NONE);
-        cover.setWidth("140px");
-        cover.setHeight("140px");
+//        cover.setWidth("140px");
+//        cover.setHeight("140px");
+        cover.setSizeFull();
         cover.addStyleName("cover");
         cover.setDropHandler(new DropHandler() {
 
