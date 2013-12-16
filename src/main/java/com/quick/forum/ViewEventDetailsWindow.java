@@ -28,9 +28,14 @@ import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -179,13 +184,23 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         //Image coverImage = new Image(GlobalConstants.emptyString, resource);
 //        coverImage.setHeight("425px");
 //        coverImage.setWidth("475px");
+        /* BufferedImage originalImage=null;
+        try {
+            originalImage = ImageIO.read(resource.getStream().getStream());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } */
         
         Embedded coverImage = new Embedded(null,resource);
         coverImage.setType(Embedded.TYPE_IMAGE);
 //        coverImage.setSizeFull();
-        coverImage.setSizeFull();
+/*        coverImage.setWidth(String.valueOf(originalImage.getWidth()));
+        coverImage.setHeight(String.valueOf(originalImage.getHeight())); */
+        
+        //coverImage.setSizeFull();
         baseLayout.addComponent(coverImage);
         baseLayout.setExpandRatio(coverImage,2.75f);
+        baseLayout.setComponentAlignment(coverImage,Alignment.MIDDLE_CENTER);
         return coverImage;
     }
 
