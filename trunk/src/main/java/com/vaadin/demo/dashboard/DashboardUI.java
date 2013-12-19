@@ -30,6 +30,7 @@ import com.quick.dictionary.DictView;
 import com.quick.forum.ForumView;
 import com.quick.games.GamesView;
 import com.quick.notices.CreateNotices;
+import com.quick.play.PlayView;
 import com.quick.ui.exam.AdminExam;
 import com.quick.ui.exam.StudentExam;
 import com.quick.upcomingtechnology.CreateUpcomingTechnology;
@@ -99,6 +100,7 @@ public class DashboardUI extends UI{
             put(GlobalConstants.ROUT_NOTICES,CreateNotices.class);
             put(GlobalConstants.ROUT_FORUM,ForumView.class);
             put(GlobalConstants.ROUT_GAMES,GamesView.class);
+            put(GlobalConstants.ROUT_PLAY,PlayView.class);
             put(GlobalConstants.ROUT_REPORTS, ReportsView.class);
             put(GlobalConstants.ROUT_TOPICS,QuickUpload.class);            
             put(GlobalConstants.ROUT_EXAM_ADMIN,AdminExam.class);
@@ -429,11 +431,11 @@ public class DashboardUI extends UI{
         
         if(userRole.equalsIgnoreCase(GlobalConstants.student))
         {
-                   actions= new String[] { "dashboard", "learn","Tech-news","Exams","Forum","dictionary","Games","Notices","reports"};
+                   actions= new String[] { "dashboard", "learn","Tech-news","Exams","Forum","dictionary","Games","Play","Notices","reports"};
             
         }else
         {
-                actions= new String[] { "dashboard","topics","Tech-news","Exam-Admin","Forum","dictionary","Games","Notices","reports",
+                actions= new String[] { "dashboard","topics","Tech-news","Exam-Admin","Forum","dictionary","Games","Play","Notices","reports",
             "students","teachers" };
         }
         

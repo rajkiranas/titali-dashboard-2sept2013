@@ -98,6 +98,7 @@ public class GlobalConstants
     public static final String ROUT_NOTICES="/Notices";
     public static final String ROUT_FORUM="/Forum";
     public static final String ROUT_GAMES="/Games";
+    public static final String ROUT_PLAY="/Play";
     public static final String ROUT_REPORTS="/reports";
     public static final String ROUT_TOPICS="/topics";
     public static final String ROUT_EXAM_ADMIN="/Exam-Admin";
