@@ -198,9 +198,15 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         coverImage.setHeight(String.valueOf(originalImage.getHeight())); */
         
         //coverImage.setSizeFull();
-        baseLayout.addComponent(coverImage);
-        baseLayout.setExpandRatio(coverImage,2.75f);
-        baseLayout.setComponentAlignment(coverImage,Alignment.MIDDLE_CENTER);
+        VerticalLayout imageLayout = new VerticalLayout();
+        imageLayout.setSizeFull();
+        imageLayout.addComponent(coverImage);
+        imageLayout.setComponentAlignment(coverImage,Alignment.MIDDLE_CENTER);
+        imageLayout.addStyleName("blackBg");
+        
+        baseLayout.addComponent(imageLayout);
+        baseLayout.setExpandRatio(imageLayout,2.75f);
+        baseLayout.setComponentAlignment(imageLayout,Alignment.MIDDLE_CENTER);
         return coverImage;
     }
 
