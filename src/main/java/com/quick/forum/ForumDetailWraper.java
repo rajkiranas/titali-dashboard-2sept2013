@@ -167,7 +167,7 @@ public class ForumDetailWraper extends VerticalLayout {
 //        }
 
 
-        String cap = "<div style='color:deeppink;display:inline-block;'> <b>" + eventDetails.getEventOwner() + "</b></div>" + "<div style='color:grey;font-size:13px;display:inline-block;'>&nbsp; shared </div> <div style='color:deeppink;display:inline-block;'>"
+        String cap = "<div style='color:#3b5998;display:inline-block;'> <b>" + eventDetails.getEventOwner() + "</b></div>" + "<div style='color:grey;font-size:13px;display:inline-block;'>&nbsp; shared </div> <div style='color:#3b5998;display:inline-block;'>"
                 + eventDetails.getEventDesc() + "</div>";
         label = new Label(cap, ContentMode.HTML);
         label.setWidth("100%");

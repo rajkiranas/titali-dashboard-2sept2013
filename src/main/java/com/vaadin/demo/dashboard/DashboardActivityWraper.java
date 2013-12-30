@@ -24,7 +24,7 @@ public class DashboardActivityWraper extends VerticalLayout {
 
         setImmediate(true);
         setSpacing(false);
-        setMargin(false);
+        setMargin(true);
         setSizeFull();
         this.activityDetails=activityDetails;
         //setCaption(topicDetails.getEventDesc());
@@ -53,17 +53,18 @@ public class DashboardActivityWraper extends VerticalLayout {
         Embedded userImage =  new Embedded(GlobalConstants.emptyString,
                 new ThemeResource("./img/profile-pic.png"));
         //userImage.setHeight("100px");
-        userImage.setWidth("40px");
+        userImage.setWidth("30px");
+        userImage.setHeight("30px");
         
         VerticalLayout imageLayout = new VerticalLayout();
         imageLayout.setSizeFull();
         imageLayout.addComponent(userImage);
         //imageLayout.addStyleName("threeSideBorder");
-        imageLayout.setComponentAlignment(userImage, Alignment.MIDDLE_CENTER);
+        imageLayout.setComponentAlignment(userImage, Alignment.TOP_CENTER);
 
         
         activityDetailsLayout.addComponent(imageLayout);
-        activityDetailsLayout.setComponentAlignment(imageLayout, Alignment.MIDDLE_CENTER);
+        activityDetailsLayout.setComponentAlignment(imageLayout, Alignment.TOP_CENTER);
         activityDetailsLayout.setExpandRatio(imageLayout, 0.5f);
         
         
@@ -86,7 +87,7 @@ public class DashboardActivityWraper extends VerticalLayout {
         String activityCaption = activityDetails.getNotification();
         label = new Label(activityCaption);
         label.setWidth("100%");
-        label.addStyleName("deepPinkColor");
+        label.addStyleName("deepPinkColorBold");
         fields.addComponent(label);
 
         
@@ -108,13 +109,13 @@ public class DashboardActivityWraper extends VerticalLayout {
         
         fields.addComponent(label);
         
-        HorizontalLayout activityImageLayout = new HorizontalLayout();
+        VerticalLayout activityImageLayout = new VerticalLayout();
         activityImageLayout.setSizeFull();
         activityImageLayout.setMargin(false);
         activityImageLayout.setSpacing(false);
         //activityImageLayout.addStyleName("fourSideBorder");
-        addComponent(activityImageLayout);
-        setExpandRatio(activityImageLayout,3);
+        fields.addComponent(activityImageLayout);
+        //fields.setExpandRatio(activityImageLayout,3);
         Embedded activityImage;
         
         if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getUploadId()+".jpg").exists())
@@ -141,29 +142,33 @@ public class DashboardActivityWraper extends VerticalLayout {
         }
         
         
-        activityImage.setHeight("90px");
-        activityImage.setWidth("90px");
+//        activityImage.setHeight("90px");
+//        activityImage.setWidth("90px");
+        activityImage.setWidth("80%");
+        activityImage.setHeight("80%");
         
 //        VerticalLayout il = new VerticalLayout();
 //        il.setSizeFull();
-        activityImageLayout.addComponent(activityImage);
-        activityImageLayout.setComponentAlignment(activityImage, Alignment.MIDDLE_CENTER);
-        activityImageLayout.setExpandRatio(activityImage, 1);
+        
         
          VerticalLayout il = new VerticalLayout();
          il.setSizeFull();
          
         label = new Label(activityDetails.getTopicintro());
         label.setWidth("100%");
-        //label.addStyleName("deepPinkColor");
+        label.addStyleName("deepPinkColor");
         il.addComponent(label);
-        label.addStyleName("lightBackgroundForDashboardActivity");
+        //label.addStyleName("lightBackgroundForDashboardActivity");
 
         
         activityImageLayout.addComponent(il);
         activityImageLayout.setComponentAlignment(il, Alignment.MIDDLE_RIGHT);
-        activityImageLayout.setExpandRatio(il, 2);
+        activityImageLayout.setExpandRatio(il, 0.5f);
         
+        
+        activityImageLayout.addComponent(activityImage);
+        activityImageLayout.setComponentAlignment(activityImage, Alignment.MIDDLE_CENTER);
+        activityImageLayout.setExpandRatio(activityImage, 2.5f);
         
         
         

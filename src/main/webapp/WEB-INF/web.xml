@@ -32,6 +32,23 @@
 			<param-name>UIProvider</param-name>
 			<param-value>com.vaadin.demo.dashboard.DashboardUIProvider</param-value>
 		</init-param>
+                <init-param>
+
+			<param-name>UI</param-name>
+
+			<param-value>org.vaadin.peter.imagestrip.ImageStripUI</param-value>
+
+		</init-param>
+
+		<init-param>
+
+			<param-name>widgetset</param-name>
+
+			<param-value>org.vaadin.peter.imagestrip.ImageStripApplicationWidgetset</param-value>
+
+		</init-param>
+
+
 	</servlet>
         
         <servlet-mapping>

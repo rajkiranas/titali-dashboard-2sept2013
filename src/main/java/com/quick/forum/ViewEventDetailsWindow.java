@@ -233,8 +233,8 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         photoAndEventDtls.addComponent(userImage);
         photoAndEventDtls.setExpandRatio(userImage, 0.5f);
         photoAndEventDtls.setComponentAlignment(userImage, Alignment.MIDDLE_LEFT);
-        
-        String cap = "<div style='color:deeppink;display:inline-block;'> <b>" + eventDtls.getEventOwner() + "</b></div>" + "<div style='color:grey;font-size:13px;display:inline-block;'>&nbsp; shared </div> <div style='color:deeppink;display:inline-block;'>"
+                                    
+        String cap = "<div style='color:#3b5998;display:inline-block;'> <b>" + eventDtls.getEventOwner() + "</b></div>" + "<div style='color:grey;font-size:13px;display:inline-block;'>&nbsp; shared </div> <div style='color:#3b5998;display:inline-block;'>"
                 + eventDtls.getEventDesc()+"</div><br><div style='color:grey;font-size:11px;display:inline-block;'>" +DateUtil.getTimeIntervalOfTheActivity(eventDtls.getEventDate()) + "</div>";
         Label eventIntro = new Label(cap, ContentMode.HTML);
         eventIntro.setWidth("100%");

@@ -112,7 +112,7 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         Label label;
         //String data="The activity of neurons in the brain and the code used by these neurons is described by mathematical neuron models at different levels of detail";
         
-        String caption = "<table><tr><td bgcolor='deeppink' style='color: #fff;'>NEW</td><td><b>"+topicDetails.getUploadId()+ ": "+topicDetails.getTopic() +"</b></td></tr></table>" +"";
+        String caption = "<table><tr><td bgcolor='#3b5998' style='color: #fff;'>NEW</td><td><div style='color:#3b5998;display:inline-block;'><b>"+topicDetails.getUploadId()+ ": "+topicDetails.getTopic() +"</b></div></td></tr></table>" +"";
 //                + "<h5> " + topicDetails.getLectureNotesInformation() + "</h5>" 
 //                + "<h4><b>STARTS: </b>"+" " + topicDetails.getUploadDate()+"" + " <b>. INSTRUCTORS: </b>"+" "+ topicDetails.getOtherNotesInformation() +" </h4>";
                 //+ "<h4><tr><b>STARTS: </b></h4>"+" <h5>" + topicDetails.getUploadDate()+"</h5>" + " <h4><b>. INSTRUCTORS: </b></h4>"+" <h5>"+ topicDetails.getOtherNotesInformation() +"</h5></tr>";
