@@ -44,6 +44,7 @@ import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.FileResource;
 import com.vaadin.server.Page;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
@@ -70,13 +71,15 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.*;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.vaadin.peter.imagestrip.ImageStrip;
 
 @Theme("dashboard")
-@Title("Titali Dashboard")
+@Title("The Learning Lab")
 public class DashboardUI extends UI{
 
     DataProvider dataProvider = new DataProvider();
@@ -160,7 +163,7 @@ public class DashboardUI extends UI{
     private static final String lableWelcome="Welcome";
     private static final String h4Style="h4";
     private static final String h2Style="h2";
-    private static final String lableTitaliDashboard="Titali Dashboard";
+    private static final String lableTitaliDashboard="The Learning Lab";
     private static final String lightStyle="light";
     private static final String fieldsStyle="fields";
     private static final String strUsername="Username";
@@ -299,6 +302,11 @@ public class DashboardUI extends UI{
          h.addComponent(Logo);
          h.setComponentAlignment(Logo, Alignment.MIDDLE_CENTER);
          h.setExpandRatio(Logo, 3);
+         
+//         ImageStrip strip = getImageStrip();
+//         h.addComponent(strip);
+//         h.setComponentAlignment(strip, Alignment.MIDDLE_CENTER);
+//         h.setExpandRatio(strip, 3);
 
          h.addComponent(loginPanel);
          h.setComponentAlignment(loginPanel, Alignment.MIDDLE_RIGHT);
@@ -310,6 +318,49 @@ public class DashboardUI extends UI{
 
          loginLayout.setExpandRatio(h, 3);
     }
+     
+     private ImageStrip getImageStrip() {
+        
+
+        // Create new horizontally aligned strip of images
+        ImageStrip strip = new ImageStrip();
+
+        // Add ValueChangeListener to listen for image selection
+        //strip.addListener(this);
+
+        // Use animation
+        strip.setAnimated(true);
+
+        // Make strip to behave like select
+        strip.setSelectable(true);
+
+        // Set size of the box surrounding the images
+        strip.setImageBoxWidth(340);
+        strip.setImageBoxHeight(340);
+
+        // Set maximum size of the images
+        strip.setImageMaxWidth(225);
+        strip.setImageMaxHeight(225);
+
+        // Add image strip to main window
+        
+
+        // Limit how many images are visible at most simultaneously
+        strip.setMaxAllowed(3);
+
+        // Add few images to the strip using different methods
+        //strip.addImage("http://www.path.to.image/image.jpg");
+        strip.addImage(new FileResource(new File("/home/rajkirans/Desktop/folder2/inside-logo.jpg")));
+        strip.addImage(new FileResource(new File("/home/rajkirans/Desktop/folder2/m1.jpg")));
+        strip.addImage(new FileResource(new File("/home/rajkirans/Desktop/folder2/m2.jpg")));
+        strip.addImage(new FileResource(new File("/home/rajkirans/Desktop/folder2/mitlogo.png")));
+        strip.addImage(new FileResource(new File("/home/rajkirans/Desktop/folder2/Screenshot-1.png")));
+        return strip;
+        
+    }
+
+    
+
 
      
      private static final String brandingStyle="branding";
@@ -344,7 +395,7 @@ public class DashboardUI extends UI{
                             {
                                 addStyleName(brandingStyle);
                                 Label logo = new Label(
-                                        "<span>Titali</span> Dashboard",
+                                        "<span>The Learning Lab</span>",
                                         ContentMode.HTML);
                                 logo.setSizeUndefined();
                                 addComponent(logo);
@@ -634,14 +685,14 @@ public class DashboardUI extends UI{
         VerticalLayout headings = new VerticalLayout();
         headings.setSpacing(true);
         
-        Label titali = new Label("Titali Dashboard",ContentMode.HTML);
-        titali.addStyleName("login-product-label");
+        Label productName = new Label("Welcome To The Learning Lab",ContentMode.HTML);
+        productName.addStyleName("login-product-label");
         
         Label signIn = new Label("Sign in to continue to dashboard",ContentMode.HTML);
         signIn.addStyleName("sign-in-tocontinue");
         
-        headings.addComponent(titali);
-        headings.setComponentAlignment(titali, Alignment.MIDDLE_CENTER);
+        headings.addComponent(productName);
+        headings.setComponentAlignment(productName, Alignment.MIDDLE_CENTER);
         headings.addComponent(UIUtils.getSchoolBannerLayout());
         headings.addComponent(signIn);
         headings.setComponentAlignment(signIn, Alignment.MIDDLE_CENTER);

@@ -127,7 +127,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         top.addStyleName("toolbar");
         addComponent(top);
         setExpandRatio(top, 0.4f);
-        final Label title = new Label("Titali Dashboard");
+        final Label title = new Label("Dashboard");
         title.setSizeUndefined();
         title.addStyleName("h1");
         top.addComponent(title);
