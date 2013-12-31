@@ -295,13 +295,15 @@ public class DashboardUI extends UI{
          HorizontalLayout h = new HorizontalLayout();
          h.setSizeFull();
 
-         Image Logo = new Image(null, new ThemeResource("img/m1.jpg"));
-         Logo.setWidth("500px");
-         Logo.setHeight("350px");
+         Image schoolPhoto = new Image(null, new ThemeResource("img/m1.jpg"));
+         schoolPhoto.setWidth("800px");
+         schoolPhoto.setHeight("400px");
+//         schoolLogo.setWidth("40%");
+//         schoolLogo.setHeight("30%");
 
-         h.addComponent(Logo);
-         h.setComponentAlignment(Logo, Alignment.MIDDLE_CENTER);
-         h.setExpandRatio(Logo, 3);
+         h.addComponent(schoolPhoto);
+         h.setComponentAlignment(schoolPhoto, Alignment.MIDDLE_CENTER);
+         h.setExpandRatio(schoolPhoto, 3);
          
 //         ImageStrip strip = getImageStrip();
 //         h.addComponent(strip);

@@ -72,6 +72,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
     private static final String strViewMore="View More";
     private LoadEarlierBtnWraper loadMoreWraper = new LoadEarlierBtnWraper(this);
     private List<List> whoIsDoingWhatWraperList = new ArrayList<List>();
+    private Button notify;
     
     
     
@@ -134,7 +135,8 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         top.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
         top.setExpandRatio(title, 0.5f);
 
-        Button notify = new Button("5");
+        notify = new Button("5");
+        notify.setImmediate(true);
         notify.setDescription("Notifications (5 unread)");
         // notify.addStyleName("borderless");
         notify.addStyleName("notifications");
@@ -430,17 +432,22 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         int i=0;
         for(MasteParmBean n : whosDoingWhatFromDB)
         {
-            label= new Label(
-                "<hr><b>"
-                        +n.getDisplaynotification()
-                +"</b><br><span>"+DateUtil.getTimeIntervalOfTheActivity(n.getUploadDate())+"</span><br>"
-                        , ContentMode.HTML);
-            l.addComponent(label);
-            i++;
-            if(i==5)
+            if(n.getDisplaynotification().indexOf("has shared")>0)
             {
-                break;
+                label = new Label(
+                        "<hr><b>"
+                        + n.getDisplaynotification()
+                        + "</b><br><span>" + DateUtil.getTimeIntervalOfTheActivity(n.getUploadDate()) + "</span><br>", ContentMode.HTML);
+                l.addComponent(label);
+                i++;
+                if (i == 5) {
+                    break;
+                }
+                notify.setCaption(""+i);
+                notify.setDescription("Notifications ("+i+" unread)");
+                
             }
+            
         }
         
         

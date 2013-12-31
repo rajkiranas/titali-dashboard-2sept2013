@@ -173,13 +173,13 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         else
         {
             coverImage =  new Embedded(null,
-                new ThemeResource("./img/learnMore.jpg"));
+                new ThemeResource("./img/learnMore-Topics.jpg"));
         }
          
         
         
-        coverImage.setHeight("90px");
-        coverImage.setWidth("100px");
+        coverImage.setHeight("92%");
+        coverImage.setWidth("92%");
         
         VerticalLayout imageLayout = new VerticalLayout();
         imageLayout.setSizeFull();
