@@ -76,7 +76,7 @@ public class DashboardActivityWraper extends VerticalLayout {
         //fields.setMargin(true);
         activityDetailsLayout.addComponent(fields);
         activityDetailsLayout.setComponentAlignment(fields, Alignment.MIDDLE_CENTER);
-        activityDetailsLayout.setExpandRatio(fields, 3);
+        activityDetailsLayout.setExpandRatio(fields, 4.5f);
         Label label;
         //String data="The activity of neurons in the brain and the code used by these neurons is described by mathematical neuron models at different levels of detail";
         

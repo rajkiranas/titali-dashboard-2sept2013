@@ -58,6 +58,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
@@ -296,10 +297,16 @@ public class DashboardUI extends UI{
          h.setSizeFull();
 
          Image schoolPhoto = new Image(null, new ThemeResource("img/m1.jpg"));
-         schoolPhoto.setWidth("800px");
-         schoolPhoto.setHeight("400px");
-//         schoolLogo.setWidth("40%");
-//         schoolLogo.setHeight("30%");
+         
+         //Embedded schoolPhoto =  new Embedded(null,new ThemeResource("img/m1.jpg"));
+//         schoolPhoto.setWidth("800px");
+//         schoolPhoto.setHeight("400px");
+         schoolPhoto.setWidth("100%");
+         schoolPhoto.setHeight("100%");
+         
+//         VerticalLayout imgLayout = new VerticalLayout();
+//         imgLayout.setSizeFull();
+//         imgLayout.addComponent(schoolPhoto);
 
          h.addComponent(schoolPhoto);
          h.setComponentAlignment(schoolPhoto, Alignment.MIDDLE_CENTER);
