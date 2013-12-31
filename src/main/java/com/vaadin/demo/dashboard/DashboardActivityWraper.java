@@ -5,6 +5,7 @@ import com.quick.bean.MyDashBoardBean;
 import com.quick.global.GlobalConstants;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.shared.ui.MarginInfo;
 
 
 import com.vaadin.ui.Alignment;
@@ -111,8 +112,8 @@ public class DashboardActivityWraper extends VerticalLayout {
         
         VerticalLayout activityImageLayout = new VerticalLayout();
         activityImageLayout.setSizeFull();
-        activityImageLayout.setMargin(false);
-        activityImageLayout.setSpacing(false);
+        activityImageLayout.setMargin(new MarginInfo(true, true, false, true));
+        activityImageLayout.setSpacing(true);
         //activityImageLayout.addStyleName("fourSideBorder");
         fields.addComponent(activityImageLayout);
         //fields.setExpandRatio(activityImageLayout,3);
@@ -144,8 +145,8 @@ public class DashboardActivityWraper extends VerticalLayout {
         
 //        activityImage.setHeight("90px");
 //        activityImage.setWidth("90px");
-        activityImage.setWidth("80%");
-        activityImage.setHeight("80%");
+        activityImage.setWidth("98%");
+//        activityImage.setHeight("80%");
         
 //        VerticalLayout il = new VerticalLayout();
 //        il.setSizeFull();
