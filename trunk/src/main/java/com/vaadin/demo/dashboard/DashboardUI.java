@@ -30,6 +30,7 @@ import com.quick.dictionary.DictView;
 import com.quick.forum.ForumView;
 import com.quick.games.GamesView;
 import com.quick.notices.CreateNotices;
+import com.quick.planner.PlannerView;
 import com.quick.play.PlayView;
 import com.quick.ui.exam.AdminExam;
 import com.quick.ui.exam.StudentExam;
@@ -72,6 +73,8 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -103,6 +106,7 @@ public class DashboardUI extends UI{
             put(GlobalConstants.ROUT_EXAMS,StudentExam.class);            
             put(GlobalConstants.ROUT_NOTICES,CreateNotices.class);
             put(GlobalConstants.ROUT_FORUM,ForumView.class);
+            put(GlobalConstants.ROUT_PLANNER,PlannerView.class);
             put(GlobalConstants.ROUT_PLAY,GamesView.class);
             //put(GlobalConstants.ROUT_PLAY,PlayView.class);
             put(GlobalConstants.ROUT_REPORTS, ReportsView.class);
@@ -164,10 +168,10 @@ public class DashboardUI extends UI{
     private static final String lableWelcome="Welcome";
     private static final String h4Style="h4";
     private static final String h2Style="h2";
-    private static final String lableTitaliDashboard="The Learning Lab";
+    private static final String lableTitaliDashboard=GlobalConstants.getProperty(GlobalConstants.PRODUCT_NAME);
     private static final String lightStyle="light";
     private static final String fieldsStyle="fields";
-    private static final String strUsername="Username";
+    private static final String strUsername="Email";
     private static final String strPassword="Password";
     private static final String strSignIn="Sign In";
     private static final String errorStyle="error";
@@ -245,8 +249,32 @@ public class DashboardUI extends UI{
 
         final Button signin = new Button(strSignIn);
         signin.addStyleName(defaultStyle);
-        fields.addComponent(signin);
-        fields.setComponentAlignment(signin, Alignment.BOTTOM_LEFT);
+        
+        Button signup= new Button("New Registration");
+        signup.setStyleName(BaseTheme.BUTTON_LINK);
+        signup.addClickListener(new ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) 
+            {
+                StudentView view = new StudentView();
+                Window w = new AddStudent(view);
+                UI.getCurrent().addWindow(w);
+                w.focus();
+            }
+        });
+        
+        
+        HorizontalLayout loginAndSignup = new HorizontalLayout();
+        loginAndSignup.setSpacing(true);
+        loginAndSignup.setWidth("100%");
+        loginAndSignup.addComponent(signin);
+        loginAndSignup.setExpandRatio(signin, 1.5f);
+        loginAndSignup.addComponent(signup);
+        loginAndSignup.setExpandRatio(signup, 3);
+        
+        fields.addComponent(loginAndSignup);
+        fields.setComponentAlignment(loginAndSignup, Alignment.BOTTOM_LEFT);
 
         final ShortcutListener enter = new ShortcutListener(strSignIn,
                 KeyCode.ENTER, null) {
@@ -404,7 +432,7 @@ public class DashboardUI extends UI{
                             {
                                 addStyleName(brandingStyle);
                                 Label logo = new Label(
-                                        "<span>The Learning Lab</span>",
+                                        "<span>"+GlobalConstants.getProperty(GlobalConstants.PRODUCT_NAME)+"</span>",
                                         ContentMode.HTML);
                                 logo.setSizeUndefined();
                                 addComponent(logo);
@@ -491,11 +519,11 @@ public class DashboardUI extends UI{
         
         if(userRole.equalsIgnoreCase(GlobalConstants.student))
         {
-                   actions= new String[] { "dashboard", "learn","Tech-news","Exams","Forum","dictionary","Play","Notices","reports"};
+                   actions= new String[] { "dashboard", "learn","Tech-news","Exams","Forum","Planner","dictionary","Play","Notices","reports"};
             
         }else
         {
-                actions= new String[] { "dashboard","topics","Tech-news","Exam-Admin","Forum","dictionary","Play","Notices","reports",
+                actions= new String[] { "dashboard","topics","Tech-news","Exam-Admin","Forum","Planner","dictionary","Play","Notices","reports",
             "students","teachers" };
         }
         
@@ -694,7 +722,7 @@ public class DashboardUI extends UI{
         VerticalLayout headings = new VerticalLayout();
         headings.setSpacing(true);
         
-        Label productName = new Label("Welcome To The Learning Lab",ContentMode.HTML);
+        Label productName = new Label("Welcome To "+GlobalConstants.getProperty(GlobalConstants.PRODUCT_NAME),ContentMode.HTML);
         productName.addStyleName("login-product-label");
         
         Label signIn = new Label("Sign in to continue to dashboard",ContentMode.HTML);
