@@ -54,6 +54,7 @@ public class ForumView extends VerticalLayout implements View,LayoutEvents.Layou
     public void enter(ViewChangeEvent event) {
 //        setSizeFull();
         addStyleName("schedule");
+        addStyleName("blackBg");
         //addStyleName("dashboard");
         //addComponent(buildDraftsView());
         loggedInUserProfile =((Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile));
@@ -137,7 +138,7 @@ public class ForumView extends VerticalLayout implements View,LayoutEvents.Layou
         addComponent(forumTable);
         setExpandRatio(forumTable, 1.5f);
         setHeight("100%");
-        setWidth("99%");
+        setWidth("100%");
     }
 
     private List<ForumEventDetailsBean> getForumDetailList() {
