@@ -10,12 +10,10 @@
 
 package com.quick.dictionary;
 
-import com.quick.forum.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.quick.bean.DictWordDetailsBean;
-import com.quick.bean.ForumEventDetailsBean;
 import com.quick.bean.Userprofile;
 import com.quick.global.GlobalConstants;
 import com.quick.utilities.LoadEarlierBtnWraper;
@@ -149,20 +147,24 @@ public class DictView extends VerticalLayout implements View,LayoutEvents.Layout
         
         
         
-        // add new button
-        Button newEventBtn =  new Button(New);
-        newEventBtn.setImmediate(true);
-        newEventBtn.addStyleName(GlobalConstants.default_style);
-        newEventBtn.addClickListener(new Button.ClickListener() {
-            @Override
-            public void buttonClick(ClickEvent event) {
-                UI.getCurrent().addWindow(new NewWordWindow(event));
-            }
-        });
-        
-        top.addComponent(newEventBtn);
-        top.setComponentAlignment(newEventBtn, Alignment.MIDDLE_RIGHT);
-        top.setExpandRatio(newEventBtn, 1);
+        if(!loggedInUserProfile.getRole().equals(GlobalConstants.student))
+        {
+            // add new button
+            Button newEventBtn = new Button(New);
+            newEventBtn.setImmediate(true);
+            newEventBtn.addStyleName(GlobalConstants.default_style);
+            newEventBtn.addClickListener(new Button.ClickListener() {
+
+                @Override
+                public void buttonClick(ClickEvent event) {
+                    UI.getCurrent().addWindow(new NewWordWindow(event));
+                }
+            });
+
+            top.addComponent(newEventBtn);
+            top.setComponentAlignment(newEventBtn, Alignment.MIDDLE_RIGHT);
+            top.setExpandRatio(newEventBtn, 1);
+        }
         
         addComponent(top);
     }

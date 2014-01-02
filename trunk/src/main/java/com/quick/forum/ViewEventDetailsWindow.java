@@ -101,7 +101,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         //addUserNotes();
         setContent(baseLayout);
         addStyleName("schedule");
-        
+        addStyleName("blackBg");
         return this;
     }
     
@@ -119,12 +119,13 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         setHeight("90%"); 
         setImmediate(true);
         
+        
         buildBaseStudentLayout();
         addEventDetails();
         //addUserNotes();
         setContent(baseLayout);
         addStyleName("schedule");
-        
+        addStyleName("blackBg");
         return this;
     }
     
@@ -147,7 +148,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
        baseLayout.setSpacing(false);   
        baseLayout.setMargin(false);
        baseLayout.setWidth("100%");
-       baseLayout.setHeight("98%");
+       baseLayout.setHeight("100%");
     }
 
     @Override
@@ -193,7 +194,9 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         
         Embedded coverImage = new Embedded(null,resource);
         coverImage.setType(Embedded.TYPE_IMAGE);
-//        coverImage.setSizeFull();
+        //coverImage.setSizeFull();
+//        coverImage.setHeight("90%");
+//        coverImage.setWidth("90%");
 /*        coverImage.setWidth(String.valueOf(originalImage.getWidth()));
         coverImage.setHeight(String.valueOf(originalImage.getHeight())); */
         
@@ -214,14 +217,18 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
     private Component getEventDetails() 
     {
         v = new VerticalLayout();
+        v.setImmediate(true);
         v.setSizeFull();
         v.setSpacing(true);
-        v.setMargin(new MarginInfo(true, false, true, false));
-        //v.setHeight("100%");
+        //v.setMargin(new MarginInfo(true, false, true, false));
+        v.setMargin(false);
+        v.setHeight("100%");
+        v.addStyleName("whiteBg");
         
         HorizontalLayout photoAndEventDtls = new HorizontalLayout();
 
         photoAndEventDtls.addStyleName("whiteBottomBorder");
+        
         photoAndEventDtls.setMargin(false);
         photoAndEventDtls.setSpacing(false);
         photoAndEventDtls.setWidth("100%");
@@ -253,14 +260,21 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         
         Table forumTable=new Table();
         forumTable.addContainerProperty(GlobalConstants.emptyString, VerticalLayout.class, null);
+        forumTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
         forumTable.addStyleName("plain");
         forumTable.addStyleName("borderless");
-        forumTable.setHeight("100%");
+        forumTable.setHeight("99%");
         forumTable.setWidth("100%");
         forumTable.setSortEnabled(false);
         forumTable.addItem(new Object[]{v},forumTable.size()+1);
-        baseLayout.addComponent(forumTable);
-        baseLayout.setExpandRatio(forumTable,2.25f);
+        
+        VerticalLayout tableVertical = new VerticalLayout();
+        tableVertical.setSizeFull();
+        tableVertical.addStyleName("whiteBg");
+        tableVertical.addComponent(forumTable);
+        
+        baseLayout.addComponent(tableVertical);
+        baseLayout.setExpandRatio(tableVertical,2.25f);
         return v;
     }
     

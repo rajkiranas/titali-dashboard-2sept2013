@@ -146,7 +146,7 @@ public class DashboardActivityWraper extends VerticalLayout {
 //        activityImage.setHeight("90px");
 //        activityImage.setWidth("90px");
         activityImage.setWidth("98%");
-//        activityImage.setHeight("80%");
+        activityImage.setHeight("80%");
         
 //        VerticalLayout il = new VerticalLayout();
 //        il.setSizeFull();
