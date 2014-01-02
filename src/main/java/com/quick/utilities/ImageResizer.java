@@ -26,7 +26,21 @@ public class ImageResizer {
             String ext=topicFileName.substring(topicFileName.indexOf(GlobalConstants.FULL_STOP)+1);
            BufferedImage originalImage = ImageIO.read(icon);
 
-           originalImage= Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_EXACT, originalImage.getWidth(), originalImage.getHeight());
+           int imgWidth=originalImage.getWidth();
+           int imgHeight = originalImage.getHeight();
+           
+           if(imgWidth>Integer.parseInt(GlobalConstants.getProperty(GlobalConstants.IMAGE_WIDTH)))
+           {
+               imgWidth=Integer.parseInt(GlobalConstants.getProperty(GlobalConstants.IMAGE_WIDTH));
+           }
+           
+           if(imgHeight>Integer.parseInt(GlobalConstants.getProperty(GlobalConstants.IMAGE_HEIGHT)))
+           {
+               imgHeight=Integer.parseInt(GlobalConstants.getProperty(GlobalConstants.IMAGE_HEIGHT));
+           }
+           
+           
+           originalImage= Scalr.resize(originalImage, Scalr.Method.QUALITY, Scalr.Mode.FIT_EXACT, imgWidth, imgHeight);
             //To save with original ratio uncomment next line and comment the above.
             //originalImage= Scalr.resize(originalImage, 153, 128);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

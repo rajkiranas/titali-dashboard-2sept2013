@@ -804,7 +804,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
                 FileOutputStream fileOuputStream = null;
                 try 
                 {
-                    String ext=topicFileName.substring(topicFileName.indexOf("."));
+                    String ext=topicFileName.substring(topicFileName.indexOf(GlobalConstants.FULL_STOP));
                     
                     /* fileOuputStream = new FileOutputStream(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)
                             +standardtxt.getValue()+GlobalConstants.HYPHEN

@@ -32,7 +32,7 @@ public class StudQuickLearnTable extends Table {
         setImmediate(true);// react at once when something is selected
         setSortEnabled(false);
         addContainerProperty(GlobalConstants.emptyString, VerticalLayout.class, null);
-        
+        setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
         
         //List<MasteParmBean> masterParamList = quickLearn.getTopicList();
         

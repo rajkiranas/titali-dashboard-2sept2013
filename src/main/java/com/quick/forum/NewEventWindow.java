@@ -15,6 +15,8 @@ import com.quick.utilities.UploadReceiver;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -26,6 +28,7 @@ import org.codehaus.jettison.json.JSONObject;
 public class NewEventWindow extends Window implements Button.ClickListener{
     
     private VerticalLayout baseLayout;
+    private String newlyCreatedEventId;
     
     public NewEventWindow(ClickEvent event){
         setModal(true);
@@ -106,7 +109,6 @@ public class NewEventWindow extends Window implements Button.ClickListener{
 
             @Override
             public void uploadSucceeded(Upload.SucceededEvent event) {
-                
                 
                 imageFileName=uploadReceiver.getFileName();
                 eventPicture=uploadReceiver.getFile();
@@ -215,6 +217,8 @@ public class NewEventWindow extends Window implements Button.ClickListener{
                 JSONObject outNObject = null;
                 String output = response.getEntity(String.class);
                 outNObject = new JSONObject(output);
+                newlyCreatedEventId = outNObject.getString("newlyCreatedEventId");
+                saveResizedTopicImageToFileSystem();
                 Notification.show(outNObject.getString(GlobalConstants.STATUS), Notification.Type.WARNING_MESSAGE);
                 
                 getUI().getNavigator().navigateTo(GlobalConstants.ROUT_FORUM);
@@ -226,4 +230,32 @@ public class NewEventWindow extends Window implements Button.ClickListener{
 
         }
     }
+    
+     private void saveResizedTopicImageToFileSystem() 
+            {
+                FileOutputStream fileOuputStream = null;
+                try 
+                {
+                    String ext=imageFileName.substring(imageFileName.indexOf(GlobalConstants.FULL_STOP));
+                    
+//                     fileOuputStream = new FileOutputStream(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)
+//                            +standardtxt.getValue()+GlobalConstants.HYPHEN
+//                            +subjecttxt.getValue() +GlobalConstants.HYPHEN
+//                            +topictxt.getValue()+GlobalConstants.HYPHEN
+//                            +ext); 
+                    fileOuputStream = new FileOutputStream(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)
+                    +newlyCreatedEventId + ext);
+                    
+                    fileOuputStream.write(eventImageArray);
+                    fileOuputStream.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } finally {
+                    try {
+                        fileOuputStream.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
 }

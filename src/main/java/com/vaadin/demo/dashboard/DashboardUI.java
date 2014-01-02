@@ -103,8 +103,8 @@ public class DashboardUI extends UI{
             put(GlobalConstants.ROUT_EXAMS,StudentExam.class);            
             put(GlobalConstants.ROUT_NOTICES,CreateNotices.class);
             put(GlobalConstants.ROUT_FORUM,ForumView.class);
-            put(GlobalConstants.ROUT_GAMES,GamesView.class);
-            put(GlobalConstants.ROUT_PLAY,PlayView.class);
+            put(GlobalConstants.ROUT_PLAY,GamesView.class);
+            //put(GlobalConstants.ROUT_PLAY,PlayView.class);
             put(GlobalConstants.ROUT_REPORTS, ReportsView.class);
             put(GlobalConstants.ROUT_TOPICS,QuickUpload.class);            
             put(GlobalConstants.ROUT_EXAM_ADMIN,AdminExam.class);
@@ -491,11 +491,11 @@ public class DashboardUI extends UI{
         
         if(userRole.equalsIgnoreCase(GlobalConstants.student))
         {
-                   actions= new String[] { "dashboard", "learn","Tech-news","Exams","Forum","dictionary","Games","Play","Notices","reports"};
+                   actions= new String[] { "dashboard", "learn","Tech-news","Exams","Forum","dictionary","Play","Notices","reports"};
             
         }else
         {
-                actions= new String[] { "dashboard","topics","Tech-news","Exam-Admin","Forum","dictionary","Games","Play","Notices","reports",
+                actions= new String[] { "dashboard","topics","Tech-news","Exam-Admin","Forum","dictionary","Play","Notices","reports",
             "students","teachers" };
         }
         

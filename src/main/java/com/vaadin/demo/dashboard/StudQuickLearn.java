@@ -861,8 +861,8 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
             setTopicForNotification(bean.getTopic());
             setStudQuikLearnDetails(getStudentQuickLearnDetails());
             String topicIntro = getStudQuikLearnDetails().getLectureNotesInformation();
-            if (topicIntro.length() > 145) {
-                topicIntro = topicIntro.substring(0, 145) + strTrippleDots;
+            if (topicIntro.length() > Integer.parseInt(GlobalConstants.getProperty(GlobalConstants.TOPIC_INTRO_LENGTH))) {
+                topicIntro = topicIntro.substring(0, Integer.parseInt(GlobalConstants.getProperty(GlobalConstants.TOPIC_INTRO_LENGTH))) + GlobalConstants.tripple_dots;
             }
             
             ViewTopicDetailsWindow w = new ViewTopicDetailsWindow(getStudQuikLearnDetails(), getUserNotes(), getUploadId());

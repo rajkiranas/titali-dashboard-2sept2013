@@ -90,6 +90,10 @@ public class GlobalConstants
     public static final String LEARN_MORE_IMG="LEARN_MORE_IMG";
     public static final String IMAGES_PATH="IMAGES_PATH";
     public static final String FULL_STOP=".";
+    public static final String TOPIC_INTRO_LENGTH="TOPIC_INTRO_LENGTH";
+    public static final String tripple_dots="...";
+    public static final String IMAGE_HEIGHT="IMAGE_HEIGHT";
+    public static final String IMAGE_WIDTH="IMAGE_WIDTH";
     
     public static final String ROUT_DASHBOARD="/dashboard";
     public static final String ROUT_LEARN="/learn";

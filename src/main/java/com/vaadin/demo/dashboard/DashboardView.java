@@ -25,7 +25,6 @@ import com.sun.jersey.api.client.WebResource;
 import com.vaadin.data.Property;
 import com.quick.data.MyDashBoardContainer;
 import com.quick.forum.ViewEventDetailsWindow;
-import com.quick.ui.exam.StudentExamDataProvider;
 import com.quick.utilities.LoadEarlierBtnWraper;
 import com.quick.utilities.DateUtil;
 import com.quick.utilities.UIUtils;
@@ -54,8 +53,6 @@ import com.vaadin.ui.themes.BaseTheme;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -432,8 +429,8 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         int i=0;
         for(MasteParmBean n : whosDoingWhatFromDB)
         {
-            if(n.getDisplaynotification().indexOf("has shared")>0)
-            {
+//            if(n.getDisplaynotification().indexOf("has shared")>0)
+//            {
                 label = new Label(
                         "<hr><b>"
                         + n.getDisplaynotification()
@@ -446,7 +443,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
                 notify.setCaption(""+i);
                 notify.setDescription("Notifications ("+i+" unread)");
                 
-            }
+            //}
             
         }
         
