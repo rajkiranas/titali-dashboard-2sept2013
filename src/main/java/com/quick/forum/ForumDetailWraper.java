@@ -50,18 +50,20 @@ public class ForumDetailWraper extends VerticalLayout {
 
         this.eventDetails = eventDetails;
         setCaption(eventDetails.getEventDesc());
-        setHeight("99%");
+        setHeight("100%");
         setWidth("99%");
         setMargin(false);
+        addStyleName("blackBg");
 //        addStyleName("no-vertical-drag-hints");
 //        addStyleName("no-horizontal-drag-hints");
-        addStyleName("fourSideBorder");
+        
         setData(eventDetails);
         HorizontalLayout details = new HorizontalLayout();
         details.setSpacing(true);
         details.setMargin(false);
         details.setSizeFull();
         addComponent(details);
+        setComponentAlignment(details,Alignment.MIDDLE_CENTER);
         addLayoutClickListener(view);
 
 //        final Image coverImage = new Image("", new ExternalResource(
@@ -100,20 +102,21 @@ public class ForumDetailWraper extends VerticalLayout {
         Image coverImage = new Image("Image", resource);
 
 
-        coverImage.setHeight("150px");
-        coverImage.setWidth("150px");
+        coverImage.setHeight("70%");
+        coverImage.setWidth("75%");
         //coverImage.setSizeFull();
 //        coverImage.setWidth("100%");
 //        coverImage.setHeight("80%");
 
 
 
-        final Label more = new Label("<div style='color:blue;display:inline-block;'> <b>" +"More..."+ "</b></div>",ContentMode.HTML);
+        final Label more = new Label("<div style='color:#3b5998;display:inline-block;'> <b>" +"Read More..."+ "</b></div>",ContentMode.HTML);
 
         DragAndDropWrapper cover = new DragAndDropWrapper(coverImage);
         cover.setDragStartMode(DragStartMode.NONE);
-        cover.setWidth("140px");
-        cover.setHeight("140px");
+        
+        cover.setHeight("70%");
+        cover.setWidth("75%");
         //cover.setSizeFull();
 //        cover.setWidth("100%");
 //        cover.setHeight("80%");
@@ -143,11 +146,14 @@ public class ForumDetailWraper extends VerticalLayout {
         details.setExpandRatio(cover, 0.5f);
 
         fields = new VerticalLayout();
-        fields.setWidth("100%");
+        fields.setWidth("60%");
         fields.setSpacing(true);
         fields.setMargin(true);
+        fields.addStyleName("rightAndLeftBorder");
+        fields.addStyleName("whiteBg");
         details.addComponent(fields);
         details.setExpandRatio(fields, 2);
+        details.setComponentAlignment(fields,Alignment.MIDDLE_CENTER);
         Label label;
 //        if (event != null) {
 //            SimpleDateFormat df = new SimpleDateFormat();
@@ -196,6 +202,9 @@ public class ForumDetailWraper extends VerticalLayout {
         updateSynopsis(eventDetails, false);
         fields.addComponent(synopsis);
 
+        fields.addComponent(cover);
+        //fields.setExpandRatio(cover, 0.5f);
+        
         //more.addStyleName("link");
         fields.addComponent(more);
         /* more.addClickListener(new ClickListener() {
