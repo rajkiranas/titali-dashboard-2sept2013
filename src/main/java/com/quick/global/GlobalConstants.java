@@ -25,6 +25,7 @@ public class GlobalConstants
     public GlobalConstants() {
     }   
   
+    public static final String PRODUCT_NAME="PRODUCT_NAME";
     public static final String CMS="CMS Dashboard";
     public static final String Footer_Line="POWERED BY SATERI SYSTEMS INC.";
     public static final String Logout="Logout";
@@ -101,6 +102,7 @@ public class GlobalConstants
     public static final String ROUT_EXAMS="/Exams";
     public static final String ROUT_NOTICES="/Notices";
     public static final String ROUT_FORUM="/Forum";
+    public static final String ROUT_PLANNER="/Planner";
     public static final String ROUT_GAMES="/Games";
     public static final String ROUT_PLAY="/Play";
     public static final String ROUT_REPORTS="/reports";

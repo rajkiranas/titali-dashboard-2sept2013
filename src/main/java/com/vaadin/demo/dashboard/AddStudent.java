@@ -16,6 +16,7 @@ import com.quick.data.MasterDataProvider;
 import com.quick.utilities.DateUtil;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
@@ -72,79 +73,87 @@ public class AddStudent extends Window implements Button.ClickListener{
     public AddStudent(StudentView studentView){
         this.studentView=studentView;
         isNewStudent=true;
-        baseLayout = new VerticalLayout();
-        baseLayout.setSpacing(true);
         setModal(true);
-        setCaption("Welcome to Add New Student");
-        setContent(baseLayout);
+        setCaption("Welcome to student signup");
+        
         center();        
-        setClosable(false);
-        setWidth("70%");
-        setHeight("70%"); 
+        setClosable(true);
+        setWidth("45%");
+        setHeight("90%"); 
         setStandardList(MasterDataProvider.getStandardList());
+        buildBaseLayout();
         buildStudentForm();
-        buildBaseStudentLayout();
+        buildButtonLayout();
+        setContent(baseLayout);
         
     }
     
     public AddStudent(StudentView studentView, List<Userprofile> studentList) {
         this.studentView=studentView;
-        baseLayout = new VerticalLayout();
-        baseLayout.setSpacing(true);       
+        
         setModal(true);       
-        setCaption("Welcome to Edit Student");
-        setContent(baseLayout);
+        setCaption("Welcome to edit student");
+        
         center();        
-        setClosable(false);
-        setWidth("70%");
-        setHeight("70%");
-        setStandardList(MasterDataProvider.getStandardList());
+        setClosable(true);
+        setWidth("45%");
+        setHeight("90%");
+        
+        buildBaseLayout();
+        setStandardList(MasterDataProvider.getStandardList());        
         buildStudentForm();
-        buildBaseStudentLayout();
+        buildButtonLayout();
         setStudentFormData(studentList);
+        setContent(baseLayout);
     }
     
-     private void buildBaseStudentLayout(){
+    private void buildBaseLayout() {
+        baseLayout = new VerticalLayout();
+        baseLayout.setSpacing(true);       
+    }
+    
+     private void buildButtonLayout(){
               
        buttonLayout=new HorizontalLayout();
        buttonLayout.setImmediate(false);
-       buttonLayout.setWidth("97%");
+       buttonLayout.setWidth("50%");
        buttonLayout.setHeight("100%");
        buttonLayout.setMargin(false);
        buttonLayout.setSpacing(false);
        
-       HorizontalLayout buttons = new HorizontalLayout();
-       buttons.setMargin(true);
-       buttons.setSpacing(true);
-       buttons.setSizeUndefined();
+//       HorizontalLayout buttons = new HorizontalLayout();
+//       buttons.setMargin(true);
+//       buttons.setSpacing(true);
+//       buttons.setSizeUndefined();
        
        savebtn = new Button("Save",(Button.ClickListener)this);
+       savebtn.setImmediate(true);  
        savebtn.addStyleName("default");
-       buttons.addComponent(savebtn);
+       
         
-       buttonLayout.addComponent(buttons);
+       //buttonLayout.addComponent(buttons);
        
        cancelbtn = new Button("Cancel",(Button.ClickListener)this);
        cancelbtn.setImmediate(true);  
        cancelbtn.addStyleName("default");
-       buttons.addComponent(cancelbtn); 
        
-       buttonLayout.setComponentAlignment(buttons, Alignment.MIDDLE_CENTER); 
+       buttonLayout.addComponent(savebtn);
+       buttonLayout.addComponent(cancelbtn);        
+       //buttonLayout.setComponentAlignment(buttons, Alignment.MIDDLE_CENTER); 
        
        baseLayout.addComponent(buttonLayout);
-       
-            
+       baseLayout.setComponentAlignment(buttonLayout, Alignment.MIDDLE_CENTER); 
     }
     
     private void buildStudentForm(){
        
-       Panel formPanel=new Panel();
-       formPanel.setSizeUndefined();
-       formPanel.setWidth("100%");
-       formPanel.setHeight("100%");
-       formPanel.setCaption("Student Information");
+//       Panel formPanel=new Panel();
+//       formPanel.setSizeUndefined();
+//       formPanel.setWidth("100%");
+//       formPanel.setHeight("100%");
+//       formPanel.setCaption("Student Information");
        
-       HorizontalLayout formLayout=new HorizontalLayout();
+       VerticalLayout formLayout=new VerticalLayout();
        formLayout.setSpacing(true);
        formLayout.setMargin(true);
        formLayout.setSizeUndefined();
@@ -154,7 +163,7 @@ public class AddStudent extends Window implements Button.ClickListener{
        studform1.setMargin(true);
 
        rollNotxt=new TextField();
-       rollNotxt.setCaption("Roll No");
+       rollNotxt.setCaption("Roll no");
        rollNotxt.setImmediate(true);
        rollNotxt.setRequired(true);
        rollNotxt.addBlurListener(new FieldEvents.BlurListener() {
@@ -170,7 +179,7 @@ public class AddStudent extends Window implements Button.ClickListener{
         });
        
        userNametxt=new TextField();
-       userNametxt.setCaption("Username");
+       userNametxt.setCaption("Email");
        userNametxt.setRequired(true);
        userNametxt.setImmediate(true);
        userNametxt.addBlurListener(new FieldEvents.BlurListener() {
@@ -234,17 +243,9 @@ public class AddStudent extends Window implements Button.ClickListener{
        address.setCaption("Address");
        address.setRequired(true);
        
-       studform1.addComponent(rollNotxt);
-       studform1.addComponent(userNametxt);
-       studform1.addComponent(genderOption);
-       studform1.addComponent(standardtxt);
-       studform1.addComponent(mobiletxt);
-       studform1.addComponent(address);
-
-       formLayout.addComponent(studform1);
-       formLayout.setComponentAlignment(studform1,Alignment.MIDDLE_LEFT);
        
-       FormLayout studform2=new FormLayout();       
+       
+       //FormLayout studform2=new FormLayout();       
       
        studNametxt=new TextField();
        studNametxt.setCaption("Name");
@@ -273,19 +274,32 @@ public class AddStudent extends Window implements Button.ClickListener{
        divisiontxt.setNullSelectionAllowed(false);
        divisiontxt.setRequired(true);
        divisiontxt.setImmediate(true);
+       
+       studform1.addComponent(new Label("<b>Sign up for "+GlobalConstants.getProperty(GlobalConstants.PRODUCT_NAME)+"</b>", ContentMode.HTML));
+       studform1.addComponent(rollNotxt);
+       studform1.addComponent(studNametxt);
+       studform1.addComponent(userNametxt);
+       studform1.addComponent(passwordtxt);
+       studform1.addComponent(mobiletxt);
+       studform1.addComponent(dob);
+       studform1.addComponent(genderOption);
+       
+       studform1.addComponent(standardtxt);
+       studform1.addComponent(divisiontxt);       
+       studform1.addComponent(eduYeartxt);
+       
+       //studform1.addComponent(address);
+       
+       
+       formLayout.addComponent(studform1);
+       formLayout.setComponentAlignment(studform1,Alignment.MIDDLE_CENTER);
                
-       studform2.addComponent(studNametxt);
-       studform2.addComponent(passwordtxt);    
-       studform2.addComponent(dob);
-       studform2.addComponent(divisiontxt);
-       studform2.addComponent(eduYeartxt);
+//       formLayout.addComponent(studform2);       
+//       formLayout.setComponentAlignment(studform2,Alignment.MIDDLE_CENTER);
        
-       
-       formLayout.addComponent(studform2);       
-       formLayout.setComponentAlignment(studform2,Alignment.MIDDLE_RIGHT);
-       formPanel.setContent(formLayout);
-       baseLayout.addComponent(formPanel);
-       baseLayout.setComponentAlignment(formPanel,Alignment.MIDDLE_CENTER);
+       //formPanel.setContent(formLayout);
+       baseLayout.addComponent(formLayout);
+       baseLayout.setComponentAlignment(formLayout,Alignment.MIDDLE_CENTER);
     }
 
     @Override
@@ -294,8 +308,8 @@ public class AddStudent extends Window implements Button.ClickListener{
         if(source==savebtn){
                 if(validateStudent()){
                    saveStudent();
-                   studentView.setStudentList(MasterDataProvider.getAllStudentList()); 
-                   studentView.getStudentTable().removeValueChangeListener((Property.ValueChangeListener)studentView);
+                   //studentView.setStudentList(MasterDataProvider.getAllStudentList()); 
+                   /* studentView.getStudentTable().removeValueChangeListener((Property.ValueChangeListener)studentView);
                    studentView.getStudentTable().setContainerDataSource(studentView.getStudentMasterContainer());
                    studentView.getStudentTable().setVisibleColumns(StudentMasterContainer.NATURAL_COL_ORDER_STUDENT_INFO);
                    studentView.getStudentTable().setColumnHeaders(StudentMasterContainer.COL_HEADERS_ENGLISH_STUDENT_INFO);
@@ -313,9 +327,10 @@ public class AddStudent extends Window implements Button.ClickListener{
                     studentView.addListenertoBtn(btnRemove);               
                     return btnRemove;
                 }
-            });
+            }); */
+                   
+                   Notification.show("Registration complete, please log into the system",Notification.Type.WARNING_MESSAGE); 
                    this.close();
-                   Notification.show("Saved",Notification.Type.WARNING_MESSAGE); 
                 }
                 
         }else if(source == cancelbtn){
@@ -411,12 +426,12 @@ public class AddStudent extends Window implements Button.ClickListener{
             Notification.show("Please enter valid contact number",Notification.Type.WARNING_MESSAGE);
             return false;
         }else if((eduYeartxt.getValue().toString()).equals("Select")){
-            Notification.show("Please select education year",Notification.Type.WARNING_MESSAGE); 
+            Notification.show("Please select educational year",Notification.Type.WARNING_MESSAGE); 
             return false;
-        }else if((address.getValue()).equals("")){
+        }/* else if((address.getValue()).equals("")){
             Notification.show("Please enter address",Notification.Type.WARNING_MESSAGE); 
             return false;
-        }else if(DateUtil.getDateDifference(""+eduYeartxt.getValue(),(Date)dob.getValue())>0){
+        }*/else if(DateUtil.getDateDifference(""+eduYeartxt.getValue(),(Date)dob.getValue())>0){
             Notification.show("Education year should be greater than date of birth",Notification.Type.WARNING_MESSAGE); 
             return false;
         }
@@ -499,6 +514,8 @@ public class AddStudent extends Window implements Button.ClickListener{
     public void setDivisionList(List<QuickLearn> divisionList) {
         this.divisionList = divisionList;
     }    
+
+    
    
     
 }
