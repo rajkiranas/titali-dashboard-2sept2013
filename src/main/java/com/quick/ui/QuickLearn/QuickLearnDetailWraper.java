@@ -141,7 +141,7 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         String timeAndInstructor = "<b>&nbsp;&nbsp;&nbsp;STARTS: </b>"+" " + DateUtil.formatDateInddMMyyyyFormat(topicDetails.getUploadDate())
                 +"" + " <b>. INSTRUCTORS: </b>"+" "+ topicDetails.getOtherNotesInformation() 
                 +"" + " <b>. SUB: </b>"+" "+ topicDetails.getSub() 
-                + " <b>. RECOMMENDED FOR: </b>"+topicDetails.getStd()+"&nbsp;&nbsp;&nbsp;";
+                + " <b>. RECOMMENDED: </b>"+topicDetails.getStd()+"&nbsp;&nbsp;&nbsp;";
         
         label = new Label(timeAndInstructor, ContentMode.HTML);
         //label.setSizeUndefined();

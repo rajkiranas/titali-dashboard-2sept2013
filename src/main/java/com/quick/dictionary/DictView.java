@@ -190,7 +190,7 @@ public class DictView extends VerticalLayout implements View,LayoutEvents.Layout
         addComponent(dictTable);
         setExpandRatio(dictTable, 1.5f);
         setHeight("100%");
-        setWidth("99%");
+        setWidth("100%");
     }
 
     private List<DictWordDetailsBean> getDictWordsList() {
