@@ -271,7 +271,7 @@ public class DashboardUI extends UI{
         loginAndSignup.addComponent(signin);
         loginAndSignup.setExpandRatio(signin, 1.5f);
         loginAndSignup.addComponent(signup);
-        loginAndSignup.setExpandRatio(signup, 3);
+        loginAndSignup.setExpandRatio(signup, 3.5f);
         
         fields.addComponent(loginAndSignup);
         fields.setComponentAlignment(loginAndSignup, Alignment.BOTTOM_LEFT);
