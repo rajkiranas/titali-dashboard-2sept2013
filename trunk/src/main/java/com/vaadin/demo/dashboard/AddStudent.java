@@ -67,7 +67,8 @@ public class AddStudent extends Window implements Button.ClickListener{
         this.standardList = standardList;
     }
     
-    private int YEAR=DateUtil.getYear(DateUtil.getCalenderInstance());
+    //private int YEAR=DateUtil.getYear(DateUtil.getCalenderInstance());
+    private String YEAR="2013-2014";
     
     
     public AddStudent(StudentView studentView){
@@ -435,10 +436,10 @@ public class AddStudent extends Window implements Button.ClickListener{
         }/* else if((address.getValue()).equals("")){
             Notification.show("Please enter address",Notification.Type.WARNING_MESSAGE); 
             return false;
-        }*/else if(DateUtil.getDateDifference(""+eduYeartxt.getValue(),(Date)dob.getValue())>0){
+        }else if(DateUtil.getDateDifference(""+eduYeartxt.getValue(),(Date)dob.getValue())>0){
             Notification.show("Education year should be greater than date of birth",Notification.Type.WARNING_MESSAGE); 
             return false;
-        }
+        } */
         return true;
     }
 
