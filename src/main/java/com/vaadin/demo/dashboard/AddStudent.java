@@ -78,8 +78,8 @@ public class AddStudent extends Window implements Button.ClickListener{
         
         center();        
         setClosable(true);
-        setWidth("45%");
-        setHeight("90%"); 
+        setWidth("40%");
+        setHeight("80%"); 
         setStandardList(MasterDataProvider.getStandardList());
         buildBaseLayout();
         buildStudentForm();
@@ -96,8 +96,8 @@ public class AddStudent extends Window implements Button.ClickListener{
         
         center();        
         setClosable(true);
-        setWidth("45%");
-        setHeight("90%");
+        setWidth("40%");
+        setHeight("80%");
         
         buildBaseLayout();
         setStandardList(MasterDataProvider.getStandardList());        
@@ -158,14 +158,13 @@ public class AddStudent extends Window implements Button.ClickListener{
        formLayout.setMargin(true);
        formLayout.setSizeUndefined();
                
-       FormLayout studform1=new FormLayout();
-       studform1.setSizeUndefined();
-       studform1.setMargin(true);
+       
 
        rollNotxt=new TextField();
        rollNotxt.setCaption("Roll no");
        rollNotxt.setImmediate(true);
        rollNotxt.setRequired(true);
+       rollNotxt.setWidth("80%");
        rollNotxt.addBlurListener(new FieldEvents.BlurListener() {
 
             @Override
@@ -173,7 +172,7 @@ public class AddStudent extends Window implements Button.ClickListener{
                 if(!NumberValidator.isValidCellNumber((String) rollNotxt.getValue())) {
                    Notification.show("Please enter valid roll no",Notification.Type.WARNING_MESSAGE);  
                 }else if(IsRollNoAlreadyExist(String.valueOf(rollNotxt.getValue()))){
-                    rollNotxt.setValue("");
+                    rollNotxt.setValue(GlobalConstants.emptyString);
                 }                
             }
         });
@@ -182,6 +181,7 @@ public class AddStudent extends Window implements Button.ClickListener{
        userNametxt.setCaption("Email");
        userNametxt.setRequired(true);
        userNametxt.setImmediate(true);
+       userNametxt.setWidth("80%");
        userNametxt.addBlurListener(new FieldEvents.BlurListener() {
            
             @Override
@@ -189,7 +189,7 @@ public class AddStudent extends Window implements Button.ClickListener{
                  if (((String) userNametxt.getValue()).equals(GlobalConstants.emptyString)) {
                        Notification.show("Please enter valid username",Notification.Type.WARNING_MESSAGE);              
                 }else if(MasterDataProvider.IsUsernameAlreadyExist(String.valueOf(userNametxt.getValue()))){
-                    userNametxt.setValue("");
+                    userNametxt.setValue(GlobalConstants.emptyString);
                 }  
             }           
         });
@@ -275,6 +275,10 @@ public class AddStudent extends Window implements Button.ClickListener{
        divisiontxt.setRequired(true);
        divisiontxt.setImmediate(true);
        
+       FormLayout studform1=new FormLayout();
+       studform1.setSizeFull();
+       studform1.setMargin(true);
+       
        studform1.addComponent(new Label("<b>Sign up for "+GlobalConstants.getProperty(GlobalConstants.PRODUCT_NAME)+"</b>", ContentMode.HTML));
        studform1.addComponent(rollNotxt);
        studform1.addComponent(studNametxt);
@@ -292,14 +296,14 @@ public class AddStudent extends Window implements Button.ClickListener{
        
        
        formLayout.addComponent(studform1);
-       formLayout.setComponentAlignment(studform1,Alignment.MIDDLE_CENTER);
+       formLayout.setComponentAlignment(studform1,Alignment.MIDDLE_LEFT);
                
 //       formLayout.addComponent(studform2);       
 //       formLayout.setComponentAlignment(studform2,Alignment.MIDDLE_CENTER);
        
        //formPanel.setContent(formLayout);
        baseLayout.addComponent(formLayout);
-       baseLayout.setComponentAlignment(formLayout,Alignment.MIDDLE_CENTER);
+       baseLayout.setComponentAlignment(formLayout,Alignment.MIDDLE_LEFT);
     }
 
     @Override
