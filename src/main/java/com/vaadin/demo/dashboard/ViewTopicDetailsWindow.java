@@ -13,12 +13,16 @@ import com.sun.jersey.api.client.WebResource;
 import com.quick.utilities.UIUtils;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FileResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -182,53 +186,85 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
            
            Video vPlayer;
            // video is available, show it on video player
-           vPlayer = new Video();
+           //vPlayer = new Flash(GlobalConstants.emptyString, new ExternalResource(this.quickLearnPojo.getVideoPath()));
+           vPlayer = new Video(GlobalConstants.emptyString, new FileResource(new File(this.quickLearnPojo.getVideoPath())));
            vPlayer.setImmediate(true);
-           vPlayer.setWidth("100%");
-           vPlayer.setHeight("100%");
-           vPlayer.setPoster(new FileResource(new File(GlobalConstants.getProperty(GlobalConstants.LEARN_MORE_IMG))));
-           
-           vPlayer.addSource(new FileResource(new File(this.quickLearnPojo.getVideoPath())));
+           vPlayer.setReadOnly(false);
+           vPlayer.setHtmlContentAllowed(true);
            vPlayer.setShowControls(true);
            vPlayer.setMuted(false);
+           vPlayer.setWidth("100%");
+           vPlayer.setHeight("100%");
+           //vPlayer.setPoster(new FileResource(new File(GlobalConstants.getProperty(GlobalConstants.LEARN_MORE_IMG))));
            
-           //return vPlayer;
-           videoInfoLayout.addComponent(vPlayer);
+           //vPlayer.addSource(new FileResource(new File(this.quickLearnPojo.getVideoPath())));
+           //vPlayer.addSource(new ExternalResource(this.quickLearnPojo.getVideoPath()));
+           
+//           String video = "<html><head>\n"
+//                   + "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n"
+//                   + "	<script type='text/javascript' src='./VAADIN/themes/dashboard/flowplayer/flowplayer-3.2.13.min.js'></script>\n"
+//                   + "	\n"
+//                   
+//                   + "	<link rel=\"stylesheet\" type=\"text/css\" href='./VAADIN/themes/dashboard/flowplayer/example/style.css'>\n"
+//                   
+//                   + "\n"
+//                   + "</head>"
+//                   + "<body>\n"
+//                   + "	<div>\n"
+//                   + "		\n"
+//                   
+//                   + "		<a  \n"
+//                   + "			 href=\"http://localhost:8084/titali-dashboard/VAADIN/themes/dashboard/video/cp.flv\"\n"
+//                   + "			 style=\"display:block;width:320px;height:330px\"  \n"
+//                   + "			 id=\"player\"> \n"
+//                   + "		</a> \n"
+//                   + "	\n"
+//                   
+//                   + "		<script>\n"                  
+//                   + "			flowplayer('player', './flowplayer-3.2.18.swf')"
+//                   + "		</script>\n"
+//                   + "		\n"
+//                   + "	</div>\n"
+//                   + "	\n"
+//                   + "	\n"
+//                   + "</body></html>";
+           
+//           String html= "http://localhost:8084/titali-dashboard/VAADIN/themes/dashboard/flowplayer/example/index.html";
+//           
+//            String s = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" "
+//                + "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> "
+//                + "<html xmlns=\"http://www.w3.org/1999/xhtml\" > "
+//                + "<head> "
+//                + "<title>Embedding in IFrame</title> "
+//                + "</head> "
+//                + "<body style=\"background: #d0ffd0;\"> "
+//                + "<div style='height: 5px;'> "
+//                + "<script src='http://demo.vaadin.com/xsembed/getEmbedJs' "
+//                + "type='text/javascript'></script> "
+//                + " </div> "
+//                + "<table align=\"center\" border=\"3\" width='100%' height='100%' > "
+//                + "<tr valign=\"top\"> "
+//                + "<td> "
+//                + "<iframe name='iframe_a' target='iframe_a' src=\""+html+"\" "
+//                + "height='500' width='500' "
+//                + "frameborder=\"0\"></iframe> "
+//                + "</td> "
+//                + "</tr> "
+//                + "</table> "
+//                + "</body> "
+//                + "</html>";
+//           
+//            System.out.println("--------"+s);
+//            
+//
+//         
+//            Label flowPlayer = new Label(s, ContentMode.HTML);
+//            String dynaString =  flowPlayer.getValue();
+//            dynaString=dynaString.replaceAll("<video-path>", this.quickLearnPojo.getVideoPath());
+//            
+//            flowPlayer.setValue(dynaString);
+            videoInfoLayout.addComponent(vPlayer);
            videoInfoLayout.setComponentAlignment(vPlayer, Alignment.MIDDLE_CENTER);
-         
-           
-//           HorizontalLayout h = new HorizontalLayout();
-//           h.setWidth("100%");
-//           Button play = new Button("Play");
-//           play.setImmediate(true);
-//           play.setWidth("100%");
-//           play.addListener(new Button.ClickListener() {
-//
-//               @Override
-//               public void buttonClick(ClickEvent event) {
-//                   vPlayer.play();
-//               }
-//           });
-//           
-//           Button stop = new Button("Stop");
-//           stop.setImmediate(true);
-//           stop.setWidth("100%");
-//           stop.addListener(new Button.ClickListener() {
-//
-//               @Override
-//               public void buttonClick(ClickEvent event) {
-//                   vPlayer.pause();
-//               }
-//           });
-//           
-//           h.addComponent(play);
-//           h.addComponent(stop);
-           
-           //layout.addComponent(vPlayer);
-           //layout.setExpandRatio(vPlayer, 2.5f);
-//           layout.addComponent(h);
-//           layout.setExpandRatio(h, 0.5f);
-           
        }
        else
        {
@@ -261,9 +297,9 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         Label topicNotes=new Label("<b><h4>"+"TOPIC NOTES"+"</h4></b>", ContentMode.HTML);
         topicNotes.setImmediate(true);
         
-        Label strNotes = new Label();
+        Label strNotes = new Label(quickLearnPojo.getLectureNotes(),ContentMode.PREFORMATTED);
         strNotes.setImmediate(true);
-        strNotes.setValue(quickLearnPojo.getLectureNotes());
+        //strNotes.setValue();
         
         
         VerticalLayout layout= new VerticalLayout();
@@ -303,9 +339,9 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         Label otherRef=new Label("<b><h4>"+"OTHER REFERENCES"+"</h4></b>", ContentMode.HTML);
         otherRef.setImmediate(true);
         
-        Label strOtherNotes = new Label();
+        Label strOtherNotes = new Label(quickLearnPojo.getOtherNotes(),ContentMode.PREFORMATTED);
         strOtherNotes.setImmediate(true);
-        strOtherNotes.setValue(quickLearnPojo.getOtherNotes());
+        //strOtherNotes.setValue();
         
         
         VerticalLayout layout= new VerticalLayout();
@@ -342,9 +378,9 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         Label previousQuestions=new Label("<b><h4>"+"PREVIOUS QUESTIONS"+"</h4></b>", ContentMode.HTML);
         previousQuestions.setImmediate(true);
         
-        Label strQuestions = new Label();
+        Label strQuestions = new Label(quickLearnPojo.getPreviousQuestion(),ContentMode.PREFORMATTED);
         strQuestions.setImmediate(true);
-        strQuestions.setValue(quickLearnPojo.getPreviousQuestion());
+        //strQuestions.setValue();
         
         
         VerticalLayout layout= new VerticalLayout();
@@ -380,9 +416,9 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
         Label topicQuiz=new Label("<b><h4>"+"TOPIC QUIZ"+"</h4></b>", ContentMode.HTML);
         topicQuiz.setImmediate(true);
         
-        Label strQuiz = new Label();
+        Label strQuiz = new Label(quickLearnPojo.getQuiz(),ContentMode.PREFORMATTED);
         strQuiz.setImmediate(true);
-        strQuiz.setValue(quickLearnPojo.getQuiz());
+        //strQuiz.setValue();
         
         
         VerticalLayout layout= new VerticalLayout();

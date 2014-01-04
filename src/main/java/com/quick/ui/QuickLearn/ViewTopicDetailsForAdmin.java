@@ -21,6 +21,7 @@ import com.quick.utilities.DateUtil;
 import com.quick.utilities.UIUtils;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FileResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -170,13 +171,17 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
            // video is available, show it on video player
            vPlayer = new Video();
            vPlayer.setImmediate(true);
+           vPlayer.setReadOnly(false);
+           vPlayer.setHtmlContentAllowed(true);
+           vPlayer.setShowControls(true);
+           vPlayer.setMuted(false);
            vPlayer.setWidth("100%");
            vPlayer.setHeight("100%");
            vPlayer.setPoster(new FileResource(new File(GlobalConstants.getProperty(GlobalConstants.LEARN_MORE_IMG))));
+           //vPlayer.addSource(new FileResource(new File(this.quickLearnPojo.getVideoPath())));
+           vPlayer.addSource(new ExternalResource(this.quickLearnPojo.getVideoPath()));
            
-           vPlayer.addSource(new FileResource(new File(this.quickLearnPojo.getVideoPath())));
-           vPlayer.setShowControls(true);
-           vPlayer.setMuted(false);
+           
            
            //return vPlayer;
            videoInfoLayout.addComponent(vPlayer);
@@ -247,9 +252,9 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         Label topicNotes=new Label("<b><h4>"+"TOPIC NOTES"+"</h4></b>", ContentMode.HTML);
         topicNotes.setImmediate(true);
         
-        Label strNotes = new Label();
+        Label strNotes = new Label(quickLearnPojo.getLectureNotes(),ContentMode.PREFORMATTED);
         strNotes.setImmediate(true);
-        strNotes.setValue(quickLearnPojo.getLectureNotes());
+        //strNotes.setValue(quickLearnPojo.getLectureNotes());
         
         
         VerticalLayout layout= new VerticalLayout();
@@ -289,9 +294,9 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         Label otherRef=new Label("<b><h4>"+"OTHER REFERENCES"+"</h4></b>", ContentMode.HTML);
         otherRef.setImmediate(true);
         
-        Label strOtherNotes = new Label();
+        Label strOtherNotes = new Label(quickLearnPojo.getOtherNotes(),ContentMode.PREFORMATTED);
         strOtherNotes.setImmediate(true);
-        strOtherNotes.setValue(quickLearnPojo.getOtherNotes());
+        //strOtherNotes.setValue(quickLearnPojo.getOtherNotes());
         
         
         VerticalLayout layout= new VerticalLayout();
@@ -328,9 +333,9 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         Label previousQuestions=new Label("<b><h4>"+"PREVIOUS QUESTIONS"+"</h4></b>", ContentMode.HTML);
         previousQuestions.setImmediate(true);
         
-        Label strQuestions = new Label();
+        Label strQuestions = new Label(quickLearnPojo.getPreviousQuestion(),ContentMode.PREFORMATTED);
         strQuestions.setImmediate(true);
-        strQuestions.setValue(quickLearnPojo.getPreviousQuestion());
+        //strQuestions.setValue(quickLearnPojo.getPreviousQuestion());
         
         
         VerticalLayout layout= new VerticalLayout();
@@ -366,9 +371,9 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         Label topicQuiz=new Label("<b><h4>"+"TOPIC QUIZ"+"</h4></b>", ContentMode.HTML);
         topicQuiz.setImmediate(true);
         
-        Label strQuiz = new Label();
+        Label strQuiz = new Label(quickLearnPojo.getQuiz(),ContentMode.PREFORMATTED);
         strQuiz.setImmediate(true);
-        strQuiz.setValue(quickLearnPojo.getQuiz());
+        //strQuiz.setValue(quickLearnPojo.getQuiz());
         
         
         VerticalLayout layout= new VerticalLayout();
