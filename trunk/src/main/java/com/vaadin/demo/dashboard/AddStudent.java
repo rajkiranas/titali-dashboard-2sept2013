@@ -80,7 +80,7 @@ public class AddStudent extends Window implements Button.ClickListener{
         center();        
         setClosable(true);
         setWidth("40%");
-        setHeight("80%"); 
+        setHeight("83%"); 
         setStandardList(MasterDataProvider.getStandardList());
         buildBaseLayout();
         buildStudentForm();
@@ -98,7 +98,7 @@ public class AddStudent extends Window implements Button.ClickListener{
         center();        
         setClosable(true);
         setWidth("40%");
-        setHeight("80%");
+        setHeight("83%");
         
         buildBaseLayout();
         setStandardList(MasterDataProvider.getStandardList());        

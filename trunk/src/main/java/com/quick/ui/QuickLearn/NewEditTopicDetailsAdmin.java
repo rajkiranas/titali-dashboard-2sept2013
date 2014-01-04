@@ -331,14 +331,15 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         
         
         notesTextArea = new TextArea();
-        
+        notesTextArea.setImmediate(true);
         notesTextArea.setSizeFull();
+        notesTextArea.setRows(15);
 //        if(this.quickLearnPojo.getLectureNotes()!=null)
 //        {
 //            notesTextArea.setValue(this.quickLearnPojo.getLectureNotes());
 //        }
         
-        notesTextArea.setImmediate(true);
+        
         
         //notesTextArea.setReadOnly(true);
         
@@ -371,14 +372,15 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         layout.addComponent(otherRef);
         
         otherNotesTextArea = new TextArea();
-        
+        otherNotesTextArea.setImmediate(true);
         otherNotesTextArea.setSizeFull();
+        //otherNotesTextArea.setRows(15);
 //        if(this.quickLearnPojo.getOtherNotes()!=null)
 //        {
 //            otherNotesTextArea.setValue(this.quickLearnPojo.getOtherNotes());
 //        }
         
-        otherNotesTextArea.setImmediate(true);
+        
         
         layout.addComponent(otherNotesTextArea);
         layout.setExpandRatio(otherNotesTextArea, 2);
@@ -405,14 +407,15 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         
         
         previousQuestionsTextArea = new TextArea();
-        
+        previousQuestionsTextArea.setImmediate(true);
         previousQuestionsTextArea.setSizeFull();
+        previousQuestionsTextArea.setRows(10);
 //        if(this.quickLearnPojo.getPreviousQuestion()!=null)
 //        {
 //            previousQuestionsTextArea.setValue(this.quickLearnPojo.getPreviousQuestion());
 //        }
         
-        previousQuestionsTextArea.setImmediate(true);
+        
         
         
         layout.addComponent(previousQuestionsTextArea);

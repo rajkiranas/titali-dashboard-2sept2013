@@ -692,7 +692,7 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
 
     public void setQuikLearnMasterParamDetails(MasteParmBean QuikLearnDetails) {
         this.quikLearnMasterParamDetails = QuikLearnDetails;
-        System.out.println("quikLearnMasterParamDetails="+quikLearnMasterParamDetails);
+        //System.out.println("quikLearnMasterParamDetails="+quikLearnMasterParamDetails);
     }
 
     private void displayTopicInformation(MasteParmBean quickLearn){
