@@ -68,7 +68,8 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
     }
     
     
-    public NewEditTopicDetailsAdmin(MasteParmBean learnRow, int selectedUploadId, QuickUpload quickupload){
+    public NewEditTopicDetailsAdmin(MasteParmBean learnRow, int selectedUploadId, QuickUpload quickupload, Userprofile loggedInProfile){
+        this.loggedInProfile=loggedInProfile;
         this.quickupload=quickupload;
         this.selectedUploadId=selectedUploadId;
         this.quickLearnPojo=learnRow;
@@ -83,9 +84,13 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         setHeight("100%"); 
         setImmediate(true);
         
+        setStandardList(MasterDataProvider.getStandardList());        
+        setUploadedList(MasterDataProvider.getQuickLearnUploadList(null,0));
+        
         buildBaseLayout();
         addTopicDetails();
         //addUserNotes();
+        setFormData();
         setContent(baseLayout);
         addStyleName("schedule");
     }
@@ -461,14 +466,15 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         
     }
     
+    private Button addOrEditTopic;
     private HorizontalLayout getAddButtonLayout() 
     {
                
-        Button addTopic = new Button();
-        addTopic.setImmediate(true);
-        addTopic.setCaption("Add topic");
-        addTopic.addStyleName("default");
-        addTopic.addClickListener(new Button.ClickListener() {
+        addOrEditTopic = new Button();        
+        addOrEditTopic.setImmediate(true);
+        addOrEditTopic.setCaption("Add topic");
+        addOrEditTopic.addStyleName("default");
+        addOrEditTopic.addClickListener(new Button.ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -489,7 +495,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         layout.setSpacing(true);
         layout.setMargin(true);
         
-        layout.addComponent(addTopic);
+        layout.addComponent(addOrEditTopic);
         
         /* TextArea quizTextArea;
         quizTextArea = new TextArea();
@@ -746,13 +752,17 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
                     inputJson.put("topicIntro", "no data");
                 }
                 
-                
-
-                //System.out.println("***** isNewQuickUpload="+isNewQuickUpload);
-                //System.out.println("***** uploadId="+uploadId);
-                
-                inputJson.put("isNewQuickUpload", true);
-                inputJson.put("uploadId", "null");
+                if(addOrEditTopic.getCaption().equals("Add topic"))
+                {
+                    inputJson.put("isNewQuickUpload", true);
+                    inputJson.put("uploadId", "null");
+                }
+                else if(addOrEditTopic.getCaption().equals("Edit topic"))
+                {
+                    inputJson.put("isNewQuickUpload", false);
+                    inputJson.put("uploadId", quickLearnPojo.getUploadId());
+                    
+                }
                 
                 ViewTopicDetailsWindow w = new ViewTopicDetailsWindow();
                 inputJson.put("classToInvoke",w.getClass().getName());
@@ -798,7 +808,6 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
             {
                 Notification.show("Saving failed", Notification.Type.WARNING_MESSAGE);
             }
-      
     }
 }
     
@@ -829,4 +838,40 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
                     }
                 }
             }
+
+    
+    private void setFormData() {
+        standardtxt.setValue(quickLearnPojo.getStd());
+        subjecttxt.setValue(quickLearnPojo.getSub());
+        
+        topictxt.setValue(quickLearnPojo.getTopic());
+        txtTopicIntro.setValue(quickLearnPojo.getLectureNotesInformation());
+        topicTagstxt.setValue(quickLearnPojo.getTopicTags());
+        videoInputPath.setValue(quickLearnPojo.getVideoPath());
+        
+//        private byte[] topicImageArray;
+//        private String topicFileName;
+    
+        notesTextArea.setValue(quickLearnPojo.getLectureNotes());
+        otherNotesTextArea.setValue(quickLearnPojo.getOtherNotes());
+        previousQuestionsTextArea.setValue(quickLearnPojo.getPreviousQuestion());
+        quizTextArea.setValue(quickLearnPojo.getQuiz());
+        addOrEditTopic.setCaption("Edit topic");
+        
+    }
+    
+        private void editThisTopic()
+    {
+        UI.getCurrent().addWindow(new ConfirmationDialogueBox("Confirmation", "Are you sure you want to edit this topic ?", new ConfirmationDialogueBox.Callback() {
+
+            @Override
+            public void onDialogResult(boolean flag) {
+                if (flag) {
+                    quickupload.deleteTopicInformationFromDB(quickLearnPojo);
+                    getUI().getCurrent().getNavigator().navigateTo(GlobalConstants.ROUT_TOPICS);
+                    //ViewTopicDetailsForAdmin.this.close();
+                }
+            }
+        }));
+    }
 }

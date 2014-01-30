@@ -935,7 +935,7 @@ public class QuickUpload extends VerticalLayout implements View,Button.ClickList
 //                setTopicForNotification(bean.getTopic());
 //                setStudQuikLearnDetails(getStudentQuickLearnDetails());
 //                sendWhosDoingWhatNotificationToStudents(GlobalConstants.going_through,bean.getSub());
-                UI.getCurrent().addWindow(new ViewTopicDetailsForAdmin(getQuikLearnMasterParamDetails(),uploadId,this));
+                UI.getCurrent().addWindow(new ViewTopicDetailsForAdmin(getQuikLearnMasterParamDetails(),uploadId,this,loggedInProfile));
              
          }
          else if(c instanceof LoadEarlierBtnWraper)
