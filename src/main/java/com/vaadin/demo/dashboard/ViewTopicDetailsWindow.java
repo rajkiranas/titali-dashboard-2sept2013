@@ -13,16 +13,12 @@ import com.sun.jersey.api.client.WebResource;
 import com.quick.utilities.UIUtils;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FileResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -195,39 +191,41 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
            vPlayer.setMuted(false);
            vPlayer.setWidth("100%");
            vPlayer.setHeight("100%");
+           
+           
            //vPlayer.setPoster(new FileResource(new File(GlobalConstants.getProperty(GlobalConstants.LEARN_MORE_IMG))));
            
            //vPlayer.addSource(new FileResource(new File(this.quickLearnPojo.getVideoPath())));
            //vPlayer.addSource(new ExternalResource(this.quickLearnPojo.getVideoPath()));
            
-//           String video = "<html><head>\n"
-//                   + "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n"
-//                   + "	<script type='text/javascript' src='./VAADIN/themes/dashboard/flowplayer/flowplayer-3.2.13.min.js'></script>\n"
-//                   + "	\n"
-//                   
-//                   + "	<link rel=\"stylesheet\" type=\"text/css\" href='./VAADIN/themes/dashboard/flowplayer/example/style.css'>\n"
-//                   
-//                   + "\n"
-//                   + "</head>"
-//                   + "<body>\n"
-//                   + "	<div>\n"
-//                   + "		\n"
-//                   
-//                   + "		<a  \n"
-//                   + "			 href=\"http://localhost:8084/titali-dashboard/VAADIN/themes/dashboard/video/cp.flv\"\n"
-//                   + "			 style=\"display:block;width:320px;height:330px\"  \n"
-//                   + "			 id=\"player\"> \n"
-//                   + "		</a> \n"
-//                   + "	\n"
-//                   
-//                   + "		<script>\n"                  
-//                   + "			flowplayer('player', './flowplayer-3.2.18.swf')"
-//                   + "		</script>\n"
-//                   + "		\n"
-//                   + "	</div>\n"
-//                   + "	\n"
-//                   + "	\n"
-//                   + "</body></html>";
+           String video = "<html><head>\n"
+                   + "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n"
+                   + "	<script type='text/javascript' src='./VAADIN/themes/dashboard/flowplayer/flowplayer-3.2.13.min.js'></script>\n"
+                   + "	\n"
+                   
+                   + "	<link rel=\"stylesheet\" type=\"text/css\" href='./VAADIN/themes/dashboard/flowplayer/example/style.css'>\n"
+                   
+                   + "\n"
+                   + "</head>"
+                   + "<body>\n"
+                   + "	<div>\n"
+                   + "		\n"
+                   
+                   + "		<a  \n"
+                   + "			 href=\"http://localhost:8084/titali-dashboard/VAADIN/themes/dashboard/video/30.flv\"\n"
+                   + "			 style=\"display:block;width:320px;height:330px\"  \n"
+                   + "			 id=\"player\"> \n"
+                   + "		</a> \n"
+                   + "	\n"
+                   
+                   + "		<script>\n"                  
+                   + "			flowplayer('player', '/VAADIN/themes/dashboard/flowplayer/flowplayer-3.2.18.swf')"
+                   + "		</script>\n"
+                   + "		\n"
+                   + "	</div>\n"
+                   + "	\n"
+                   + "	\n"
+                   + "</body></html>";
            
 //           String html= "http://localhost:8084/titali-dashboard/VAADIN/themes/dashboard/flowplayer/example/index.html";
 //           
@@ -258,13 +256,13 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
 //            
 //
 //         
-//            Label flowPlayer = new Label(s, ContentMode.HTML);
+            Label flowPlayer = new Label(video, ContentMode.HTML);
 //            String dynaString =  flowPlayer.getValue();
 //            dynaString=dynaString.replaceAll("<video-path>", this.quickLearnPojo.getVideoPath());
 //            
 //            flowPlayer.setValue(dynaString);
-            videoInfoLayout.addComponent(vPlayer);
-           videoInfoLayout.setComponentAlignment(vPlayer, Alignment.MIDDLE_CENTER);
+            videoInfoLayout.addComponent(flowPlayer);
+           videoInfoLayout.setComponentAlignment(flowPlayer, Alignment.MIDDLE_CENTER);
        }
        else
        {

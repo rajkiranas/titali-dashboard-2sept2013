@@ -58,9 +58,11 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class DashboardView extends VerticalLayout implements View, Property.ValueChangeListener,LayoutEvents.LayoutClickListener {
 
-    private Table t;
+    private static final String NEWSFEED="Newsfeed";
+    
+    //private Table t;
     private MyDashBoardDataProvider boardDataProvider = new MyDashBoardDataProvider();
-    private  List<Whatsnew> whatsnewsList;
+    //private  List<Whatsnew> whatsnewsList;
     private  List<MasteParmBean> whosDoingWhatFromDB;
     private  List<Notices> noticeses;
     List<DictWordDetailsBean> wordOfTheDayList;
@@ -71,12 +73,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
     private List<List> whoIsDoingWhatWraperList = new ArrayList<List>();
     private Button notify;
     
-    
-    
     public DashboardView() {
-        
-        
-
     }
 
     private CssLayout createPanel(Component content) {
@@ -264,7 +261,7 @@ public class DashboardView extends VerticalLayout implements View, Property.Valu
         whatsNewTable.setImmediate(true);// react at once when something is selected
         whatsNewTable.addStyleName("borderless");
         whatsNewTable.addStyleName("plain");
-        whatsNewTable.setCaption("ACTIVITIES");
+        whatsNewTable.setCaption(NEWSFEED);
         whatsNewTable.setWidth("100%");
         whatsNewTable.setHeight("100%");
         //whatsNewTable.setPageLength(3);

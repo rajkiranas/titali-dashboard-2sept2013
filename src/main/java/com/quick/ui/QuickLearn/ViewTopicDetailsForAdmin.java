@@ -6,30 +6,20 @@ package com.quick.ui.QuickLearn;
 
 import com.quick.bean.MasteParmBean;
 import com.vaadin.demo.dashboard.*;
-import com.quick.bean.QuickLearn;
 import com.quick.bean.Userprofile;
-import com.quick.entity.Std;
 import com.quick.global.GlobalConstants;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import com.vaadin.data.Property;
-import com.quick.data.MasterDataProvider;
-import com.quick.table.QuickUploadTable;
 import com.quick.utilities.ConfirmationDialogueBox;
-import com.quick.utilities.DateUtil;
 import com.quick.utilities.UIUtils;
-import com.vaadin.event.FieldEvents;
-import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FileResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.BaseTheme;
 import java.io.File;
-import java.util.*;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -50,9 +40,10 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
     private TextArea userNotesTxtArea;
     private int selectedUploadId;
     private QuickUpload quickupload;
+    private Userprofile loggedInProfile;
     
-    
-    public ViewTopicDetailsForAdmin(MasteParmBean learnRow, int selectedUploadId, QuickUpload quickupload){
+    public ViewTopicDetailsForAdmin(MasteParmBean learnRow, int selectedUploadId, QuickUpload quickupload, Userprofile loggedInProfile){
+        this.loggedInProfile=loggedInProfile;
         this.quickupload=quickupload;
         this.selectedUploadId=selectedUploadId;
         this.quickLearnPojo=learnRow;
@@ -121,7 +112,7 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         baseLayout.addComponent(getOtherNotesLayout());
         baseLayout.addComponent(getPreviousQuestionsLayout());
         baseLayout.addComponent(getQuizLayout());
-        baseLayout.addComponent(getDeleteButtonLayout());
+        baseLayout.addComponent(getEditDeleteButtonLayout());
     }
     
     
@@ -404,8 +395,20 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         
     }
     
-    private HorizontalLayout getDeleteButtonLayout() 
+    private HorizontalLayout getEditDeleteButtonLayout() 
     {
+        
+        Button editTopic = new Button();
+        editTopic.setImmediate(true);
+        editTopic.setCaption("Edit topic");
+        editTopic.addStyleName("default");
+        editTopic.addClickListener(new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                showEditTopicView();                
+            }
+        });
                
         Button deleteTopic = new Button();
         deleteTopic.setImmediate(true);
@@ -426,6 +429,7 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         layout.setSpacing(true);
         layout.setMargin(true);
         
+        layout.addComponent(editTopic);
         layout.addComponent(deleteTopic);
         
         /* TextArea quizTextArea;
@@ -523,6 +527,15 @@ public class ViewTopicDetailsForAdmin extends Window implements Button.ClickList
         }
         
     }
+    
+    private void showEditTopicView() 
+    {
+        //baseLayout.removeAllComponents();
+        getUI().addWindow(new NewEditTopicDetailsAdmin(quickLearnPojo, selectedUploadId, quickupload,this.loggedInProfile));
+        this.close();
+    }
+    
+
     
     private void deleteThisTopic()
     {
