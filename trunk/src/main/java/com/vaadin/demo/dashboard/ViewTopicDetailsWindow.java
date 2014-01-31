@@ -13,12 +13,10 @@ import com.sun.jersey.api.client.WebResource;
 import com.quick.utilities.UIUtils;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
-import com.vaadin.server.FileResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import java.io.File;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -177,108 +175,86 @@ public class ViewTopicDetailsWindow extends Window implements Button.ClickListen
            
 
        
-       if(this.quickLearnPojo.getVideoPath()!=null)
-       {
-           
-           Video vPlayer;
-           // video is available, show it on video player
-           //vPlayer = new Flash(GlobalConstants.emptyString, new ExternalResource(this.quickLearnPojo.getVideoPath()));
-           vPlayer = new Video(GlobalConstants.emptyString, new FileResource(new File(this.quickLearnPojo.getVideoPath())));
-           vPlayer.setImmediate(true);
-           vPlayer.setReadOnly(false);
-           vPlayer.setHtmlContentAllowed(true);
-           vPlayer.setShowControls(true);
-           vPlayer.setMuted(false);
-           vPlayer.setWidth("100%");
-           vPlayer.setHeight("100%");
-           
-           
-           //vPlayer.setPoster(new FileResource(new File(GlobalConstants.getProperty(GlobalConstants.LEARN_MORE_IMG))));
-           
-           //vPlayer.addSource(new FileResource(new File(this.quickLearnPojo.getVideoPath())));
-           //vPlayer.addSource(new ExternalResource(this.quickLearnPojo.getVideoPath()));
-           
-           String video = "<html><head>\n"
-                   + "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n"
-                   + "	<script type='text/javascript' src='./VAADIN/themes/dashboard/flowplayer/flowplayer-3.2.13.min.js'></script>\n"
-                   + "	\n"
-                   
-                   + "	<link rel=\"stylesheet\" type=\"text/css\" href='./VAADIN/themes/dashboard/flowplayer/example/style.css'>\n"
-                   
-                   + "\n"
-                   + "</head>"
-                   + "<body>\n"
-                   + "	<div>\n"
-                   + "		\n"
-                   
-                   + "		<a  \n"
-                   + "			 href=\"http://localhost:8084/titali-dashboard/VAADIN/themes/dashboard/video/30.flv\"\n"
-                   + "			 style=\"display:block;width:320px;height:330px\"  \n"
-                   + "			 id=\"player\"> \n"
-                   + "		</a> \n"
-                   + "	\n"
-                   
-                   + "		<script>\n"                  
-                   + "			flowplayer('player', '/VAADIN/themes/dashboard/flowplayer/flowplayer-3.2.18.swf')"
-                   + "		</script>\n"
-                   + "		\n"
-                   + "	</div>\n"
-                   + "	\n"
-                   + "	\n"
-                   + "</body></html>";
-           
-//           String html= "http://localhost:8084/titali-dashboard/VAADIN/themes/dashboard/flowplayer/example/index.html";
-//           
-//            String s = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" "
-//                + "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> "
-//                + "<html xmlns=\"http://www.w3.org/1999/xhtml\" > "
-//                + "<head> "
-//                + "<title>Embedding in IFrame</title> "
-//                + "</head> "
-//                + "<body style=\"background: #d0ffd0;\"> "
-//                + "<div style='height: 5px;'> "
-//                + "<script src='http://demo.vaadin.com/xsembed/getEmbedJs' "
-//                + "type='text/javascript'></script> "
-//                + " </div> "
-//                + "<table align=\"center\" border=\"3\" width='100%' height='100%' > "
-//                + "<tr valign=\"top\"> "
-//                + "<td> "
-//                + "<iframe name='iframe_a' target='iframe_a' src=\""+html+"\" "
-//                + "height='500' width='500' "
-//                + "frameborder=\"0\"></iframe> "
-//                + "</td> "
-//                + "</tr> "
-//                + "</table> "
-//                + "</body> "
-//                + "</html>";
-//           
-//            System.out.println("--------"+s);
-//            
-//
-//         
-            Label flowPlayer = new Label(video, ContentMode.HTML);
-//            String dynaString =  flowPlayer.getValue();
-//            dynaString=dynaString.replaceAll("<video-path>", this.quickLearnPojo.getVideoPath());
-//            
-//            flowPlayer.setValue(dynaString);
-            videoInfoLayout.addComponent(flowPlayer);
-           videoInfoLayout.setComponentAlignment(flowPlayer, Alignment.MIDDLE_CENTER);
-       }
-       else
-       {
-           Label lableVideo;
-           // not video available, accept path from user
-           lableVideo = new Label("<b><h3>No video available for this topic.</h3></b>", ContentMode.HTML);
-           lableVideo.setImmediate(true);
-           //txtVideoPath.setInputPrompt("Enter server video path");
-           lableVideo.setCaption("About Video");
-           lableVideo.setWidth("90%");
-           //txtVideoPath.addValueChangeListener(this);
-           videoInfoLayout.addComponent(lableVideo);
-           videoInfoLayout.setComponentAlignment(lableVideo, Alignment.MIDDLE_CENTER);
-         
-         
-       }
+        if (this.quickLearnPojo.getVideoPath() != null) {
+
+            String videoId = quickLearnPojo.getVideoPath();
+
+            if (videoId.indexOf("=") > 0) {
+                videoId = videoId.substring(videoId.lastIndexOf("=") + 1);
+            } else {
+                videoId = videoId.substring(videoId.lastIndexOf("/") + 1);
+            }
+            //System.out.println("********videoId="+videoId);
+            String str = "<!DOCTYPE html>\n"
+                    + "<html>\n"
+                    + "  <body>\n"
+                    + "    <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->\n"
+                    + "<iframe id=\"player\" type=\"text/html\" width=\"450\" height=\"250\"\n"
+                    + "  src=\"https://www.youtube.com/embed/" + videoId + "?enablejsapi=1&origin=https://example.com\"\n"
+                    + "  frameborder=\"0\"></iframe>"
+                    + "\n"
+                    + "    <script>\n"
+                    + "      // 2. This code loads the IFrame Player API code asynchronously.\n"
+                    + "      var tag = document.createElement('script');\n"
+                    + "\n"
+                    + "      tag.src = \"https://www.youtube.com/iframe_api\";\n"
+                    + "      var firstScriptTag = document.getElementsByTagName('script')[0];\n"
+                    + "      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);\n"
+                    + "\n"
+                    + "      // 3. This function creates an <iframe> (and YouTube player)\n"
+                    + "      //    after the API code downloads.\n"
+                    + "      var player;\n"
+                    + "      function onYouTubeIframeAPIReady() {\n"
+                    + "        player = new YT.Player('player', {\n"
+                    + "          height: '250',\n"
+                    + "          width: '450',\n"
+                    + "          videoId: '" + videoId + "',\n"
+                    + "          events: {\n"
+                    + "            'onReady': onPlayerReady,\n"
+                    + "            'onStateChange': onPlayerStateChange\n"
+                    + "          }\n"
+                    + "        });\n"
+                    + "      }\n"
+                    + "\n"
+                    + "      // 4. The API will call this function when the video player is ready.\n"
+                    + "      function onPlayerReady(event) {\n"
+                    + "        event.target.playVideo();\n"
+                    + "      }\n"
+                    + "\n"
+                    + "      // 5. The API calls this function when the player's state changes.\n"
+                    + "      //    The function indicates that when playing a video (state=1),\n"
+                    + "      //    the player should play for six seconds and then stop.\n"
+                    + "      var done = false;\n"
+                    + "      function onPlayerStateChange(event) {\n"
+                    + "        if (event.data == YT.PlayerState.PLAYING && !done) {\n"
+                    + "          setTimeout(stopVideo, 6000);\n"
+                    + "          done = true;\n"
+                    + "        }\n"
+                    + "      }\n"
+                    + "      function stopVideo() {\n"
+                    + "        player.stopVideo();\n"
+                    + "      }\n"
+                    + "    </script>\n"
+                    + "  </body>\n"
+                    + "</html>";
+
+            Label video = new Label(str, ContentMode.HTML);
+
+            videoInfoLayout.addComponent(video);
+            videoInfoLayout.setComponentAlignment(video, Alignment.MIDDLE_RIGHT);
+        } else {
+            Label lableVideo;
+            // not video available, accept path from user
+            lableVideo = new Label("<b><h3>No video available for this topic.</h3></b>", ContentMode.HTML);
+            lableVideo.setImmediate(true);
+            //txtVideoPath.setInputPrompt("Enter server video path");
+            lableVideo.setCaption("About Video");
+            lableVideo.setWidth("90%");
+            //txtVideoPath.addValueChangeListener(this);
+            videoInfoLayout.addComponent(lableVideo);
+            videoInfoLayout.setComponentAlignment(lableVideo, Alignment.MIDDLE_CENTER);
+
+        }
        
        HorizontalLayout h = new HorizontalLayout();
        h.setSizeFull();
