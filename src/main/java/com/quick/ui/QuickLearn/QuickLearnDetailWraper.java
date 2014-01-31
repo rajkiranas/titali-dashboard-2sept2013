@@ -1,28 +1,18 @@
 package com.quick.ui.QuickLearn;
 
 import com.quick.bean.MasteParmBean;
-import com.quick.bean.QuickLearn;
 import com.quick.global.GlobalConstants;
 import com.quick.utilities.DateUtil;
-import com.vaadin.demo.dashboard.StudQuickLearn;
-import com.vaadin.demo.dashboard.ViewTopicDetailsWindow;
 import com.vaadin.event.LayoutEvents;
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.server.ExternalResource;
 import com.vaadin.server.ThemeResource;
 
 
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.io.File;
 
@@ -103,7 +93,7 @@ public class QuickLearnDetailWraper extends VerticalLayout {
         //final Button more = new Button("More…");
         FormLayout fields = new FormLayout();
         fields.setWidth("100%");
-        fields.addStyleName("rightBorder");
+        //fields.addStyleName("rightBorder");
         //fields.setSpacing(true);
         //fields.setMargin(true);
         details.addComponent(fields);
@@ -178,8 +168,9 @@ public class QuickLearnDetailWraper extends VerticalLayout {
          
         
         
-        coverImage.setHeight("92%");
-        coverImage.setWidth("92%");
+//        coverImage.setHeight("92%");
+//        coverImage.setWidth("92%");
+        coverImage.setSizeFull();
         
         VerticalLayout imageLayout = new VerticalLayout();
         imageLayout.setSizeFull();

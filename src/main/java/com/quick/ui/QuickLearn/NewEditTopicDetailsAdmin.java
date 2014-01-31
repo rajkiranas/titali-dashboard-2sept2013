@@ -45,6 +45,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
     private Userprofile loggedInProfile;
     private static final String Select = "Select";
     private int newlyCreatedUploadId;
+    private static final String saveTopic="Save topic";
     
     public NewEditTopicDetailsAdmin(Userprofile loggedInProfile)
     {
@@ -75,7 +76,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         this.quickLearnPojo=learnRow;
         //upload id is set to master param - further used for deletion
         quickLearnPojo.setUploadId(selectedUploadId);
-        this.strUserNotes=strUserNotes;
+        //this.strUserNotes=strUserNotes;
         setModal(true);
         setCaption("View topic details");
         center();        
@@ -263,19 +264,17 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         upload.setImmediate(true);
         upload.setButtonCaption("Image");
         upload.addStyleName("notifications");
-        upload.addListener(new Upload.SucceededListener() {
+        upload.addSucceededListener(new Upload.SucceededListener() {
 
             @Override
             public void uploadSucceeded(Upload.SucceededEvent event) {
-                
-                
                 topicFileName=uploadReceiver.getFileName();
                 File topicPicture=uploadReceiver.getFile();
                 topicImageArray= ImageResizer.resize(topicPicture,topicFileName);
             }
         });
         final Button cancelProcessing = new Button("Cancel");
-        cancelProcessing.addListener(new Button.ClickListener() {
+        cancelProcessing.addClickListener(new Button.ClickListener() {
 
             @Override
             public void buttonClick(ClickEvent event) {
@@ -608,7 +607,13 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         }));
     }
     
-    private void validateAndSaveQuickUploadDetails() throws JSONException {
+    private void validateAndSaveQuickUploadDetails() throws JSONException 
+    {
+        //to bypass validations on edit
+        if (addOrEditTopic.getCaption().equals(saveTopic)) 
+        {
+            topicFileName=GlobalConstants.emptyString;            
+        }
         
         //validations
         if(loggedInProfile.getName()==null || loggedInProfile.getName().trim().equals(GlobalConstants.emptyString))
@@ -697,6 +702,8 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         
         else
         {
+            
+            
             //executions - inserting in db
             JSONObject inputJson = new JSONObject();
             try 
@@ -757,11 +764,10 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
                     inputJson.put("isNewQuickUpload", true);
                     inputJson.put("uploadId", "null");
                 }
-                else if(addOrEditTopic.getCaption().equals("Edit topic"))
+                else if(addOrEditTopic.getCaption().equals(saveTopic))
                 {
                     inputJson.put("isNewQuickUpload", false);
                     inputJson.put("uploadId", quickLearnPojo.getUploadId());
-                    
                 }
                 
                 ViewTopicDetailsWindow w = new ViewTopicDetailsWindow();
@@ -796,7 +802,11 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
             if(Integer.parseInt(outputJson.getString(GlobalConstants.STATUS)) == GlobalConstants.YES)
             {
                 Notification.show("Saved successfully", Notification.Type.WARNING_MESSAGE);
-                saveResizedTopicImageToFileSystem();
+                //save resized image only in case of new upload
+                if(!topicFileName.equals(GlobalConstants.emptyString))
+                {
+                    saveResizedTopicImageToFileSystem();
+                }
                 if(outputJson.has("newlyCreatedUploadId"))
                 {
                     newlyCreatedUploadId=outputJson.getInt("newlyCreatedUploadId");
@@ -856,7 +866,7 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         otherNotesTextArea.setValue(quickLearnPojo.getOtherNotes());
         previousQuestionsTextArea.setValue(quickLearnPojo.getPreviousQuestion());
         quizTextArea.setValue(quickLearnPojo.getQuiz());
-        addOrEditTopic.setCaption("Edit topic");
+        addOrEditTopic.setCaption(saveTopic);
         
     }
     
