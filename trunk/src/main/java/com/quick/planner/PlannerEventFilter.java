@@ -96,8 +96,8 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
         setCaption("Schedule Appointment");
         setModal(true);
         center();
-        setWidth("360px");
-        setHeight("400px");
+        setWidth("30%");
+        setHeight("50%");
         buildMainLayout();
     }
 
@@ -158,23 +158,23 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
         isAllDay = true;
         baseLayout = new VerticalLayout();
         baseLayout.setSpacing(true);
-        baseLayout.setWidth("360px");
-        baseLayout.setHeight("310px");
+        baseLayout.setMargin(true);
+        baseLayout.setSizeFull();
 
-        Form eventForm = new Form();
-        eventForm.setHeight("310px");
+        FormLayout eventForm = new FormLayout();
+        eventForm.setSizeFull();
         startDt = new DateField("Date");
         startDt.setRequired(true);
 
         startDt.setDateFormat(GlobalConstants.DATEFORMAT);
         startDt.setValue(startDate);
-        startDt.setWidth("180px");
+        //startDt.setWidth("180px");
 //        startDt.setRequired(true);
         startDt.setRequiredError("Please select date");
         
 
         eventCaption = new TextField("Caption");
-        eventCaption.setWidth("180px");
+        //eventCaption.setWidth("180px");
         eventCaption.setRequired(true);
 
 //        eventDesc=new TextArea("Description");
@@ -182,9 +182,9 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 
         eventColour = new ComboBox("Colour", colourList);
         eventColour.setNullSelectionAllowed(false);
-        eventColour.setWidth("180px");
+        //eventColour.setWidth("180px");
 
-        eventForm.getLayout().addComponent(startDt);
+        eventForm.addComponent(startDt);
 
         isAllDay = false;
         lblTimeSlot = new Label();
@@ -260,10 +260,10 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 
 
 
-        eventForm.getLayout().addComponent(timeLayout);
+        eventForm.addComponent(timeLayout);
         //eventForm.getLayout().addComponent(endDt);
 //        eventForm.getLayout().addComponent(cmbCustomer);
-        eventForm.getLayout().addComponent(eventCaption);
+        eventForm.addComponent(eventCaption);
         //eventForm.getLayout().addComponent(eventDesc);
 //        eventForm.getLayout().addComponent(eventColour);
 
@@ -320,9 +320,9 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
         footer.addComponent(buttons);
         footer.setComponentAlignment(buttons, Alignment.BOTTOM_LEFT);
 
-        eventForm.getLayout().addComponent(footer);
+        eventForm.addComponent(footer);
 //        baseLayout.addComponent(footer);
-        //addComponent(baseLayout);
+        setContent(baseLayout);
     }
 
     private void buildEmpEventLayout() {

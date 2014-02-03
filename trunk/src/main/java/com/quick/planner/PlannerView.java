@@ -10,11 +10,18 @@
 
 package com.quick.planner;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.quick.bean.AppointmentMstBean;
 import com.quick.forum.*;
 import com.quick.bean.ForumEventDetailsBean;
 import com.quick.bean.Userprofile;
 import com.quick.global.GlobalConstants;
 import com.quick.utilities.LoadEarlierBtnWraper;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 import com.vaadin.addon.calendar.event.BasicEventProvider;
 import com.vaadin.addon.calendar.ui.Calendar;
 import com.vaadin.addon.calendar.ui.CalendarComponentEvents;
@@ -38,22 +45,24 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 public class PlannerView extends VerticalLayout implements View,LayoutEvents.LayoutClickListener {
 
     //private Table forumTable;
     private String New="New";
-    private List <ForumEventDetailsBean> forumEventDetailsList;
+    private List <AppointmentMstBean> plannerEventList;
     private Userprofile loggedInUserProfile;
     private List<List> wrapperList = new ArrayList<List>();
-    private LoadEarlierBtnWraper loadMoreWraper = new LoadEarlierBtnWraper(this);
+    //private LoadEarlierBtnWraper loadMoreWraper = new LoadEarlierBtnWraper(this);
 
-    public List<ForumEventDetailsBean> getForumEventDetailsList() {
-        return forumEventDetailsList;
+    public List<AppointmentMstBean> getPlannerEventList() {
+        return plannerEventList;
     }
 
-    public void setForumEventDetailsList(List<ForumEventDetailsBean> forumEventDetail) {
-        this.forumEventDetailsList = forumEventDetail;
+    public void setPlannerEventList(List<AppointmentMstBean> plannerEventDetail) {
+        this.plannerEventList = plannerEventDetail;
     }
 
     @Override
@@ -64,7 +73,7 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
         //addStyleName("dashboard");
         //addComponent(buildDraftsView());
         loggedInUserProfile =((Userprofile)getSession().getAttribute(GlobalConstants.CurrentUserProfile));
-
+        fetchPlannerEventList();
         buildHeaderView();
         buildBodyView();
     }
@@ -87,6 +96,11 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
         
         Button addEventBtn = new Button("Schedule Appointment");
         addEventBtn.setImmediate(true);
+        addEventBtn.setDescription("New Event");
+        addEventBtn.addStyleName("notifications");
+        addEventBtn.addStyleName("unread");
+        addEventBtn.addStyleName("icon-only");
+        addEventBtn.addStyleName("icon-bell");
         addEventBtn.addClickListener(new Button.ClickListener() {
 
             public void buttonClick(ClickEvent event) {
@@ -133,6 +147,7 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
         v.setSizeFull();
 
         initCalendar();
+        setDataToCalendar();
         
         addComponent(v);
         setExpandRatio(v, 1.5f);
@@ -166,7 +181,7 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
             calendar.setEndDate(gregorianCalendar.getTime());
         }
 
-        Date now = new Date();
+        /* Date now = new Date();
         calendar.addEvent(constructEvent(now, now, "Today", "Today",true));
         
         java.util.Calendar javaCal = java.util.Calendar.getInstance();
@@ -189,14 +204,14 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
         
         javaCal.set(java.util.Calendar.DAY_OF_MONTH, 26);
         Date indDay = javaCal.getTime();
-        calendar.addEvent(constructEvent(indDay, indDay, "Independence Day!", "Independence Day!",true));
+        calendar.addEvent(constructEvent(indDay, indDay, "Independence Day!", "Independence Day!",true)); */
         
         //addCalendarEventListeners();
         
         v.addComponent(calendar);
     }
     
-     private MUCEvent constructEvent(Date fromDate,Date toDate, String eventDescription, String eventCaption,boolean isAllDay)
+     private MUCEvent constructEvent(Date fromDate,Date toDate, String eventDescription, String eventCaption,boolean isAllDay, String style)
     {
         MUCEvent event = new MUCEvent();
         event.setDescription(eventDescription);
@@ -204,7 +219,7 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
         event.setCaption(eventCaption);        
         event.setStart(fromDate);        
         event.setEnd(toDate);
-        event.setStyleName("orangeBg");
+        event.setStyleName(style);
         return event;
         
     }
@@ -250,49 +265,45 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
     
     
 
-//    private List<ForumEventDetailsBean> getForumDetailList() {
-//        try {
-//            Client client = Client.create();
-//            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_All_FORUM_EVENTS));
-//            //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
-//            JSONObject inputJson = new JSONObject();
-//             try
-//             {           
-//                 if (forumTable == null) {
-//                     inputJson.put("fetchResultsFrom", 0);
-//                 } else {
-//                     inputJson.put("fetchResultsFrom", (forumTable.size() - 1));
-//                 }
-////                inputJson.put("username",userprofile.getUsername());
-//             }catch(Exception ex){
-//                 ex.printStackTrace();
-//             }
-//            
-//            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
-//            
-//            JSONObject outNObject = null;
-//            String output = response.getEntity(String.class);
-//            outNObject = new JSONObject(output);
-//
-//            java.lang.reflect.Type listType = new TypeToken<ArrayList<ForumEventDetailsBean>>() {
-//            }.getType();
-//    
-//            Gson gson=  new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();
-//            
-//            forumEventDetailsList=gson.fromJson(outNObject.getString(GlobalConstants.eventDetailsList), listType);
-//            if(forumEventDetailsList.size()>0)
-//            {
-//                wrapperList.add(forumEventDetailsList);
-//            }
-//            
-//            
-//        } catch (JSONException ex) 
-//        {
-//            ex.printStackTrace();
-//          //  L.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return forumEventDetailsList;
-//    }
+    private void fetchPlannerEventList() {
+        try {
+            Client client = Client.create();
+            WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.GET_PLANNER_EVENT_LIST));
+            //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
+            JSONObject inputJson = new JSONObject();
+             try
+             {           
+                 java.util.Calendar c = java.util.Calendar.getInstance();
+                 c.setTime(new Date());
+                 c.set(java.util.Calendar.DAY_OF_MONTH, 1);
+                 inputJson.put("starttime", c.getTimeInMillis());
+                 
+                 c.set(java.util.Calendar.DAY_OF_MONTH, c.getActualMaximum(java.util.Calendar.DAY_OF_MONTH));
+                 inputJson.put("endtime", c.getTimeInMillis());
+                 
+             }catch(Exception ex){
+                 ex.printStackTrace();
+             }
+            
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
+            
+            JSONObject outNObject = null;
+            String output = response.getEntity(String.class);
+            outNObject = new JSONObject(output);
+
+            java.lang.reflect.Type listType = new TypeToken<ArrayList<AppointmentMstBean>>() {
+            }.getType();
+    
+            Gson gson=  new GsonBuilder().setDateFormat(GlobalConstants.gsonTimeFormat).create();
+            
+            plannerEventList=gson.fromJson(outNObject.getString(GlobalConstants.eventList), listType);
+            
+        } catch (JSONException ex) 
+        {
+            ex.printStackTrace();
+          //  L.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
     @Override
     public void layoutClick(LayoutEvents.LayoutClickEvent event) 
@@ -371,4 +382,16 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
 //        }
 //
 //    }
+
+//    private void fetchPlannerEventList() {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+
+    private void setDataToCalendar() 
+    {
+        for(AppointmentMstBean bean : plannerEventList)
+        {
+            calendar.addEvent(constructEvent(bean.getStarttime(), bean.getEndtime(), bean.getEventDescription(), bean.getEventCaption(),true,bean.getEventStyle()));
+        }
+    }
 }
