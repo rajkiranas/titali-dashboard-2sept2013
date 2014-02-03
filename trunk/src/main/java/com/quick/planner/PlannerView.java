@@ -30,11 +30,14 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PlannerView extends VerticalLayout implements View,LayoutEvents.LayoutClickListener {
 
@@ -81,6 +84,28 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
         top.setExpandRatio(title, 1);
         top.addStyleName("lightBackgroundForDashboardActivity");
         top.addStyleName("lightGrayFourSideBorder");
+        
+        Button addEventBtn = new Button("Schedule Appointment");
+        addEventBtn.setImmediate(true);
+        addEventBtn.addClickListener(new Button.ClickListener() {
+
+            public void buttonClick(ClickEvent event) {
+                //String dt = format.format(new Date());
+                //Date date;
+                try 
+                {
+                    //date = (Date) format.parse(dt);
+                    getUI().addWindow((new PlannerEventFilter(new Date())));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        });
+        
+         top.addComponent(addEventBtn);
+        top.setComponentAlignment(addEventBtn, Alignment.MIDDLE_RIGHT);
+        top.setExpandRatio(addEventBtn, 1);
         
         /* Button newEventBtn =  new Button(New);
         newEventBtn.setImmediate(true);
@@ -167,6 +192,7 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
         calendar.addEvent(constructEvent(indDay, indDay, "Independence Day!", "Independence Day!",true));
         
         //addCalendarEventListeners();
+        
         v.addComponent(calendar);
     }
     
