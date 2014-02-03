@@ -81,6 +81,7 @@ public class GlobalConstants
     public static final String Technologies="Technologies";
     public static final String category_distribution = "category_distribution";
     public static final String eventDetailsList="eventDetailsList";
+    public static final String eventList="eventList";
     public static final String dictWordList="dictWordList";
     public static final String eventLikes="eventLikes";
     public static final String eventComments="eventComments";
@@ -150,6 +151,7 @@ public class GlobalConstants
    public static  final String GET_TECHNOLOGY_BY_CATEGORY="GET_TECHNOLOGY_BY_CATEGORY";
    public static  final String GET_SUB_WISE_COMPARISON="GET_SUB_WISE_COMPARISON";
    public static  final String GET_All_FORUM_EVENTS="GET_All_FORUM_EVENTS";
+   public static  final String GET_PLANNER_EVENT_LIST="GET_PLANNER_EVENT_LIST";
    public static  final String GET_FORUM_EVENT_BY_ID="GET_FORUM_EVENT_BY_ID";
    public static  final String GET_WORD_LIST="GET_WORD_LIST";
    public static  final String SEARCH_WORD_LIST="SEARCH_WORD_LIST";
