@@ -95,6 +95,7 @@ public class GlobalConstants
     public static final String tripple_dots="...";
     public static final String IMAGE_HEIGHT="IMAGE_HEIGHT";
     public static final String IMAGE_WIDTH="IMAGE_WIDTH";
+    public static final String AT_THE_RATE="@";
     
     public static final String ROUT_DASHBOARD="/dashboard";
     public static final String ROUT_LEARN="/learn";
