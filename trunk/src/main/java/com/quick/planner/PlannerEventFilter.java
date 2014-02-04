@@ -5,9 +5,19 @@
 package com.quick.planner;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.quick.bean.AppointmentMstBean;
+import com.quick.bean.QuickLearn;
+import com.quick.bean.Userprofile;
+import com.quick.data.MasterDataProvider;
 import com.quick.entity.AppointmentMst;
+import com.quick.entity.Std;
 import com.quick.global.GlobalConstants;
-import com.quick.utilities.DateUtil;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 import com.vaadin.addon.calendar.event.BasicEvent;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -15,14 +25,11 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.UnsupportedEncodingException;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.commons.io.IOUtils;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 
 
@@ -33,11 +40,13 @@ import org.apache.commons.io.IOUtils;
 public class PlannerEventFilter extends Window implements Property.ValueChangeListener {
 
     private VerticalLayout baseLayout;
-    private DateField startDt;
-    private DateField endDt;
+    private DateField startTime;
+    private DateField endTime;
     private TextField eventCaption;
     private TextArea eventDesc;
-    private Button applyEvent;
+    private ComboBox stdCombo;
+    private ComboBox divCombo;
+    private Button saveEvent;
     private Button cancelEvent;
     private Date startDate;
     private Date endDate;
@@ -47,7 +56,9 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
     private GregorianCalendar weekendTime;
 //    private ScheduleAppointmentsOfEmp empAppoinments;
     private ComboBox eventColour;
-    private static final List<String> colourList = Arrays.asList(new String[]{"Red", "Green", "Purple", "Gray"});
+    private static final List<String> colourList = Arrays.asList(new String[]{"Orange", "Blue"});
+    private static final HashMap<String,String> colorMap=new HashMap<String,String>();
+    
     private static final List<Integer> hrList = Arrays.asList(new Integer[]{9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19});
     //private static final List<Integer> minList = Arrays.asList(new Integer[]{00, 10, 15, 30, 45});
     private static final List<Integer> minList = Arrays.asList(new Integer[]{00, 01, 02, 03, 04, 05, 10, 15, 30, 45});
@@ -79,25 +90,27 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
     String emailId;
     private HashMap emailIdMap;
     private File appointmentiCalFile;
-//    String custExternalId = null;
-//    String cosultantExternalId = null;
+    private Userprofile loggedInUserProfile;
+
+    static
+    {
+        colorMap.put("Orange", "orangeBg");
+        colorMap.put("Blue", "blueFbBg");
+    }
 
     public PlannerEventFilter() {
     }
     /* Added by suyog for c-cure healthcare changes*/
 
-    public PlannerEventFilter(Date date) {
-        this.emailIdMap = emailIdMap;
+    public PlannerEventFilter(Date date,Userprofile loggedInUserProfile) {
+        this.loggedInUserProfile=loggedInUserProfile;
         this.startDate = date;
         this.endDate = date;
-        this.custId = custId;
-        this.username = username;
-        this.isWeekEvent = isWeekEvent;
-        setCaption("Schedule Appointment");
+        setCaption("New planner event");
         setModal(true);
         center();
-        setWidth("30%");
-        setHeight("50%");
+        setWidth("35%");
+        setHeight("80%");
         buildMainLayout();
     }
 
@@ -163,148 +176,105 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 
         FormLayout eventForm = new FormLayout();
         eventForm.setSizeFull();
-        startDt = new DateField("Date");
-        startDt.setRequired(true);
-
-        startDt.setDateFormat(GlobalConstants.DATEFORMAT);
-        startDt.setValue(startDate);
-        //startDt.setWidth("180px");
-//        startDt.setRequired(true);
-        startDt.setRequiredError("Please select date");
+        eventForm.setSpacing(true);
+        
+        startTime = new DateField("Start date");
+        startTime.setRequired(true);
+        startTime.setDateFormat(GlobalConstants.DATEFORMAT);
+        startTime.setValue(startDate);
+        startTime.setRequiredError("Please select start date");
+        
+        endTime = new DateField("End date");
+        endTime.setRequired(true);
+        endTime.setDateFormat(GlobalConstants.DATEFORMAT);
+        endTime.setValue(startDate);
+        endTime.setRequiredError("Please select end date");
         
 
         eventCaption = new TextField("Caption");
-        //eventCaption.setWidth("180px");
         eventCaption.setRequired(true);
 
-//        eventDesc=new TextArea("Description");
-//        eventDesc.setWidth("180px");
+        eventDesc=new TextArea("Description");
+        eventDesc.setRequired(true);
+        
+        stdCombo = new ComboBox("Standard");
+        stdCombo.setImmediate(true);
+        stdCombo.setInputPrompt("Standard");
+        stdCombo.addItem("Select");
+        stdCombo.setValue("Select"); 
+        stdCombo.setNullSelectionAllowed(false);
+        stdCombo.setRequired(true);
+        
+        divCombo = new ComboBox("Division");
+        divCombo.setImmediate(true);
+        divCombo.setInputPrompt("Division");
+        divCombo.addItem("Select");
+        divCombo.setValue("Select");
+        
+        
+        List<Std> stdList = MasterDataProvider.getStandardList();
+        for(Std s: stdList)
+        {
+            stdCombo.addItem(s.getStd());
+        }
+        
+        stdCombo.addValueChangeListener(new Property.ValueChangeListener() {
 
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if(!stdCombo.getValue().equals("Select")){
+                    String std=String.valueOf(stdCombo.getValue());
+                    List<QuickLearn> divBeanList  = MasterDataProvider.getDivisionBystd(std);
+                    
+                    if(!divBeanList.isEmpty())
+                    {
+                        
+                            
+                       for(QuickLearn bean : divBeanList)
+                       {
+                            divCombo.addItem(bean.getFordiv());
+                       }
+                         
+                    }     
+               }
+            }
+        });
+
+        
         eventColour = new ComboBox("Colour", colourList);
         eventColour.setNullSelectionAllowed(false);
-        //eventColour.setWidth("180px");
+        eventColour.setRequired(true);
+        
 
-        eventForm.addComponent(startDt);
-
-        isAllDay = false;
-        lblTimeSlot = new Label();
-        lblTimeSlot.setCaption("Time Slot");
-        SimpleDateFormat df = new SimpleDateFormat("hh:mm aaa");
-
-        timeLayout = new AbsoluteLayout();
-        timeLayout.setHeight("65px");
-        timeLayout.setWidth("180px");
-        timeLayout.setCaption("Time");
-
-
-        HorizontalLayout startTimeLayout = new HorizontalLayout();
-        startTimeLayout.setCaption("Time");
-//            startTimeLayout.setSpacing(true);
-        Label fromLbl = new Label("From:");
-        Label toLbl = new Label("To:  ");
-        Label startHrLbl = new Label("H");
-        Label startMinLbl = new Label("M");
-        Label endHrLbl = new Label("H");
-        Label endMinLbl = new Label("M");
-        calstartTime = new GregorianCalendar();
-        calendTime = new GregorianCalendar();
-
-        weekstartTime = new GregorianCalendar();
-        weekendTime = new GregorianCalendar();
-
-        calstartTime.setTime(startDate);
-        weekstartTime.setTime(calstartTime.getTime());
-
-        calendTime.setTime(startDate);
-        calendTime.add(java.util.Calendar.HOUR, 1);
-        weekendTime.setTime(calendTime.getTime());
-
-//            lblTimeSlot.setValue(df.format(calstartTime.getTime())+" To "+df.format(calendTime.getTime()));
-//            lblTimeSlot.setValue(df.format(calstartTime.getTime())+" To ");
-
-
-        startTimeHr = new ComboBox("", hrList);
-        startTimeHr.setWidth("50px");
-        startTimeHr.setNullSelectionAllowed(false);
-        startTimeHr.setRequired(true);
-//            startTimeHr.setRequired(true);
-        startTimeMin = new ComboBox("", minList);
-        startTimeMin.setWidth("50px");
-        startTimeMin.setValue(00);
-        startTimeMin.setNullSelectionAllowed(false);
-
-        endTimeHr = new ComboBox("", hrList);
-        endTimeHr.setWidth("50px");
-        endTimeHr.setNullSelectionAllowed(false);
-        endTimeHr.setRequired(true);
-//            endTimeHr.setRequired(true);
-        endTimeMin = new ComboBox("", minList);
-        endTimeMin.setWidth("50px");
-        endTimeMin.setValue(00);
-        endTimeMin.setNullSelectionAllowed(false);
-
-
-
-        timeLayout.addComponent(fromLbl, "top:5px;left:0px");
-        timeLayout.addComponent(startTimeHr, "top:5px;left:40px;");
-        timeLayout.addComponent(startHrLbl, "top:5px;left:95px;");
-        timeLayout.addComponent(startTimeMin, "top:5px;left:115px;");
-        timeLayout.addComponent(startMinLbl, "top:5px;left:170px;");
-
-        timeLayout.addComponent(toLbl, "top:40px;left:0px");
-        timeLayout.addComponent(endTimeHr, "top:40px;left:40px;");
-        timeLayout.addComponent(endHrLbl, "top:40px;left:95px;");
-        timeLayout.addComponent(endTimeMin, "top:40px;left:115px;");
-        timeLayout.addComponent(endMinLbl, "top:40px;left:170px;");
-
-
-
-
-        eventForm.addComponent(timeLayout);
-        //eventForm.getLayout().addComponent(endDt);
-//        eventForm.getLayout().addComponent(cmbCustomer);
+        eventForm.addComponent(startTime);
+        eventForm.addComponent(endTime);
         eventForm.addComponent(eventCaption);
-        //eventForm.getLayout().addComponent(eventDesc);
-//        eventForm.getLayout().addComponent(eventColour);
+        eventForm.addComponent(eventDesc);
+        eventForm.addComponent(stdCombo);
+        eventForm.addComponent(divCombo);
+        eventForm.addComponent(eventColour);
 
         baseLayout.addComponent(eventForm);
 
-        HorizontalLayout footer = new HorizontalLayout();
-        footer.setWidth("100%");
-        footer.setMargin(new MarginInfo(false, false, false, true));
-
         HorizontalLayout buttons = new HorizontalLayout();
-//        buttons.setMargin(false);
         buttons.setSpacing(true);
         buttons.setMargin(new MarginInfo(false, false, false, true));
-//        buttons.setSizeUndefined();
 
 
-        applyEvent = new Button("Apply");
-        applyEvent.setImmediate(true);
-        applyEvent.addListener(new Button.ClickListener() {
-            public void buttonClick(ClickEvent event) {
-                createEvent();
-    /*                String emailto = emailIdMap.get("emailId").toString() + GlobalConstants.AT_THE_RATE + GlobalConstants.SERVER;
-                String message = GlobalConstants.getProperty(GlobalConstants.MESSAGE_BODY_FOR_MEETING);
-                message = message.replace("<time>", startTimeHr.getValue().toString() + ":" + startTimeMin.getValue().toString() + " to " + endTimeHr.getValue().toString() + ":" + endTimeMin.getValue().toString());
-                message = message.replace("<date>", startDt.toString());
-                message = message.replace("<Caption>", eventCaption.getValue().toString());
-                message = message.replace("<emailFrom>", app.getLoginUserProfile().getUsername().split(GlobalConstants.AT_THE_RATE)[0]);
-                try {
-                    original = message.getBytes(GlobalConstants.UTF8);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+        saveEvent = new Button("Save");
+        saveEvent.setImmediate(true);
+        saveEvent.addListener(new Button.ClickListener() {
+            public void buttonClick(ClickEvent event) 
+            {
+                if(validateEventForm())
+                {
+                    savePlannerEvent();
                 }
-
-                byte[] key = KEY.getBytes();
-                byte[] iv = IV.getBytes();
-
-                sendMail(emailto); */
+                
 
             }
         });
-        buttons.addComponent(applyEvent);
+        buttons.addComponent(saveEvent);
 
 
         cancelEvent = new Button("Cancel");
@@ -316,12 +286,8 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
         });
         buttons.addComponent(cancelEvent);
 
-
-        footer.addComponent(buttons);
-        footer.setComponentAlignment(buttons, Alignment.BOTTOM_LEFT);
-
-        eventForm.addComponent(footer);
-//        baseLayout.addComponent(footer);
+        eventForm.addComponent(buttons);
+        
         setContent(baseLayout);
     }
 
@@ -334,14 +300,14 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 
         Form eventForm = new Form();
         eventForm.setHeight("310px");
-        startDt = new DateField("Date");
-        startDt.setDateFormat(GlobalConstants.DATEFORMAT);
-        startDt.setValue(startDate);
-        startDt.setWidth("180px");
-        startDt.setRequired(true);
-        startDt.setImmediate(true);
-        startDt.setRequiredError("Please select date");
-        startDt.addListener(new DateField.ValueChangeListener() {
+        startTime = new DateField("Date");
+        startTime.setDateFormat(GlobalConstants.DATEFORMAT);
+        startTime.setValue(startDate);
+        startTime.setWidth("180px");
+        startTime.setRequired(true);
+        startTime.setImmediate(true);
+        startTime.setRequiredError("Please select date");
+        startTime.addListener(new DateField.ValueChangeListener() {
 
             public void valueChange(ValueChangeEvent event) {
                 //isValidStartDt();
@@ -375,7 +341,7 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
         eventColour.setNullSelectionAllowed(false);
         eventColour.setWidth("180px");
 
-        eventForm.getLayout().addComponent(startDt);
+        eventForm.getLayout().addComponent(startTime);
 
         isAllDay = false;
         lblTimeSlot = new Label();
@@ -463,9 +429,9 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 //        buttons.setSizeUndefined();
 
 
-        applyEvent = new Button("Apply");
-        applyEvent.setImmediate(true);
-        applyEvent.addListener(new Button.ClickListener() {
+        saveEvent = new Button("Apply");
+        saveEvent.setImmediate(true);
+        saveEvent.addListener(new Button.ClickListener() {
             public void buttonClick(ClickEvent event) {
                 try {
                     createEmpEvent();
@@ -475,7 +441,7 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 
             }
         });
-        buttons.addComponent(applyEvent);
+        buttons.addComponent(saveEvent);
 
 
         cancelEvent = new Button("Cancel");
@@ -497,38 +463,56 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 
     }
 
-    private void createEvent() {
-        Calendar calanderStartDate = Calendar.getInstance();
-        Calendar calanderEndDate = Calendar.getInstance();
-        if (validateCustForm()) {
+    
+    
+    private void savePlannerEvent() 
+    {
+        if (validateEventForm()) 
+        {
+            try 
+            {
+                Client client = Client.create();
+                WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_PLANNER_EVENT));
+                //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
+                JSONObject input = new JSONObject();
+                try {
+                    input.put("startTime", startTime.getValue().getTime());
+                    input.put("endTime", endTime.getValue().getTime());
+                    String caption = String.valueOf(eventCaption.getValue());
+                    input.put("caption", caption);
+                    String desc = String.valueOf(eventDesc.getValue());
+                    input.put("desc", desc);
 
-            calanderStartDate.setTime((Date) startDt.getValue());
-            calanderEndDate.setTime((Date) startDt.getValue());
-            calanderStartDate.set(Calendar.HOUR_OF_DAY, Integer.valueOf(startTimeHr.getValue().toString()));
-            calanderStartDate.set(Calendar.MINUTE, Integer.valueOf(startTimeMin.getValue().toString()));
-            calanderStartDate.set(Calendar.SECOND, 0);
-            calanderEndDate.set(Calendar.HOUR_OF_DAY, Integer.valueOf(endTimeHr.getValue().toString()));
-            calanderEndDate.set(Calendar.MINUTE, Integer.valueOf(endTimeMin.getValue().toString()));
-            calanderEndDate.set(Calendar.SECOND, 0);
+                    String forWhom=stdCombo.getValue().toString();
+                    if (!divCombo.getValue().toString().equals("Select")) {
+                        forWhom=forWhom + divCombo.getValue().toString();
+                    }
+                    input.put("for_whom", forWhom);
+                    
+                    input.put("event_style", colorMap.get(eventColour.getValue().toString()));
+                    input.put("isallday", true);
+                    
+                    input.put("owner_name", loggedInUserProfile.getName());
+                    input.put("owner_username", loggedInUserProfile.getUsername());
+                    
 
-            String caption = String.valueOf(eventCaption.getValue());
-            //  String desc=String.valueOf(eventDesc.getValue());
-            colourCode = "GreenYellow";
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
 
-//            if ((isEventBooked(calanderStartDate.getTime(), calanderEndDate.getTime()))) 
-//            {
+                ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, input);
 
+                JSONObject outNObject = null;
+                String output = response.getEntity(String.class);
+                outNObject = new JSONObject(output);
 
-                /* appoinments.createEvent(calanderStartDate.getTime(), calanderEndDate.getTime(), caption, "", colourCode, isAllDay);
+                getUI().showNotification(outNObject.getString(GlobalConstants.STATUS));
 
-                scheduleAppointmentService.saveAppointment(setAppointmentDtls()); */
-
-                closePopup();
-
-            //}
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+                //  L.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-
-
     }
 
     public AppointmentMst setAppointmentDtls() {
@@ -542,9 +526,9 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
         String desc = "Appointment-" + cmbDoctor.getValue() + " meets " + cmbPaitent.getItemCaption(cmbPaitent.getValue()) + "(" + cmbPaitent.getValue() + ")";
         appointmentMst.setEventDescription(desc);
 
-        appointmentMst.setStartdate((Date) startDt.getValue());
-        appointmentMst.setEnddate((Date) startDt.getValue());
-        cal.setTime((Date) startDt.getValue());
+        appointmentMst.setStartdate((Date) startTime.getValue());
+        appointmentMst.setEnddate((Date) startTime.getValue());
+        cal.setTime((Date) startTime.getValue());
 
         cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(startTimeHr.getValue().toString()));
         cal.set(Calendar.MINUTE, Integer.valueOf(startTimeMin.getValue().toString()));
@@ -714,8 +698,8 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
             username = GlobalConstants.emptyString + cmbDoctor.getValue();
 //            System.out.println("In CreateEmpEvent Method");
 
-            calanderStartDate.setTime((Date) startDt.getValue());
-            calanderEndDate.setTime((Date) startDt.getValue());
+            calanderStartDate.setTime((Date) startTime.getValue());
+            calanderEndDate.setTime((Date) startTime.getValue());
 
             calanderStartDate.set(Calendar.HOUR_OF_DAY, Integer.valueOf(startTimeHr.getValue().toString()));
             calanderStartDate.set(Calendar.MINUTE, Integer.valueOf(startTimeMin.getValue().toString()));
@@ -1082,7 +1066,7 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 //    }
 
     private boolean validateForm() {
-        if (startDt.getValue() == null) {
+        if (startTime.getValue() == null) {
             ShowNotification("Please select event date");
             return false;
         } /* else if (!DateUtil.ComapreDate((Date) startDt.getValue())) {
@@ -1139,36 +1123,33 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 
     }
 
-    private boolean validateCustForm() {
-        if (startDt.getValue() == null) {
-            ShowNotification("Please select event date");
+    private boolean validateEventForm() {
+        if (startTime.getValue() == null) 
+        {
+            ShowNotification("Please select event start date");
             return false;
-        } else if (startTimeHr.getValue() == null) {
-            ShowNotification("Please select from time");
+        } else if (endTime.getValue() == null) {
+            ShowNotification("Please select event end date");
             return false;
-        } else if (endTimeHr.getValue() == null) {
-            ShowNotification("Please select to time");
-            return false;
-        } //        else if(cmbCustomer.getValue()==null)
-        //       {
-        //           ShowNotification("Please select customer");
-        //            return false;
-        //       }
-        else if ((eventCaption.getValue().toString() == "")) {
+        } 
+        else if ((eventCaption.getValue().toString().trim().equals(GlobalConstants.emptyString))) {
             ShowNotification("Please provide event caption");
             return false;
         }
-//        else if((eventDesc.getValue().toString()==""))
-//        {
-//            ShowNotification("Please provide event description");
-//            return false;
-//        }
-//        else if(eventColour.getValue()==null)
-//        {
-//            ShowNotification("Please select event color");
-//            return false;
-//        }
-
+        else if ((eventDesc.getValue().toString().trim().equals(GlobalConstants.emptyString))) {
+            ShowNotification("Please provide event description");
+            return false;
+        }
+        else if(stdCombo.getValue()==null || stdCombo.getValue().toString().equals("Select"))
+        {
+            ShowNotification("Please select standard");
+            return false;
+        }
+        else if(eventColour.getValue()==null)
+        {
+            ShowNotification("Please select event color");
+            return false;
+        }
 
         return true;
     }
@@ -1181,7 +1162,7 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 
     public void valueChange(ValueChangeEvent event) {
         Property property = event.getProperty();
-        if (property == startDt) {
+        if (property == startTime) {
             isReschedule = true;
         }
 //        throw new UnsupportedOperationException("Not supported yet.");
