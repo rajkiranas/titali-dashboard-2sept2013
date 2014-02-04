@@ -14,11 +14,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.quick.bean.AppointmentMstBean;
-import com.quick.forum.*;
-import com.quick.bean.ForumEventDetailsBean;
 import com.quick.bean.Userprofile;
 import com.quick.global.GlobalConstants;
-import com.quick.utilities.LoadEarlierBtnWraper;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -37,14 +34,11 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -100,7 +94,7 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
         addEventBtn.addStyleName("notifications");
         addEventBtn.addStyleName("unread");
         addEventBtn.addStyleName("icon-only");
-        addEventBtn.addStyleName("icon-bell");
+        addEventBtn.addStyleName("icon-upload-cloud");
         addEventBtn.addClickListener(new Button.ClickListener() {
 
             public void buttonClick(ClickEvent event) {
@@ -109,7 +103,7 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
                 try 
                 {
                     //date = (Date) format.parse(dt);
-                    getUI().addWindow((new PlannerEventFilter(new Date())));
+                    getUI().addWindow((new PlannerEventFilter(new Date(),loggedInUserProfile)));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
