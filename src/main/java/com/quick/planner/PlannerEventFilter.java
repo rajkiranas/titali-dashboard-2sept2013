@@ -5,10 +5,6 @@
 package com.quick.planner;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.quick.bean.AppointmentMstBean;
 import com.quick.bean.QuickLearn;
 import com.quick.bean.Userprofile;
 import com.quick.data.MasterDataProvider;
@@ -91,6 +87,7 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
     private HashMap emailIdMap;
     private File appointmentiCalFile;
     private Userprofile loggedInUserProfile;
+    private PlannerView view;
 
     static
     {
@@ -102,7 +99,8 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
     }
     /* Added by suyog for c-cure healthcare changes*/
 
-    public PlannerEventFilter(Date date,Userprofile loggedInUserProfile) {
+    public PlannerEventFilter(Date date, Userprofile loggedInUserProfile, PlannerView view) {
+        this.view=view;
         this.loggedInUserProfile=loggedInUserProfile;
         this.startDate = date;
         this.endDate = date;
@@ -112,6 +110,18 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
         setWidth("35%");
         setHeight("80%");
         buildMainLayout();
+    }
+    
+    public PlannerEventFilter(MUCEvent basicEvent, Userprofile loggedInUserProfile, PlannerView view) {
+        this.view=view;
+        this.loggedInUserProfile=loggedInUserProfile;
+        setCaption("Planner event");
+        setModal(true);
+        center();
+        setWidth("35%");
+        setHeight("80%");
+        buildMainLayout();
+        setFormData(basicEvent);
     }
 
 //    public PlannerEventFilter(Date date, ScheduleAppoinments appoinments, int custId, int empid, boolean isWeekEvent, MyApplication app, HashMap emailIdMap) {
@@ -263,15 +273,18 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 
         saveEvent = new Button("Save");
         saveEvent.setImmediate(true);
-        saveEvent.addListener(new Button.ClickListener() {
+        saveEvent.addClickListener(new Button.ClickListener() {
             public void buttonClick(ClickEvent event) 
             {
                 if(validateEventForm())
                 {
                     savePlannerEvent();
+                    //MUCEvent e = view.constructEvent(startTime.getValue(), endTime.getValue(), eventDesc.getValue(), eventCaption.getValue(), true, colorMap.get(eventColour.getValue().toString()));
+                    //view.addEventToCalendar(e);
+                    getUI().getNavigator().navigateTo(GlobalConstants.ROUT_PLANNER);
+                    closePopup();
+                    
                 }
-                
-
             }
         });
         buttons.addComponent(saveEvent);
@@ -279,7 +292,7 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 
         cancelEvent = new Button("Cancel");
         cancelEvent.setImmediate(true);
-        cancelEvent.addListener(new Button.ClickListener() {
+        cancelEvent.addClickListener(new Button.ClickListener() {
             public void buttonClick(ClickEvent event) {
                 closePopup();
             }
@@ -506,11 +519,11 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
                 String output = response.getEntity(String.class);
                 outNObject = new JSONObject(output);
 
-                getUI().showNotification(outNObject.getString(GlobalConstants.STATUS));
+                ShowNotification(outNObject.getString(GlobalConstants.STATUS));
 
             } catch (JSONException ex) {
                 ex.printStackTrace();
-                //  L.getLogger(AddStudent.class.getName()).log(Level.SEVERE, null, ex);
+                ShowNotification("Save planner event failed");
             }
         }
     }
@@ -1306,4 +1319,12 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 //
 //        return isValidDt;
 //    }
+
+    private void setFormData(MUCEvent basicEvent) {
+        this.startTime.setValue(basicEvent.getStart());
+        this.endTime.setValue(basicEvent.getEnd());
+        this.eventCaption.setValue(basicEvent.getCaption());
+        this.eventDesc.setValue(basicEvent.getDescription());
+        
+    }
 }
