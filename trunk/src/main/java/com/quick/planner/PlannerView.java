@@ -19,6 +19,7 @@ import com.quick.global.GlobalConstants;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.vaadin.addon.calendar.event.BasicEvent;
 import com.vaadin.addon.calendar.event.BasicEventProvider;
 import com.vaadin.addon.calendar.ui.Calendar;
 import com.vaadin.addon.calendar.ui.CalendarComponentEvents;
@@ -37,6 +38,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import org.codehaus.jettison.json.JSONException;
@@ -103,7 +105,7 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
                 try 
                 {
                     //date = (Date) format.parse(dt);
-                    getUI().addWindow((new PlannerEventFilter(new Date(),loggedInUserProfile)));
+                    getUI().addWindow((new PlannerEventFilter(new Date(),loggedInUserProfile,PlannerView.this)));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -201,11 +203,11 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
         calendar.addEvent(constructEvent(indDay, indDay, "Independence Day!", "Independence Day!",true)); */
         
         //addCalendarEventListeners();
-        
+        addCalendarEventListeners();
         v.addComponent(calendar);
     }
     
-     private MUCEvent constructEvent(Date fromDate,Date toDate, String eventDescription, String eventCaption,boolean isAllDay, String style)
+     public MUCEvent constructEvent(Date fromDate,Date toDate, String eventDescription, String eventCaption,boolean isAllDay, String style)
     {
         MUCEvent event = new MUCEvent();
         event.setDescription(eventDescription);
@@ -226,6 +228,7 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
             public void weekClick(final WeekClick event) {
                 // let BasicWeekClickHandler handle calendar dates, and update
                 // only the other parts of UI here
+                getUI().showNotification("Week clicked");
                 super.weekClick(event);
                 //switchToWeekView();
             }
@@ -234,7 +237,10 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
         calendar.setHandler(new EventClickHandler() {
             @Override
             public void eventClick(final EventClick event) {
+                //event.
                 //showEventPopup(event.getCalendarEvent(), false);
+                MUCEvent basicEvent=(MUCEvent) event.getCalendarEvent();
+                getUI().addWindow(new PlannerEventFilter(basicEvent,loggedInUserProfile,PlannerView.this));
             }
         });
 
@@ -243,6 +249,7 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
             public void dateClick(final DateClickEvent event) {
                 // let BasicDateClickHandler handle calendar dates, and update
                 // only the other parts of UI here
+                getUI().showNotification("Date clicked");
                 super.dateClick(event);
                 //switchToDayView();
             }
@@ -381,11 +388,19 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //    }
 
+    HashMap<String,AppointmentMstBean> plannerEventMap = new HashMap<String,AppointmentMstBean>();
+    
     private void setDataToCalendar() 
     {
         for(AppointmentMstBean bean : plannerEventList)
         {
-            calendar.addEvent(constructEvent(bean.getStarttime(), bean.getEndtime(), bean.getEventDescription(), bean.getEventCaption(),true,bean.getEventStyle()));
+            plannerEventMap.put(bean.getAppointmentId()+GlobalConstants.HYPHEN+bean.getEventDescription(), bean);
+            calendar.addEvent(constructEvent(bean.getStarttime(), bean.getEndtime(), bean.getAppointmentId()+GlobalConstants.HYPHEN+bean.getEventDescription(), bean.getEventCaption(),true,bean.getEventStyle()));
         }
+    }
+    
+    public void addEventToCalendar(MUCEvent e) 
+    {
+        calendar.addEvent(e);
     }
 }
