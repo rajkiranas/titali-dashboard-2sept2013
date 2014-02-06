@@ -240,7 +240,7 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
                 //event.
                 //showEventPopup(event.getCalendarEvent(), false);
                 MUCEvent basicEvent=(MUCEvent) event.getCalendarEvent();
-                getUI().addWindow(new PlannerEventFilter(basicEvent,loggedInUserProfile,PlannerView.this));
+                getUI().addWindow(new PlannerEventFilter(basicEvent,loggedInUserProfile,PlannerView.this,plannerEventMap));
             }
         });
 
@@ -388,19 +388,14 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //    }
 
-    HashMap<String,AppointmentMstBean> plannerEventMap = new HashMap<String,AppointmentMstBean>();
+    private HashMap<String,AppointmentMstBean> plannerEventMap = new HashMap<String,AppointmentMstBean>();
     
     private void setDataToCalendar() 
     {
         for(AppointmentMstBean bean : plannerEventList)
         {
-            plannerEventMap.put(bean.getAppointmentId()+GlobalConstants.HYPHEN+bean.getEventDescription(), bean);
-            calendar.addEvent(constructEvent(bean.getStarttime(), bean.getEndtime(), bean.getAppointmentId()+GlobalConstants.HYPHEN+bean.getEventDescription(), bean.getEventCaption(),true,bean.getEventStyle()));
+            plannerEventMap.put(bean.getAppointmentId()+GlobalConstants.HASH+bean.getEventDescription(), bean);
+            calendar.addEvent(constructEvent(bean.getStarttime(), bean.getEndtime(), bean.getAppointmentId()+GlobalConstants.HASH+bean.getEventDescription(), bean.getEventCaption(),true,bean.getEventStyle()));
         }
-    }
-    
-    public void addEventToCalendar(MUCEvent e) 
-    {
-        calendar.addEvent(e);
     }
 }

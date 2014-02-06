@@ -45,7 +45,7 @@ public class DashboardActivityWraper extends VerticalLayout {
         activityDetailsLayout.setHeight("70%");
         //activityDetailsLayout.addStyleName("fourSideBorder");
         addComponent(activityDetailsLayout);
-        setExpandRatio(activityDetailsLayout,0.5f);
+        setExpandRatio(activityDetailsLayout,1.5f);
         setData(activityDetails);
         addLayoutClickListener((LayoutEvents.LayoutClickListener)dash);
 
@@ -115,8 +115,8 @@ public class DashboardActivityWraper extends VerticalLayout {
         activityImageLayout.setMargin(new MarginInfo(true, true, false, true));
         activityImageLayout.setSpacing(true);
         //activityImageLayout.addStyleName("fourSideBorder");
-        fields.addComponent(activityImageLayout);
-        //fields.setExpandRatio(activityImageLayout,3);
+        addComponent(activityImageLayout);
+        setExpandRatio(activityImageLayout,3);
         Embedded activityImage;
         
         if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getUploadId()+".jpg").exists())
@@ -145,8 +145,8 @@ public class DashboardActivityWraper extends VerticalLayout {
         
 //        activityImage.setHeight("90px");
 //        activityImage.setWidth("90px");
-        activityImage.setWidth("98%");
-        activityImage.setHeight("80%");
+        activityImage.setWidth("80%");
+        activityImage.setHeight("50%");
         
 //        VerticalLayout il = new VerticalLayout();
 //        il.setSizeFull();
@@ -164,12 +164,12 @@ public class DashboardActivityWraper extends VerticalLayout {
         
         activityImageLayout.addComponent(il);
         activityImageLayout.setComponentAlignment(il, Alignment.MIDDLE_RIGHT);
-        activityImageLayout.setExpandRatio(il, 0.5f);
+        activityImageLayout.setExpandRatio(il, 1.5f);
         
         
         activityImageLayout.addComponent(activityImage);
         activityImageLayout.setComponentAlignment(activityImage, Alignment.MIDDLE_CENTER);
-        activityImageLayout.setExpandRatio(activityImage, 2.5f);
+        activityImageLayout.setExpandRatio(activityImage, 3);
         
         
         

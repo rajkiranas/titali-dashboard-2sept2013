@@ -250,11 +250,9 @@ public class NewEditTopicDetailsAdmin extends Window implements Button.ClickList
         //lableVideo.setCaption("About Video");
         lableVideo.setWidth("90%");
         
-        
         videoInputPath = new TextField();
-        videoInputPath.setInputPrompt("Please enter video path on the SERVER");
+        videoInputPath.setInputPrompt("Please enter youtube url of the video");
         videoInputPath.setWidth("90%");
-        
         
         final UploadReceiver uploadReceiver = new UploadReceiver();
         final Upload upload;
