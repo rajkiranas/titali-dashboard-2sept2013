@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.vaadin.dialogs.ConfirmDialog;
 
 
 
@@ -44,6 +45,7 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
     private ComboBox stdCombo;
     private ComboBox divCombo;
     private Button saveEvent;
+    private Button deleteEvent;
     private Button cancelEvent;
     private Date startDate;
     private Date endDate;
@@ -91,6 +93,9 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
     private Userprofile loggedInUserProfile;
     private PlannerView view;
     private HashMap<String,AppointmentMstBean> plannerEventMap;
+    private static final String All="All";
+    private long eventIdForEditDeleteBean;
+    private boolean isEditDeleteView=false;
 
     static
     {
@@ -105,6 +110,7 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
     }
     /* Added by suyog for c-cure healthcare changes*/
 
+    //new event
     public PlannerEventFilter(Date date, Userprofile loggedInUserProfile, PlannerView view) {
         this.view=view;
         this.loggedInUserProfile=loggedInUserProfile;
@@ -118,16 +124,18 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
         buildMainLayout();
     }
     
+    //view popup for existing event
     public PlannerEventFilter(MUCEvent basicEvent, Userprofile loggedInUserProfile, PlannerView view, HashMap<String,AppointmentMstBean> plannerEventMap) {
         this.view=view;
         this.loggedInUserProfile=loggedInUserProfile;
         this.basicEvent=basicEvent;
         this.plannerEventMap=plannerEventMap;
+        this.isEditDeleteView=true;
         setCaption("Planner event");
         setModal(true);
         center();
         setWidth("35%");
-        setHeight("80%");
+        setHeight("80%");        
         buildMainLayout();
         setFormData(basicEvent);
     }
@@ -235,24 +243,21 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
         {
             stdCombo.addItem(s.getStd());
         }
-        
+        stdCombo.addItem(All);
         stdCombo.addValueChangeListener(new Property.ValueChangeListener() {
 
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
-                if(!stdCombo.getValue().equals("Select")){
+                if(!stdCombo.getValue().equals("Select") && !stdCombo.getValue().equals(All)){
                     String std=String.valueOf(stdCombo.getValue());
                     List<QuickLearn> divBeanList  = MasterDataProvider.getDivisionBystd(std);
                     
                     if(!divBeanList.isEmpty())
                     {
-                        
-                            
                        for(QuickLearn bean : divBeanList)
                        {
                             divCombo.addItem(bean.getFordiv());
                        }
-                         
                     }     
                }
             }
@@ -274,9 +279,7 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 
         baseLayout.addComponent(eventForm);
 
-        HorizontalLayout buttons = new HorizontalLayout();
-        buttons.setSpacing(true);
-        buttons.setMargin(new MarginInfo(false, false, false, true));
+        
 
 
         saveEvent = new Button("Save");
@@ -295,19 +298,67 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
                 }
             }
         });
-        buttons.addComponent(saveEvent);
+        
+        
+        if(isEditDeleteView)
+        {
+            deleteEvent = new Button("Delete");
+            deleteEvent.setImmediate(true);
+            deleteEvent.addClickListener(new Button.ClickListener() {
+                public void buttonClick(ClickEvent event) 
+                {
+                    if(validateEventForm())
+                    {
+                        ConfirmDialog.show(PlannerEventFilter.this, "Confirm:", "Are you sure, you want to delete this event ?", "YES", "NO", new ConfirmDialog.Listener() {
+            
+                        public void onClose(ConfirmDialog dialog) {
+                            if (dialog.isConfirmed()) 
+                            {
+                                deletePlannerEvent();
+                                getUI().getNavigator().navigateTo(GlobalConstants.ROUT_PLANNER);
+                                closePopup();
+                            }
+                            // else {
+//                                //isBlankMsg = false;
+//                            }
+                        }
+            });
+                    }
+                }
+            });
+            
+        }
 
 
-        cancelEvent = new Button("Cancel");
+        cancelEvent = new Button("Close");
         cancelEvent.setImmediate(true);
         cancelEvent.addClickListener(new Button.ClickListener() {
             public void buttonClick(ClickEvent event) {
                 closePopup();
             }
         });
-        buttons.addComponent(cancelEvent);
+        
 
+        
+        
+        
+        HorizontalLayout buttons = new HorizontalLayout();
+        buttons.setSpacing(true);
+        //buttons.setMargin(new MarginInfo(false, false, false, true));
+        buttons.setMargin(false);
+        
+        if(!loggedInUserProfile.getRole().equals(GlobalConstants.student))
+        {
+            buttons.addComponent(saveEvent);
+            if(deleteEvent!=null)
+                buttons.addComponent(deleteEvent);            
+        }
+        
+        buttons.addComponent(cancelEvent);        
+        
         eventForm.addComponent(buttons);
+        eventForm.setComponentAlignment(buttons, Alignment.MIDDLE_LEFT);
+        
         
         setContent(baseLayout);
     }
@@ -496,7 +547,10 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
                 WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SAVE_PLANNER_EVENT));
                 //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
                 JSONObject input = new JSONObject();
-                try {
+                try 
+                {
+                    
+                    input.put("eventIdForEditDeleteBean", eventIdForEditDeleteBean);
                     input.put("startTime", startTime.getValue().getTime());
                     input.put("endTime", endTime.getValue().getTime());
                     String caption = String.valueOf(eventCaption.getValue());
@@ -535,6 +589,40 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
             }
         }
     }
+    
+    private void deletePlannerEvent() 
+    {
+        if (validateEventForm()) 
+        {
+            try 
+            {
+                Client client = Client.create();
+                WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.DELETE_PLANNER_EVENT));
+                //String input = "{\"userName\":\"raj\",\"password\":\"FadeToBlack\"}";
+                JSONObject input = new JSONObject();
+                try 
+                {
+                    
+                    input.put("eventIdForEditDeleteBean", eventIdForEditDeleteBean);
+
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+
+                ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, input);
+
+                JSONObject outNObject = null;
+                String output = response.getEntity(String.class);
+                outNObject = new JSONObject(output);
+
+                ShowNotification(outNObject.getString(GlobalConstants.STATUS));
+
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+                ShowNotification("Save planner event failed");
+            }
+        }
+    }
 
     public AppointmentMst setAppointmentDtls() {
 
@@ -547,8 +635,7 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
         String desc = "Appointment-" + cmbDoctor.getValue() + " meets " + cmbPaitent.getItemCaption(cmbPaitent.getValue()) + "(" + cmbPaitent.getValue() + ")";
         appointmentMst.setEventDescription(desc);
 
-        appointmentMst.setStartdate((Date) startTime.getValue());
-        appointmentMst.setEnddate((Date) startTime.getValue());
+        
         cal.setTime((Date) startTime.getValue());
 
         cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(startTimeHr.getValue().toString()));
@@ -1335,6 +1422,8 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
         String desc=basicEvent.getDescription();
         
         AppointmentMstBean bean = plannerEventMap.get(desc);
+        
+        eventIdForEditDeleteBean = bean.getAppointmentId();
         
         desc=desc.substring(desc.indexOf(GlobalConstants.HASH)+1);
         this.eventDesc.setValue(desc);

@@ -90,32 +90,38 @@ public class PlannerView extends VerticalLayout implements View,LayoutEvents.Lay
         top.addStyleName("lightBackgroundForDashboardActivity");
         top.addStyleName("lightGrayFourSideBorder");
         
-        Button addEventBtn = new Button("Schedule Appointment");
-        addEventBtn.setImmediate(true);
-        addEventBtn.setDescription("New Event");
-        addEventBtn.addStyleName("notifications");
-        addEventBtn.addStyleName("unread");
-        addEventBtn.addStyleName("icon-only");
-        addEventBtn.addStyleName("icon-upload-cloud");
-        addEventBtn.addClickListener(new Button.ClickListener() {
+        if(!loggedInUserProfile.getRole().equals(GlobalConstants.student))
+        {
+            Button addEventBtn = new Button("New Event");
+            addEventBtn.setImmediate(true);
+            addEventBtn.setDescription("New Event");
+            addEventBtn.addStyleName("default");
+    //        addEventBtn.addStyleName("notifications");
+    //        addEventBtn.addStyleName("unread");
+            //addEventBtn.addStyleName("icon-only");
+            //addEventBtn.addStyleName("pencilBg");
+            addEventBtn.addClickListener(new Button.ClickListener() {
 
-            public void buttonClick(ClickEvent event) {
-                //String dt = format.format(new Date());
-                //Date date;
-                try 
-                {
-                    //date = (Date) format.parse(dt);
-                    getUI().addWindow((new PlannerEventFilter(new Date(),loggedInUserProfile,PlannerView.this)));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                public void buttonClick(ClickEvent event) {
+                    //String dt = format.format(new Date());
+                    //Date date;
+                    try 
+                    {
+                        //date = (Date) format.parse(dt);
+                        getUI().addWindow((new PlannerEventFilter(new Date(),loggedInUserProfile,PlannerView.this)));
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
                 }
+            });
 
-            }
-        });
+            top.addComponent(addEventBtn);
+            top.setComponentAlignment(addEventBtn, Alignment.MIDDLE_RIGHT);
+            top.setExpandRatio(addEventBtn, 1);
+            
+        }
         
-         top.addComponent(addEventBtn);
-        top.setComponentAlignment(addEventBtn, Alignment.MIDDLE_RIGHT);
-        top.setExpandRatio(addEventBtn, 1);
         
         /* Button newEventBtn =  new Button(New);
         newEventBtn.setImmediate(true);

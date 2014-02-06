@@ -154,6 +154,7 @@ public class GlobalConstants
    public static  final String GET_All_FORUM_EVENTS="GET_All_FORUM_EVENTS";
    public static  final String GET_PLANNER_EVENT_LIST="GET_PLANNER_EVENT_LIST";
    public static  final String SAVE_PLANNER_EVENT="SAVE_PLANNER_EVENT";
+   public static  final String DELETE_PLANNER_EVENT="DELETE_PLANNER_EVENT";
    public static  final String GET_FORUM_EVENT_BY_ID="GET_FORUM_EVENT_BY_ID";
    public static  final String GET_WORD_LIST="GET_WORD_LIST";
    public static  final String SEARCH_WORD_LIST="SEARCH_WORD_LIST";
