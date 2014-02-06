@@ -17,8 +17,6 @@ public class AppointmentMstBean
     private long appointmentId;     
      private String ownerName;
      private String ownerUsername;
-     private Date startdate;
-     private Date enddate;
      private Date starttime;
      private Date endtime;
      private String eventDescription;
@@ -51,22 +49,7 @@ public class AppointmentMstBean
         this.ownerUsername = ownerUsername;
     }
 
-    public Date getStartdate() {
-        return startdate;
-    }
-
-    public void setStartdate(Date startdate) {
-        this.startdate = startdate;
-    }
-
-    public Date getEnddate() {
-        return enddate;
-    }
-
-    public void setEnddate(Date enddate) {
-        this.enddate = enddate;
-    }
-
+    
     public Date getStarttime() {
         return starttime;
     }
