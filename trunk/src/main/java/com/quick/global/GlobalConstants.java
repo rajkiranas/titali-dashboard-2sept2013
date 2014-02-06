@@ -56,6 +56,7 @@ public class GlobalConstants
     public static final String emptyString="";
     public static final String spaceString=" ";
     public static final String HYPHEN = "-";
+    public static final String HASH = "#";
     public static final String ISUSERNAMEEXIST="isUsernameExist";
     public static final String QUICKLEARNLIST = "quickLearnList";
     public static final String STDSUBLIST = "stdsub";

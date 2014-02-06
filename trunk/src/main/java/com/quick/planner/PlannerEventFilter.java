@@ -5,6 +5,7 @@
 package com.quick.planner;
 
 
+import com.quick.bean.AppointmentMstBean;
 import com.quick.bean.QuickLearn;
 import com.quick.bean.Userprofile;
 import com.quick.data.MasterDataProvider;
@@ -53,7 +54,8 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 //    private ScheduleAppointmentsOfEmp empAppoinments;
     private ComboBox eventColour;
     private static final List<String> colourList = Arrays.asList(new String[]{"Orange", "Blue"});
-    private static final HashMap<String,String> colorMap=new HashMap<String,String>();
+    private static final HashMap<String,String> colorToStyleMap=new HashMap<String,String>();
+    private static final HashMap<String,String> styleToColorMap=new HashMap<String,String>();
     
     private static final List<Integer> hrList = Arrays.asList(new Integer[]{9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19});
     //private static final List<Integer> minList = Arrays.asList(new Integer[]{00, 10, 15, 30, 45});
@@ -88,11 +90,15 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
     private File appointmentiCalFile;
     private Userprofile loggedInUserProfile;
     private PlannerView view;
+    private HashMap<String,AppointmentMstBean> plannerEventMap;
 
     static
     {
-        colorMap.put("Orange", "orangeBg");
-        colorMap.put("Blue", "blueFbBg");
+        colorToStyleMap.put("Orange", "orangeBg");
+        colorToStyleMap.put("Blue", "blueFbBg");
+        
+        styleToColorMap.put("orangeBg", "Orange");
+        styleToColorMap.put("blueFbBg", "Blue");
     }
 
     public PlannerEventFilter() {
@@ -112,9 +118,11 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
         buildMainLayout();
     }
     
-    public PlannerEventFilter(MUCEvent basicEvent, Userprofile loggedInUserProfile, PlannerView view) {
+    public PlannerEventFilter(MUCEvent basicEvent, Userprofile loggedInUserProfile, PlannerView view, HashMap<String,AppointmentMstBean> plannerEventMap) {
         this.view=view;
         this.loggedInUserProfile=loggedInUserProfile;
+        this.basicEvent=basicEvent;
+        this.plannerEventMap=plannerEventMap;
         setCaption("Planner event");
         setModal(true);
         center();
@@ -498,11 +506,11 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 
                     String forWhom=stdCombo.getValue().toString();
                     if (!divCombo.getValue().toString().equals("Select")) {
-                        forWhom=forWhom + divCombo.getValue().toString();
+                        forWhom=forWhom+GlobalConstants.HASH + divCombo.getValue().toString();
                     }
                     input.put("for_whom", forWhom);
                     
-                    input.put("event_style", colorMap.get(eventColour.getValue().toString()));
+                    input.put("event_style", colorToStyleMap.get(eventColour.getValue().toString()));
                     input.put("isallday", true);
                     
                     input.put("owner_name", loggedInUserProfile.getName());
@@ -1324,7 +1332,28 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
         this.startTime.setValue(basicEvent.getStart());
         this.endTime.setValue(basicEvent.getEnd());
         this.eventCaption.setValue(basicEvent.getCaption());
-        this.eventDesc.setValue(basicEvent.getDescription());
+        String desc=basicEvent.getDescription();
+        
+        AppointmentMstBean bean = plannerEventMap.get(desc);
+        
+        desc=desc.substring(desc.indexOf(GlobalConstants.HASH)+1);
+        this.eventDesc.setValue(desc);
+        
+
+        String std = bean.getForWhom();
+        String div=GlobalConstants.emptyString;
+        if(std.contains(GlobalConstants.HASH))
+        {
+            div=std.substring(std.indexOf(GlobalConstants.HASH)+1);
+            std=std.substring(0,std.indexOf(GlobalConstants.HASH));            
+        }
+            
+        this.stdCombo.setValue(std);
+        
+        if(!div.equals(GlobalConstants.emptyString))
+            this.divCombo.setValue(div);
+        
+        this.eventColour.setValue(styleToColorMap.get(bean.getEventStyle()));
         
     }
 }
