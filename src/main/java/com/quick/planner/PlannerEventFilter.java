@@ -309,7 +309,7 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
                 {
                     if(validateEventForm())
                     {
-                        ConfirmDialog.show(PlannerEventFilter.this, "Confirm:", "Are you sure, you want to delete this event ?", "YES", "NO", new ConfirmDialog.Listener() {
+                        ConfirmDialog dia =ConfirmDialog.show(getUI(), "Confirm delete", "Are you sure, you want to delete this event ?", "YES", "NO", new ConfirmDialog.Listener() {
             
                         public void onClose(ConfirmDialog dialog) {
                             if (dialog.isConfirmed()) 
@@ -323,6 +323,8 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
 //                            }
                         }
             });
+                        dia.setWidth("33%");
+                        dia.setHeight("20%");
                     }
                 }
             });
