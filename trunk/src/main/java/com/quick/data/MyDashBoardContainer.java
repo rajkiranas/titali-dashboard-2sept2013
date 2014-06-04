@@ -152,6 +152,7 @@ public class MyDashBoardContainer extends BeanItemContainer<MyDashBoardBean> {
                 bean.setStandard(whoisdoingwhat.getStd());
                 bean.setClassToInvoke(whoisdoingwhat.getClassToInvoke());
                 bean.setTopic(whoisdoingwhat.getTopic());
+                bean.setVideoUrl(whoisdoingwhat.getVideoUrl());
                 boardContainer.addItem(bean);
             }
        }

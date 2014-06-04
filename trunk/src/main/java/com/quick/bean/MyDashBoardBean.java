@@ -21,6 +21,7 @@ public class MyDashBoardBean {
     private String  uploadId;
     private String topicintro;
     private String classToInvoke;
+    private String videoUrl;
    
 
     public String getBywhome() {
@@ -135,6 +136,20 @@ public class MyDashBoardBean {
      */
     public void setClassToInvoke(String classToInvoke) {
         this.classToInvoke = classToInvoke;
+    }
+
+    /**
+     * @return the videoUrl
+     */
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    /**
+     * @param videoUrl the videoUrl to set
+     */
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
     
     

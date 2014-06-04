@@ -3,9 +3,11 @@ package com.vaadin.demo.dashboard;
 import com.quick.bean.MasteParmBean;
 import com.quick.bean.MyDashBoardBean;
 import com.quick.global.GlobalConstants;
+import com.quick.utilities.VideoUtil;
 import com.vaadin.event.LayoutEvents;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.shared.ui.label.ContentMode;
 
 
 import com.vaadin.ui.Alignment;
@@ -110,66 +112,101 @@ public class DashboardActivityWraper extends VerticalLayout {
         
         fields.addComponent(label);
         
-        VerticalLayout activityImageLayout = new VerticalLayout();
-        activityImageLayout.setSizeFull();
-        activityImageLayout.setMargin(new MarginInfo(true, true, false, true));
-        activityImageLayout.setSpacing(true);
-        //activityImageLayout.addStyleName("fourSideBorder");
-        addComponent(activityImageLayout);
-        setExpandRatio(activityImageLayout,3);
-        Embedded activityImage;
-        
-        if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getUploadId()+".jpg").exists())
-        {
-            activityImage =  new Embedded(null,
-                new ThemeResource("./img/topic_images/"+activityDetails.getUploadId()+".jpg"));
-        }
-        else if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getUploadId()+".jpeg").exists())
-        {
-            activityImage =  new Embedded(null,
-                new ThemeResource("./img/topic_images/"+activityDetails.getUploadId()+".jpeg"));
-        }
-        else if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getUploadId()+".png").exists())
-        {
-            activityImage =  new Embedded(null,
-                new ThemeResource("./img/topic_images/"+activityDetails.getUploadId()+".png"));            
-            
-        }
-        else
-        {
-            activityImage =  new Embedded(null,
-                new ThemeResource("./img/learnMore.jpg"));
-            
-        }
-        
-        
-//        activityImage.setHeight("90px");
-//        activityImage.setWidth("90px");
-        activityImage.setWidth("80%");
-        activityImage.setHeight("50%");
-        
-//        VerticalLayout il = new VerticalLayout();
-//        il.setSizeFull();
-        
-        
-         VerticalLayout il = new VerticalLayout();
+        //adding activity introduction
+        VerticalLayout il = new VerticalLayout();
          il.setSizeFull();
+         il.setImmediate(true);
+         il.setMargin(new MarginInfo(true, true, true, false));
          
         label = new Label(activityDetails.getTopicintro());
         label.setWidth("100%");
         label.addStyleName("deepPinkColor");
         il.addComponent(label);
+        fields.addComponent(il);
+        
+        //adding activity image/video
+        
+//        VerticalLayout activityImageLayout = new VerticalLayout();
+//        activityImageLayout.setSizeFull();
+//        activityImageLayout.setMargin(new MarginInfo(true, true, false, true));
+//        activityImageLayout.setSpacing(true);
+                //activityImageLayout.addStyleName("fourSideBorder");
+                //fields.addComponent(activityImageLayout);
+                //fields.setExpandRatio(activityImageLayout,3);
+        Embedded activityImage;
+        
+        //image
+        if(activityDetails.getVideoUrl()!=null)
+        {
+             String str = VideoUtil.getYoutubeEmbedingString(activityDetails.getVideoUrl());
+            
+            Label video = new Label(str,ContentMode.HTML);
+           
+            fields.addComponent(video);
+            
+//            
+//            activityImageLayout.addComponent(video);
+//            activityImageLayout.setComponentAlignment(video, Alignment.MIDDLE_CENTER);
+//            activityImageLayout.setExpandRatio(video, 3);
+//            
+            
+        }
+        //video
+        else
+        {
+            if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getUploadId()+".jpg").exists())
+            {
+                activityImage =  new Embedded(null,
+                    new ThemeResource("./img/topic_images/"+activityDetails.getUploadId()+".jpg"));
+            }
+            else if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getUploadId()+".jpeg").exists())
+            {
+                activityImage =  new Embedded(null,
+                    new ThemeResource("./img/topic_images/"+activityDetails.getUploadId()+".jpeg"));
+            }
+            else if(new File(GlobalConstants.getProperty(GlobalConstants.UPLOAD_TOPIC_IMAGES_PATH)+activityDetails.getUploadId()+".png").exists())
+            {
+                activityImage =  new Embedded(null,
+                    new ThemeResource("./img/topic_images/"+activityDetails.getUploadId()+".png"));            
+
+            }
+            else
+            {
+                activityImage =  new Embedded(null,
+                    new ThemeResource("./img/learnMore.jpg"));
+
+            }
+            
+            activityImage.setWidth("80%");
+            activityImage.setHeight("50%");
+            
+//             activityImageLayout.addComponent(activityImage);
+//            activityImageLayout.setComponentAlignment(activityImage, Alignment.MIDDLE_CENTER);
+//            activityImageLayout.setExpandRatio(activityImage, 3);
+            
+            fields.addComponent(activityImage);
+           
+        
+        }
+        
+//        activityImage.setHeight("90px");
+//        activityImage.setWidth("90px");
+        
+        
+//        VerticalLayout il = new VerticalLayout();
+//        il.setSizeFull();
+        
+        
+         
         //label.addStyleName("lightBackgroundForDashboardActivity");
 
         
-        activityImageLayout.addComponent(il);
-        activityImageLayout.setComponentAlignment(il, Alignment.MIDDLE_RIGHT);
-        activityImageLayout.setExpandRatio(il, 1.5f);
+//        activityImageLayout.addComponent(il);
+//        activityImageLayout.setComponentAlignment(il, Alignment.MIDDLE_RIGHT);
+//        activityImageLayout.setExpandRatio(il, 1.5f);
         
         
-        activityImageLayout.addComponent(activityImage);
-        activityImageLayout.setComponentAlignment(activityImage, Alignment.MIDDLE_CENTER);
-        activityImageLayout.setExpandRatio(activityImage, 3);
+       
         
         
         
