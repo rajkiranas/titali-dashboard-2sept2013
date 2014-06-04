@@ -39,6 +39,7 @@ public class MasteParmBean {
     private String quiz;
     private String topicintro;
     private String classToInvoke;
+    private String videoUrl;
 
     public int getActivityId() {
         return activityId;
@@ -246,6 +247,20 @@ public class MasteParmBean {
      */
     public void setClassToInvoke(String classToInvoke) {
         this.classToInvoke = classToInvoke;
+    }
+
+    /**
+     * @return the videoUrl
+     */
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    /**
+     * @param videoUrl the videoUrl to set
+     */
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 
    

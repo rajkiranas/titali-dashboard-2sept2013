@@ -676,7 +676,7 @@ public class DashboardUI extends UI{
             }
 
 
-            ClientResponse response = webResource.type("application/json").post(ClientResponse.class, inputJson);
+            ClientResponse response = webResource.type(GlobalConstants.application_json).post(ClientResponse.class, inputJson);
 
             /*
              * if (response.getStatus() != 201) { throw new
