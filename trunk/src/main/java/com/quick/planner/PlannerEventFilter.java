@@ -324,7 +324,9 @@ public class PlannerEventFilter extends Window implements Property.ValueChangeLi
                         }
             });
                         dia.setWidth("33%");
-                        dia.setHeight("20%");
+                        dia.setHeight("15%");
+                        Component c = dia.getParent();
+                        c.setHeight("90%");
                     }
                 }
             });

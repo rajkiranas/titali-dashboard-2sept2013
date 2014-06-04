@@ -793,6 +793,7 @@ public class StudQuickLearn extends VerticalLayout implements View, LayoutEvents
                 inputRequest.put("topic",getTopicForNotification());
                 inputRequest.put("topicIntro",topicIntro);
                 inputRequest.put("classToInvoke",classToInvoke);
+                inputRequest.put("videoUrl",getStudQuikLearnDetails().getVideoPath());
                                    
             Client client = Client.create();
                 WebResource webResource = client.resource(GlobalConstants.getProperty(GlobalConstants.SEND_WHOS_DOING_WHAT_NOTIFICATIONS));
