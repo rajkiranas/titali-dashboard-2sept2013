@@ -7,6 +7,7 @@ import com.quick.bean.*;
 import com.quick.global.GlobalConstants;
 import com.quick.utilities.DateUtil;
 import com.quick.utilities.MyImageSource;
+import com.quick.utilities.VideoUtil;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -88,124 +89,80 @@ public class ForumDetailWraper extends VerticalLayout {
 //                 (Resource)imageResource);
 
         // Create an instance of our stream source.
-        byte[] by = eventDetails.getStringImage().getBytes();
-        StreamResource.StreamSource imagesource = new MyImageSource(Base64.decode(by));
-
-// Create a resource that uses the stream source and give it a name.
-// The constructor will automatically register the resource in
-// the application.
-        StreamResource resource = new StreamResource(imagesource, "myimage.png");
-
-// Create an image component that gets its contents
-// from the resource.
-//layout.addComponent(new Image("Image title", resource));
-        Image coverImage = new Image("Image", resource);
-
-
-        coverImage.setHeight("70%");
-        coverImage.setWidth("75%");
-        //coverImage.setSizeFull();
-//        coverImage.setWidth("100%");
-//        coverImage.setHeight("80%");
-
-
-
         final Label more = new Label("<div style='color:#3b5998;display:inline-block;'> <b>" +"Read More..."+ "</b></div>",ContentMode.HTML);
-
-        DragAndDropWrapper cover = new DragAndDropWrapper(coverImage);
-        cover.setDragStartMode(DragStartMode.NONE);
-        
-        cover.setHeight("70%");
-        cover.setWidth("75%");
-        //cover.setSizeFull();
-//        cover.setWidth("100%");
-//        cover.setHeight("80%");
-        cover.addStyleName("cover");
-        cover.setDropHandler(new DropHandler() {
-
-            @Override
-            public void drop(DragAndDropEvent event) {
-                DragAndDropWrapper d = (DragAndDropWrapper) event.getTransferable().getSourceComponent();
-                if (d == event.getTargetDetails().getTarget()) {
-                    return;
-                }
-                //Movie m = (Movie) d.getData();
-//                coverImage.setSource(new ExternalResource(m.posterUrl));
-//                coverImage.setAlternateText(m.title);
-                //setCaption(m.title);
-                updateSynopsis(eventDetails, false);
-                more.setVisible(true);
-            }
-
-            @Override
-            public AcceptCriterion getAcceptCriterion() {
-                return AcceptAll.get();
-            }
-        });
-        details.addComponent(cover);
-        details.setExpandRatio(cover, 0.5f);
-
         fields = new VerticalLayout();
         fields.setWidth("60%");
         fields.setSpacing(true);
         fields.setMargin(true);
         fields.addStyleName("rightAndLeftBorder");
         fields.addStyleName("whiteBg");
-        details.addComponent(fields);
-        details.setExpandRatio(fields, 2);
-        details.setComponentAlignment(fields,Alignment.MIDDLE_CENTER);
+        
         Label label;
-//        if (event != null) {
-//            SimpleDateFormat df = new SimpleDateFormat();
-//
-//            df.applyPattern("dd-mm-yyyy");
-//            label = new Label(df.format(event.start));
-//            label.setSizeUndefined();
-//            label.setCaption("Date");
-//            fields.addComponent(label);
-//
-//            df.applyPattern("hh:mm a");
-//            label = new Label(df.format(event.start));
-//            label.setSizeUndefined();
-//            label.setCaption("Starts");
-//            fields.addComponent(label);
-//
-//            label = new Label(df.format(event.end));
-//            label.setSizeUndefined();
-//            label.setCaption("Ends");
-//            fields.addComponent(label);
-//        }
-
 
         String cap = "<div style='color:#3b5998;display:inline-block;'> <b>" + eventDetails.getEventOwner() + "</b></div>" + "<div style='color:grey;font-size:13px;display:inline-block;'>&nbsp; shared </div> <div style='color:#3b5998;display:inline-block;'>"
                 + eventDetails.getEventDesc() + "</div>";
         label = new Label(cap, ContentMode.HTML);
         label.setWidth("100%");
+        fields.addComponent(label);
         //label.setStyleName("deepPinkColor");
         //label.setCaption("");
-        fields.addComponent(label);
-
-//        label = new Label("<h4><b>"+eventDetails.getEventOwner()+"</b></h4>",ContentMode.HTML);
-//        label.setSizeUndefined();
-//        label.setCaption("By");
-//        fields.addComponent(label);
-//        
-//        label = new Label("<h4><b>"+eventDetails.getEventDate()+"</b></h4>",ContentMode.HTML);
-//        label.setSizeUndefined();
-//        label.setCaption("on");
-//        fields.addComponent(label);
-
+        
         synopsis = new Label();
         synopsis.setWidth("100%");
         synopsis.setData(eventDetails.getEventOwner());
-        //synopsis.setCaption(GlobalConstants.emptyString);
         updateSynopsis(eventDetails, false);
         fields.addComponent(synopsis);
-
-        fields.addComponent(cover);
-        //fields.setExpandRatio(cover, 0.5f);
         
-        //more.addStyleName("link");
+        
+        
+        
+        if(eventDetails.getStringImage()!=null)
+        {
+            byte[] by = eventDetails.getStringImage().getBytes();
+            StreamResource.StreamSource imagesource = new MyImageSource(Base64.decode(by));
+            StreamResource resource = new StreamResource(imagesource, "myimage.png");
+
+            Image coverImage = new Image("Image", resource);
+
+            coverImage.setHeight("70%");
+            coverImage.setWidth("75%");
+
+            DragAndDropWrapper cover = new DragAndDropWrapper(coverImage);
+            cover.setDragStartMode(DragStartMode.NONE);
+
+            cover.setHeight("70%");
+            cover.setWidth("75%");
+            cover.addStyleName("cover");
+            cover.setDropHandler(new DropHandler() {
+
+                @Override
+                public void drop(DragAndDropEvent event) {
+                    DragAndDropWrapper d = (DragAndDropWrapper) event.getTransferable().getSourceComponent();
+                    if (d == event.getTargetDetails().getTarget()) {
+                        return;
+                    }
+                    updateSynopsis(eventDetails, false);
+                    more.setVisible(true);
+                }
+
+                @Override
+                public AcceptCriterion getAcceptCriterion() {
+                    return AcceptAll.get();
+                }
+            });
+//            details.addComponent(cover);
+//            details.setExpandRatio(cover, 0.5f);
+            fields.addComponent(cover);
+        }
+        else
+        {
+            String str = VideoUtil.getYoutubeEmbedingString(eventDetails.getVideoUrl());
+            Label video = new Label(str, ContentMode.HTML);
+            fields.addComponent(video);
+        }
+
+        
+
         fields.addComponent(more);
         /* more.addClickListener(new ClickListener() {
 
@@ -218,21 +175,11 @@ public class ForumDetailWraper extends VerticalLayout {
                 showLikeAndCommentsForm();
             }
         }); */
-
         
+        details.addComponent(fields);
+        details.setExpandRatio(fields, 2);
+        details.setComponentAlignment(fields,Alignment.MIDDLE_CENTER);
 
-//        Button ok = new Button("Close");
-//        ok.addStyleName("wide");
-//        ok.addStyleName("default");
-//        ok.addClickListener(new ClickListener() {
-//            @Override
-//            public void buttonClick(ClickEvent event) {
-//                close();
-//            }
-//        });
-//        footer.addComponent(ok);
-//        footer.setComponentAlignment(ok, Alignment.TOP_RIGHT);
-//        l.addComponent(footer);
     }
     
     private void showLikeAndCommentsForm() {

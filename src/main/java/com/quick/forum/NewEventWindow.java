@@ -12,6 +12,9 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.quick.utilities.ImageResizer;
 import com.quick.utilities.UploadReceiver;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import java.io.File;
@@ -69,7 +72,9 @@ public class NewEventWindow extends Window implements Button.ClickListener{
 
     private UploadReceiver uploadReceiver = new UploadReceiver();
     private Upload upload;
+    private OptionGroup imageVideoOption;
     private TextField subject;
+    private TextField txtVideoUrl;
     private TextArea desc;
     private File eventPicture;
     private Window w;
@@ -78,16 +83,12 @@ public class NewEventWindow extends Window implements Button.ClickListener{
 
     private void getEventDetailsInputForm() 
     {
-        subject = new TextField("Subject");
-        subject.setImmediate(true);
-        subject.setInputPrompt("Event heading comes here");
-        subject.setWidth("50%");
+        initializeImageOrVideoOption();
         
-        desc = new TextArea("Description");
-        desc.setImmediate(true);
-        desc.setInputPrompt("Event description comes here");
-        desc.setWidth("90%");
-        desc.setRows(8);
+        txtVideoUrl = new TextField();
+        txtVideoUrl.setImmediate(true);
+        txtVideoUrl.setInputPrompt("Please enter youtube URL");
+        //txtVideoUrl.setWidth("50%");
         
         upload = new Upload(null, uploadReceiver);
         upload.setImmediate(true);
@@ -123,6 +124,19 @@ public class NewEventWindow extends Window implements Button.ClickListener{
             }
         });
         
+        subject = new TextField("Subject");
+        subject.setImmediate(true);
+        subject.setInputPrompt("Event heading comes here");
+        subject.setWidth("50%");
+        
+        
+        
+        desc = new TextArea("Description");
+        desc.setImmediate(true);
+        desc.setInputPrompt("Event description comes here");
+        desc.setWidth("90%");
+        desc.setRows(8);
+        
         
            HorizontalLayout h = new HorizontalLayout();
            h.setWidth("100%");
@@ -157,8 +171,19 @@ public class NewEventWindow extends Window implements Button.ClickListener{
         
         VerticalLayout layout = new VerticalLayout();
         layout.setSpacing(true);
-        layout.addComponent(subject);
-        layout.addComponent(upload);
+        
+        layout.addComponent(imageVideoOption);
+        HorizontalLayout ivLayout = new HorizontalLayout();
+//        ivLayout.setWidth("100%");
+        ivLayout.setSpacing(true);
+        ivLayout.addComponent(upload);
+        ivLayout.addComponent(new Label("<b>OR</b>", ContentMode.HTML));
+        ivLayout.addComponent(txtVideoUrl);
+        
+//        layout.addComponent(upload);
+//        layout.addComponent(txtVideoUrl);
+        layout.addComponent(ivLayout);
+        layout.addComponent(subject);        
         layout.addComponent(desc);
         
         baseLayout.addComponent(layout);
@@ -179,9 +204,13 @@ public class NewEventWindow extends Window implements Button.ClickListener{
         {
             Notification.show("Event subject cannot be more than 100 characters.", Notification.Type.WARNING_MESSAGE);
         }
-        else if(imageFileName == null)
+        else if(upload.isEnabled() && imageFileName == null)
         {
             Notification.show("Please upload image for the event.", Notification.Type.WARNING_MESSAGE);
+        }
+        else if(txtVideoUrl.isEnabled() && (txtVideoUrl.getValue()==null || txtVideoUrl.getValue().equals(GlobalConstants.emptyString)))
+        {
+            Notification.show("Please enter youtube url of video.", Notification.Type.WARNING_MESSAGE);
         }
         else if (desc.getValue() == null || ((String) desc.getValue()).trim().equals(GlobalConstants.emptyString))
         {
@@ -202,9 +231,26 @@ public class NewEventWindow extends Window implements Button.ClickListener{
                     Userprofile loggedinProfile = (Userprofile) getSession().getAttribute(GlobalConstants.CurrentUserProfile);
                     inputJson.put("event_desc", subject.getValue());
                     inputJson.put("event_body", desc.getValue());
-                    inputJson.put("image", new String(Base64.encode(eventImageArray)));
+                    if(upload.isEnabled())
+                    {
+                        inputJson.put("image", new String(Base64.encode(eventImageArray)));
+                        inputJson.put("image_filename", imageFileName);
+                    }
+                    else
+                    {
+                        inputJson.put("image", "null");
+                    }
+                    
+                    if(txtVideoUrl.isEnabled())
+                    {
+                        inputJson.put("videoUrl", txtVideoUrl.getValue());
+                    }
+                    else
+                    {
+                        inputJson.put("videoUrl", "null");
+                    }
+                    
                     inputJson.put("owner", loggedinProfile.getName());
-                    inputJson.put("image_filename", imageFileName);
                     ViewEventDetailsWindow w = new ViewEventDetailsWindow();
                     inputJson.put("classToInvoke", w.getClass().getName());
 
@@ -218,7 +264,11 @@ public class NewEventWindow extends Window implements Button.ClickListener{
                 String output = response.getEntity(String.class);
                 outNObject = new JSONObject(output);
                 newlyCreatedEventId = outNObject.getString("newlyCreatedEventId");
-                saveResizedTopicImageToFileSystem();
+                if(upload.isEnabled())
+                {
+                    saveResizedTopicImageToFileSystem();
+                }
+                
                 Notification.show(outNObject.getString(GlobalConstants.STATUS), Notification.Type.WARNING_MESSAGE);
                 
                 getUI().getNavigator().navigateTo(GlobalConstants.ROUT_FORUM);
@@ -258,4 +308,35 @@ public class NewEventWindow extends Window implements Button.ClickListener{
                     }
                 }
             }
+
+    private void initializeImageOrVideoOption() {
+        imageVideoOption = new OptionGroup("Share Image/Video");
+        imageVideoOption.setImmediate(true);
+        imageVideoOption.addStyleName("horizontal");
+        
+        imageVideoOption.addItem("Image");
+        imageVideoOption.setItemCaption("Image", "Image");
+        
+        imageVideoOption.addItem("Video");
+        imageVideoOption.setItemCaption("Video", "Video");
+        
+        imageVideoOption.addValueChangeListener(new ValueChangeListener() {
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+               String valueString = String.valueOf(event.getProperty().getValue());
+//                System.out.println("***valueString="+valueString);
+                if(valueString.equals("Image"))
+                {
+                    upload.setEnabled(true);
+                    txtVideoUrl.setEnabled(false);
+                }
+                else
+                {
+                    txtVideoUrl.setEnabled(true);
+                    upload.setEnabled(false);
+                }
+            }
+        });
+    }
 }

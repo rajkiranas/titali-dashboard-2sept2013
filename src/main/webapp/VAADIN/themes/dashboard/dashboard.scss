@@ -874,4 +874,16 @@ background-color: #3B5998 !important;
     background-image:url(img/pencil.png)
 }
 
+.v-select-optiongroup-horizontal .v-select-option {
+    display: inline-block;
+}
+
+.v-select-optiongroup-horizontal {
+    white-space: nowrap;
+}
+
+.v-select-optiongroup-horizontal .v-select-option.v-radiobutton {
+    padding-right: 10px;
+}
+
 }

@@ -23,6 +23,7 @@ public class ForumEventDetailsBean
      private Integer parentForumId;
      private String imageFileName;
      private List<EventLikeBean> eventLikesList;
+     private String videoUrl;
 
     @Override
     public String toString() {
@@ -122,7 +123,18 @@ public class ForumEventDetailsBean
     public void setEventLikesList(List<EventLikeBean> eventLikesList) {
         this.eventLikesList = eventLikesList;
     }
-     
-     
-    
+
+    /**
+     * @return the videoUrl
+     */
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    /**
+     * @param videoUrl the videoUrl to set
+     */
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
 }
