@@ -14,6 +14,7 @@ import com.quick.bean.Userprofile;
 import com.quick.global.GlobalConstants;
 import com.quick.utilities.DateUtil;
 import com.quick.utilities.MyImageSource;
+import com.quick.utilities.VideoUtil;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -23,19 +24,13 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.ThemeResource;
-import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.themes.BaseTheme;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -101,7 +96,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         //addUserNotes();
         setContent(baseLayout);
         addStyleName("schedule");
-        addStyleName("blackBg");
+        //addStyleName("blackBg");
         return this;
     }
     
@@ -125,7 +120,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         //addUserNotes();
         setContent(baseLayout);
         addStyleName("schedule");
-        addStyleName("blackBg");
+        //addStyleName("blackBg");
         return this;
     }
     
@@ -168,7 +163,14 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         tabsheet.addTab(getQuizLayout(),"Quiz"); */
         
         //CssLayout tabsheetLayout = UIUtils.createPanel(tabsheet);
-        getEventImage();
+        if(eventDtls.getStringImage()!=null)
+        {
+            getEventImage();
+        }
+        else
+        {
+            getYoutubeVideo();
+        }
         getEventDetails();
         showLikeAndCommentsForm();
         showFullCommentsStack();
@@ -205,7 +207,7 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         imageLayout.setSizeFull();
         imageLayout.addComponent(coverImage);
         imageLayout.setComponentAlignment(coverImage,Alignment.MIDDLE_CENTER);
-        imageLayout.addStyleName("blackBg");
+        //imageLayout.addStyleName("blackBg");
         
         baseLayout.addComponent(imageLayout);
         baseLayout.setExpandRatio(imageLayout,2.75f);
@@ -608,5 +610,15 @@ public class ViewEventDetailsWindow extends Window implements Button.ClickListen
         }
           
    }
+
+    private void getYoutubeVideo() 
+    {
+        String str=VideoUtil.getYoutubeEmbedingString(eventDtls.getVideoUrl());
+        Label video = new Label(str, ContentMode.HTML);
+        video.setWidth("50%");
+        baseLayout.addComponent(video);
+        baseLayout.setExpandRatio(video,2.75f);
+        baseLayout.setComponentAlignment(video,Alignment.MIDDLE_CENTER);
+    }
     
 }
